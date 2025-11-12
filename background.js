@@ -1,4 +1,4 @@
-// background.js - Service worker with AI correction logic
+// background.js - Service worker with dictionary shard loading
 
 const DEFAULTS = { enabled: true, pausedHosts: [] };
 
@@ -18,13 +18,12 @@ async function initializeModels() {
   console.log('📚 Loading dictionary from shards...');
   
   try {
-    // Load dictionary from shards (50K+ words)
     dictionary = await loadDictionaryFromShards();
     console.log('✅ Loaded', dictionary.size, 'words from shards');
   } catch (error) {
     console.warn('⚠️ Could not load shards, using fallback dictionary:', error);
     
-    // Fallback: use hardcoded dictionary if shards fail
+    // Fallback dictionary
     dictionary = new Set([
       'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
       'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this',
@@ -42,7 +41,10 @@ async function initializeModels() {
       'am', 'being', 'does', 'done', 'doing', 'made', 'make', 'making',
       'called', 'call', 'calling', 'went', 'going', 'goes', 'came', 'coming',
       'write', 'writing', 'wrote', 'written', 'read', 'reading', 'reads',
-      'thing', 'things', 'place', 'places', 'person', 'great', 'small', 'grit', 'greet'
+      'thing', 'things', 'place', 'places', 'person', 'great', 'small', 'grit', 'greet',
+      'get', 'got', 'getting', 'give', 'gave', 'given', 'know', 'knew', 'known',
+      'trying', 'tried', 'try', 'tries', 'guess', 'guessed', 'guessing',
+      'must', 'adjust', 'adjusted', 'adjusting', 'adjustment', 'i'
     ]);
     console.log('✅ Using fallback dictionary with', dictionary.size, 'words');
   }
@@ -54,35 +56,71 @@ async function initializeModels() {
 async function loadDictionaryFromShards() {
   const words = new Set();
   
-  // Import pako for decompression
-  importScripts(chrome.runtime.getURL('libs/pako.min.js'));
+  // Generate all shard combinations: a_, aa, ab, ac, ..., zz
+  const shardNames = [];
   
-  // Load all shard files (assumes you have shard_0.json.gz, shard_1.json.gz, etc.)
-  const shardCount = 10; // Adjust based on how many shards build-dict.js created
+  // Single letter + underscore (a_, b_, c_, ...)
+  for (let i = 97; i <= 122; i++) {
+    shardNames.push(String.fromCharCode(i) + '_');
+  }
   
-  for (let i = 0; i < shardCount; i++) {
+  // Two letter combinations (aa, ab, ..., zz)
+  for (let i = 97; i <= 122; i++) {
+    for (let j = 97; j <= 122; j++) {
+      shardNames.push(String.fromCharCode(i) + String.fromCharCode(j));
+    }
+  }
+  
+  console.log(`📦 Loading ${shardNames.length} shards...`);
+  
+  let loadedCount = 0;
+  let failedCount = 0;
+  
+  for (const shardName of shardNames) {
     try {
-      const shardPath = `assets/shards/shard_${i}.json.gz`;
+      const shardPath = `assets/shards/${shardName}.txt.gz`;
       const shardUrl = chrome.runtime.getURL(shardPath);
       
-      console.log(`📦 Loading shard ${i}...`);
-      
-      // Fetch the compressed shard
       const response = await fetch(shardUrl);
+      
+      if (!response.ok) {
+        failedCount++;
+        continue;
+      }
+      
+      // Decompress using DecompressionStream API
       const arrayBuffer = await response.arrayBuffer();
+      const decompressedStream = new Response(
+        new Blob([arrayBuffer]).stream().pipeThrough(new DecompressionStream('gzip'))
+      );
+      const text = await decompressedStream.text();
       
-      // Decompress using pako
-      const decompressed = pako.inflate(new Uint8Array(arrayBuffer), { to: 'string' });
-      const shardWords = JSON.parse(decompressed);
+      // Split by lines and add to dictionary
+      const shardWords = text.split('\n').filter(w => w.trim().length > 0);
       
-      // Add words to dictionary
-      shardWords.forEach(word => words.add(word.toLowerCase()));
+      shardWords.forEach(word => {
+        const cleaned = word.trim().toLowerCase();
+        if (cleaned && /^[a-z]+$/.test(cleaned)) {
+          words.add(cleaned);
+        }
+      });
       
-      console.log(`✅ Shard ${i} loaded: ${shardWords.length} words`);
+      loadedCount++;
+      
+      // Log progress every 50 shards
+      if (loadedCount % 50 === 0) {
+        console.log(`✅ Loaded ${loadedCount} shards so far... (${words.size} words)`);
+      }
     } catch (error) {
-      console.warn(`⚠️ Could not load shard ${i}:`, error);
-      // Continue with other shards
+      failedCount++;
+      // Silently skip failed shards
     }
+  }
+  
+  console.log(`✅ Successfully loaded ${loadedCount} shards, ${failedCount} failed`);
+  
+  if (words.size === 0) {
+    throw new Error('No words loaded from shards');
   }
   
   return words;
@@ -93,7 +131,6 @@ async function setBadge(enabled) {
   try {
     await chrome.action.setBadgeText({ text: enabled ? "" : "OFF" });
     await chrome.action.setBadgeBackgroundColor({ color: "#777" });
-    console.log('🏷️ Badge set:', enabled ? 'ON' : 'OFF');
   } catch (e) {
     console.log('⚠️ Could not set badge:', e);
   }
@@ -108,7 +145,6 @@ async function buildMenus() {
       title: "Pause/Resume on this site",
       contexts: ["action"]
     });
-    console.log('📋 Context menus created');
   } catch (e) {
     console.log('⚠️ Could not build menus:', e);
   }
@@ -129,7 +165,6 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 // Storage change listener
 chrome.storage.onChanged.addListener(async (changes) => {
-  console.log('⚙️ Storage changed:', changes);
   if (changes.enabled) {
     await setBadge(changes.enabled.newValue);
   }
@@ -137,8 +172,6 @@ chrome.storage.onChanged.addListener(async (changes) => {
 
 // Context menu click handler
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log('🖱️ Context menu clicked:', info.menuItemId);
-  
   if (info.menuItemId !== "toggle-site" || !tab?.url) return;
   
   const host = new URL(tab.url).hostname;
@@ -160,18 +193,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 // ===== AI CORRECTION LOGIC =====
 
 function getAICorrections(word, context = '') {
-  console.log('🔍 Checking word:', word);
-  console.log('📝 With context:', context);
-  
   const normalized = word.toLowerCase();
   
   // If word is correct, return empty
   if (dictionary && dictionary.has(normalized)) {
-    console.log('✅ Word is correct');
     return [];
   }
-  
-  console.log('❌ Word needs correction');
   
   // Generate candidates
   const candidates = new Set();
@@ -192,18 +219,8 @@ function getAICorrections(word, context = '') {
     if (dictionary && dictionary.has(c)) candidates.add(c);
   });
   
-  console.log('📋 Found candidates:', Array.from(candidates));
-  
-  // TODO: Use context to improve ranking
-  // For now, just log it to prepare for future AI integration
-  if (context) {
-    console.log('🧠 Context will be used for AI ranking in future version');
-  }
-  
   // Rank and return top 3
   const ranked = rankCandidates(Array.from(candidates), normalized, context);
-  console.log('🏆 Ranked suggestions:', ranked);
-  
   return ranked.slice(0, 3);
 }
 
@@ -361,28 +378,16 @@ function getFrequencyScore(word) {
 // ===== MESSAGE HANDLER =====
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('📬 Received message:', request.action);
-  
   if (request.action === 'correctWord') {
-    // Log context if provided
-    if (request.context) {
-      console.log('📝 Context:', request.context);
-    }
-    
     if (!initialized) {
-      console.log('⚠️ Models not initialized, initializing now...');
       initializeModels().then(() => {
-        // TODO: Use context for AI-powered correction
         const suggestions = getAICorrections(request.word, request.context);
-        console.log('📤 Sending suggestions:', suggestions);
         sendResponse({ suggestions });
       });
-      return true; // Keep channel open for async response
+      return true;
     }
     
-    // TODO: Pass context to AI correction function
     const suggestions = getAICorrections(request.word, request.context);
-    console.log('📤 Sending suggestions:', suggestions);
     sendResponse({ suggestions });
     return true;
   }
@@ -391,14 +396,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.storage.sync.get(DEFAULTS).then(settings => {
       const isHostPaused = settings.pausedHosts.includes(request.host);
       const enabled = settings.enabled && !isHostPaused;
-      console.log('🔍 Check enabled for', request.host, '→', enabled);
       sendResponse({ enabled });
     });
-    return true; // Keep channel open for async response
-  }
-  
-  if (request.action === 'log') {
-    console.log('[Content Script]:', request.message);
+    return true;
   }
 });
 
