@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AutoCorrect Extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered offline spell-check and autocorrect for Chrome text fields.",
 
   "permissions": [
@@ -38,5 +38,14 @@
       "css": ["styles.css"],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "web_accessible_resources": [
+  {
+    "resources": [
+      "assets/shards/*",
+      "libs/pako.min.js"
+    ],
+    "matches": ["<all_urls>"]
+  }
+]
 }

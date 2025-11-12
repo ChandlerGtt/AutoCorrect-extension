@@ -360,12 +360,50 @@
         // Type the word
         hiddenInput.value = word;
         
-        // Trigger input event (content script might listen to this)
+        console.log(`[TEST] Testing word: "${word}"`);
+        
+        // Observe value changes using MutationObserver
+        let finalCorrectedValue = word;
+        let changeDetected = false;
+        
+        const observer = new MutationObserver((mutations) => {
+          const currentValue = hiddenInput.value.trim();
+          if (currentValue && currentValue !== word) {
+            finalCorrectedValue = currentValue;
+            changeDetected = true;
+            console.log(`[TEST] Observer detected change to: "${finalCorrectedValue}"`);
+          }
+        });
+        
+        // Observe the input element for any changes
+        observer.observe(hiddenInput, { 
+          attributes: true, 
+          attributeFilter: ['value'],
+          characterData: true,
+          subtree: true
+        });
+        
+        // Also listen to input events as backup
+        const inputListener = () => {
+          const currentValue = hiddenInput.value.trim();
+          if (currentValue && currentValue !== word) {
+            finalCorrectedValue = currentValue;
+            changeDetected = true;
+            console.log(`[TEST] Input event detected change to: "${finalCorrectedValue}"`);
+          }
+        };
+        
+        hiddenInput.addEventListener('input', inputListener);
+        
+        // Trigger input event
         hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
         
         // Move cursor to end
         hiddenInput.selectionStart = word.length;
         hiddenInput.selectionEnd = word.length;
+        
+        const beforeSpace = hiddenInput.value;
+        console.log(`[TEST] Value before space: "${beforeSpace}"`);
         
         // Simulate space keydown (triggers autocorrect)
         const keydownEvent = new KeyboardEvent('keydown', {
@@ -376,12 +414,24 @@
         });
         hiddenInput.dispatchEvent(keydownEvent);
         
-        // Wait for correction to happen
+        // Wait for correction to complete
         setTimeout(() => {
-          // Get the corrected value (without trailing space)
-          const corrected = hiddenInput.value.trim();
-          resolve(corrected || word);
-        }, 300); // Wait 300ms for correction to process
+          // Clean up
+          observer.disconnect();
+          hiddenInput.removeEventListener('input', inputListener);
+          
+          // Get final value - prefer the observed change if detected
+          const directValue = hiddenInput.value.trim();
+          const result = changeDetected ? finalCorrectedValue : directValue;
+          
+          console.log(`[TEST] Final raw value: "${hiddenInput.value}"`);
+          console.log(`[TEST] Direct trimmed: "${directValue}"`);
+          console.log(`[TEST] Observed value: "${finalCorrectedValue}"`);
+          console.log(`[TEST] Returning: "${result}"`);
+          console.log(`[TEST] Changed: ${word !== result ? 'YES ✓' : 'NO ✗'}`);
+          
+          resolve(result || word);
+        }, 1200); // Even longer wait - 1.2 seconds
       });
     }
 
