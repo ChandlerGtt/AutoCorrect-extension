@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced AutoCorrect Test Suite - Grammar & Accuracy Metrics</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 30px;
+      background: #f8f9fa;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .metric-value.good {
+      color: #4CAF50;
+    }
+
+    .metric-value.warning {
+      color: #ff9800;
+    }
+
+    .metric-value.poor {
+      color: #f44336;
+    }
+
+    .controls {
+      padding: 30px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .test-categories {
+      padding: 30px;
+    }
+
+    .category {
+      margin-bottom: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .category-header {
+      background: #f5f5f5;
+      padding: 15px 20px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .category-stats {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .category-tests {
+      display: none;
+    }
+
+    .category.expanded .category-tests {
+      display: block;
+    }
+
+    .test-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr 100px;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .test-item:last-child {
+      border-bottom: none;
+    }
+
+    .test-status {
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .test-status.pending {
+      color: #ccc;
+    }
+
+    .test-status.pass {
+      color: #4CAF50;
+    }
+
+    .test-status.fail {
+      color: #f44336;
+    }
+
+    .test-input, .test-expected {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .test-confidence {
+      text-align: right;
+      font-size: 14px;
+      color: #666;
+    }
+
+    #hiddenTestInput {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="hiddenTestInput"></textarea>
+
+  <div class="container">
+    <header>
+      <h1>🧪 Advanced AutoCorrect Test Suite</h1>
+      <p>Comprehensive testing with grammar, precision/recall, and confidence metrics</p>
+    </header>
+
+    <div class="controls">
+      <button id="runAllBtn">▶️ Run All Tests</button>
+      <button id="runSpellingBtn">Run Spelling Tests</button>
+      <button id="runGrammarBtn">Run Grammar Tests</button>
+      <button id="exportBtn">📥 Export Detailed Results</button>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Overall Accuracy</div>
+        <div class="metric-value" id="overallAccuracy">0%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Precision</div>
+        <div class="metric-value" id="precision">0.000</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Recall</div>
+        <div class="metric-value" id="recall">0.000</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">F1 Score</div>
+        <div class="metric-value" id="f1Score">0.000</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Grammar Detection</div>
+        <div class="metric-value" id="grammarDetection">0%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">False Positive Rate</div>
+        <div class="metric-value" id="falsePositiveRate">0%</div>
+      </div>
+    </div>
+
+    <div class="test-categories" id="testCategories">
+      <!-- Test categories will be inserted here -->
+    </div>
+  </div>
+
+  <script>
+    // Enhanced test dataset with grammar tests
+    const testData = {
+      spelling: [
+        { input: 'teh quick brown', expected: 'the quick brown', difficulty: 'easy', type: 'common-typo' },
+        { input: 'recieve the package', expected: 'receive the package', difficulty: 'medium', type: 'double-letter' },
+        { input: 'seperate items please', expected: 'separate items please', difficulty: 'medium', type: 'common-mistake' },
+        { input: 'definately going there', expected: 'definitely going there', difficulty: 'medium', type: 'common-mistake' },
+        { input: 'occured yesterday morning', expected: 'occurred yesterday morning', difficulty: 'medium', type: 'double-letter' },
+        { input: 'thier house is', expected: 'their house is', difficulty: 'easy', type: 'transposition' },
+        { input: 'my best freind', expected: 'my best friend', difficulty: 'easy', type: 'transposition' },
+        { input: 'that is wierd', expected: 'that is weird', difficulty: 'medium', type: 'common-mistake' },
+        { input: 'I beleive you', expected: 'I believe you', difficulty: 'easy', type: 'common-mistake' },
+        { input: 'wait untill tomorrow', expected: 'wait until tomorrow', difficulty: 'easy', type: 'double-letter' }
+      ],
+
+      grammar: [
+        { input: 'he dont like apples', expected: 'he doesn\'t like apples', difficulty: 'easy', type: 'subject-verb' },
+        { input: 'she dont care', expected: 'she doesn\'t care', difficulty: 'easy', type: 'subject-verb' },
+        { input: 'I is happy', expected: 'I am happy', difficulty: 'easy', type: 'subject-verb' },
+        { input: 'they was here', expected: 'they were here', difficulty: 'easy', type: 'subject-verb' },
+        { input: 'he were late', expected: 'he was late', difficulty: 'easy', type: 'subject-verb' },
+        { input: 'should of known', expected: 'should have known', difficulty: 'medium', type: 'common-grammar' },
+        { input: 'could of been', expected: 'could have been', difficulty: 'medium', type: 'common-grammar' },
+        { input: 'would of gone', expected: 'would have gone', difficulty: 'medium', type: 'common-grammar' },
+        { input: 'alot of people', expected: 'a lot of people', difficulty: 'easy', type: 'spacing' },
+        { input: 'aswell as that', expected: 'as well as that', difficulty: 'easy', type: 'spacing' }
+      ],
+
+      context: [
+        { input: 'I red the book', expected: 'I read the book', difficulty: 'hard', type: 'context-dependent', context: 'past tense' },
+        { input: 'there house is nice', expected: 'their house is nice', difficulty: 'medium', type: 'homophone', context: 'possession' },
+        { input: 'your welcome here', expected: 'you\'re welcome here', difficulty: 'medium', type: 'contraction' },
+        { input: 'its a beautiful day', expected: 'it\'s a beautiful day', difficulty: 'medium', type: 'contraction' },
+        { input: 'to many people', expected: 'too many people', difficulty: 'medium', type: 'homophone' }
+      ]
+    };
+
+    // Test state
+    let testResults = {
+      truePositives: 0,
+      falsePositives: 0,
+      falseNegatives: 0,
+      trueNegatives: 0,
+      byCategory: {},
+      byDifficulty: {}
+    };
+
+    let isRunning = false;
+
+    // DOM elements
+    const hiddenInput = document.getElementById('hiddenTestInput');
+    const runAllBtn = document.getElementById('runAllBtn');
+    const runSpellingBtn = document.getElementById('runSpellingBtn');
+    const runGrammarBtn = document.getElementById('runGrammarBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const testCategoriesEl = document.getElementById('testCategories');
+
+    // Initialize UI
+    function initializeUI() {
+      let html = '';
+
+      for (const [categoryName, tests] of Object.entries(testData)) {
+        html += `
+          <div class="category" id="cat-${categoryName}">
+            <div class="category-header" onclick="toggleCategory('${categoryName}')">
+              <span>${categoryName.toUpperCase()} (${tests.length} tests)</span>
+              <span class="category-stats" id="stats-${categoryName}">0/${tests.length} passed</span>
+            </div>
+            <div class="category-tests" id="tests-${categoryName}"></div>
+          </div>
+        `;
+      }
+
+      testCategoriesEl.innerHTML = html;
+
+      // Populate test items
+      for (const [categoryName, tests] of Object.entries(testData)) {
+        const container = document.getElementById(`tests-${categoryName}`);
+        tests.forEach((test, index) => {
+          container.innerHTML += `
+            <div class="test-item" id="test-${categoryName}-${index}">
+              <div class="test-status pending" id="status-${categoryName}-${index}">⏳</div>
+              <div class="test-input">${test.input}</div>
+              <div class="test-expected">→ ${test.expected}</div>
+              <div class="test-confidence" id="conf-${categoryName}-${index}">-</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function toggleCategory(categoryName) {
+      const category = document.getElementById(`cat-${categoryName}`);
+      category.classList.toggle('expanded');
+    }
+
+    // Run single test
+    async function runTest(categoryName, testIndex) {
+      const test = testData[categoryName][testIndex];
+      const statusEl = document.getElementById(`status-${categoryName}-${testIndex}`);
+      const confEl = document.getElementById(`conf-${categoryName}-${testIndex}`);
+
+      // Clear input
+      hiddenInput.value = '';
+      hiddenInput.focus();
+
+      // Type the input
+      hiddenInput.value = test.input;
+      hiddenInput.selectionStart = hiddenInput.value.length;
+
+      // Trigger correction by adding a space
+      hiddenInput.value += ' ';
+      hiddenInput.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
+
+      // Wait for correction
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Check result
+      const result = hiddenInput.value.trim();
+      const passed = result === test.expected;
+
+      // Update UI
+      statusEl.textContent = passed ? '✅' : '❌';
+      statusEl.className = `test-status ${passed ? 'pass' : 'fail'}`;
+      confEl.textContent = passed ? '100%' : '0%';
+
+      // Update metrics
+      if (passed) {
+        testResults.truePositives++;
+      } else if (result !== test.input) {
+        testResults.falsePositives++;
+      } else {
+        testResults.falseNegatives++;
+      }
+
+      return passed;
+    }
+
+    // Run all tests in category
+    async function runCategoryTests(categoryName) {
+      const tests = testData[categoryName];
+      let passed = 0;
+
+      for (let i = 0; i < tests.length; i++) {
+        const result = await runTest(categoryName, i);
+        if (result) passed++;
+      }
+
+      // Update category stats
+      const statsEl = document.getElementById(`stats-${categoryName}`);
+      statsEl.textContent = `${passed}/${tests.length} passed`;
+
+      return { passed, total: tests.length };
+    }
+
+    // Run all tests
+    async function runAllTests() {
+      if (isRunning) return;
+      isRunning = true;
+
+      runAllBtn.disabled = true;
+      runAllBtn.textContent = '⏳ Running Tests...';
+
+      // Reset results
+      testResults = {
+        truePositives: 0,
+        falsePositives: 0,
+        falseNegatives: 0,
+        trueNegatives: 0
+      };
+
+      // Run each category
+      for (const categoryName of Object.keys(testData)) {
+        await runCategoryTests(categoryName);
+      }
+
+      // Calculate metrics
+      updateMetrics();
+
+      runAllBtn.disabled = false;
+      runAllBtn.textContent = '▶️ Run All Tests';
+      isRunning = false;
+    }
+
+    // Update metrics display
+    function updateMetrics() {
+      const total = testResults.truePositives + testResults.falsePositives + testResults.falseNegatives;
+      const accuracy = total > 0 ? (testResults.truePositives / total * 100).toFixed(1) : 0;
+
+      const precision = (testResults.truePositives + testResults.falsePositives) > 0
+        ? testResults.truePositives / (testResults.truePositives + testResults.falsePositives)
+        : 0;
+
+      const recall = (testResults.truePositives + testResults.falseNegatives) > 0
+        ? testResults.truePositives / (testResults.truePositives + testResults.falseNegatives)
+        : 0;
+
+      const f1 = (precision + recall) > 0
+        ? 2 * (precision * recall) / (precision + recall)
+        : 0;
+
+      const fpRate = total > 0 ? (testResults.falsePositives / total * 100).toFixed(1) : 0;
+
+      // Update DOM
+      document.getElementById('overallAccuracy').textContent = `${accuracy}%`;
+      document.getElementById('precision').textContent = precision.toFixed(3);
+      document.getElementById('recall').textContent = recall.toFixed(3);
+      document.getElementById('f1Score').textContent = f1.toFixed(3);
+      document.getElementById('falsePositiveRate').textContent = `${fpRate}%`;
+
+      // Color coding
+      const accuracyEl = document.getElementById('overallAccuracy');
+      accuracyEl.className = 'metric-value ' +
+        (accuracy >= 95 ? 'good' : accuracy >= 90 ? 'warning' : 'poor');
+
+      const f1El = document.getElementById('f1Score');
+      f1El.className = 'metric-value ' +
+        (f1 >= 0.9 ? 'good' : f1 >= 0.8 ? 'warning' : 'poor');
+    }
+
+    // Export results
+    function exportResults() {
+      let csv = 'Category,Test Input,Expected,Difficulty,Type,Result,Status\n';
+
+      for (const [categoryName, tests] of Object.entries(testData)) {
+        tests.forEach((test, index) => {
+          const statusEl = document.getElementById(`status-${categoryName}-${index}`);
+          const status = statusEl.textContent === '✅' ? 'PASS' : 'FAIL';
+          csv += `${categoryName},"${test.input}","${test.expected}",${test.difficulty},${test.type},,${status}\n`;
+        });
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'autocorrect-advanced-results.csv';
+      a.click();
+    }
+
+    // Event listeners
+    runAllBtn.addEventListener('click', runAllTests);
+    runSpellingBtn.addEventListener('click', () => runCategoryTests('spelling'));
+    runGrammarBtn.addEventListener('click', () => runCategoryTests('grammar'));
+    exportBtn.addEventListener('click', exportResults);
+
+    // Initialize
+    initializeUI();
+    console.log('✅ Advanced test suite ready');
+  </script>
+</body>
+</html>
