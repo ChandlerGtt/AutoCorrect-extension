@@ -7,6 +7,9 @@ let isEnabled = true;
 let currentMode = 'auto'; // 'auto', 'suggestions', 'off'
 let correctionQueue = new Map(); // Track pending corrections
 let suggestionElements = new Map(); // Track suggestion UI elements
+let currentSentenceId = null; // Track current sentence for re-evaluation
+let sentenceStartPos = 0; // Track where current sentence starts
+let lastTypingTime = Date.now(); // Track typing pauses
 
 // Check if autocorrect is enabled and get mode
 async function checkEnabledAndMode() {
