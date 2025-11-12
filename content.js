@@ -118,17 +118,25 @@ async function correctWordAsync(el, wordInfo) {
         const wordStillThere = currentText.slice(wordInfo.start, wordInfo.end) === token;
         
         if (wordStillThere) {
+          // Save cursor position BEFORE changing the value
+          let savedCursor = null;
+          if ('selectionStart' in el) {
+            savedCursor = el.selectionStart;
+          }
+
           const updated = replaceRange(currentText, wordInfo.start, wordInfo.end, suggestion);
           setValue(el, updated);
-          
+
           // Restore cursor position - adjust for length difference
-          if ('selectionStart' in el) {
+          if (savedCursor !== null && 'selectionStart' in el) {
             const lengthDiff = suggestion.length - token.length;
-            const currentCursor = el.selectionStart;
-            
+
             // If cursor is after the corrected word, adjust it
-            if (currentCursor > wordInfo.end) {
-              el.selectionStart = el.selectionEnd = currentCursor + lengthDiff;
+            if (savedCursor > wordInfo.end) {
+              el.selectionStart = el.selectionEnd = savedCursor + lengthDiff;
+            } else {
+              // Otherwise, restore the original position
+              el.selectionStart = el.selectionEnd = savedCursor;
             }
           }
           
