@@ -1,0 +1,54 @@
+Misspelled,Corrected,Expected,Context,Result
+teh,the,the,teh quick brown,PASS
+recieve,receive,receive,I will recieve it,PASS
+seperate,separate,separate,seperate the items,PASS
+definately,definitely,definitely,definately going there,PASS
+occured,occurred,occurred,it occured yesterday,PASS
+thier,their,their,thier house is,PASS
+freind,friend,friend,my best freind,PASS
+wierd,weird,weird,that is wierd,PASS
+beleive,believe,believe,I beleive you,PASS
+untill,until,until,wait untill tomorrow,PASS
+begining,beginning,beginning,the begining of,PASS
+occassion,occasion,occasion,special occassion today,PASS
+accomodate,accommodate,accommodate,can accomodate guests,PASS
+tommorrow,tomorrow,tomorrow,see you tommorrow,PASS
+succesful,succesful,successful,very succesful project,FAIL
+thsi,this,this,thsi is important,PASS
+taht,that,that,taht was great,PASS
+waht,what,what,waht is it,PASS
+wiht,with,with,come wiht me,PASS
+hte,the,the,hte best one,PASS
+nite,nite,night,good nite everyone,FAIL
+lite,like,light,lite the candle,FAIL
+rite,write,right,you are rite,FAIL
+thru,thru,through,go thru the door,FAIL
+becase,because,because,becase I said so,PASS
+enviroment,environment,environment,clean enviroment matters,PASS
+goverment,government,government,the goverment decided,PASS
+realy,really,really,realy good food,PASS
+basicly,basically,basically,basicly it works,PASS
+arguement,arguement,argument,had an arguement,FAIL
+writting,writing,writing,writting a letter,PASS
+knowlege,knowledge,knowledge,common knowlege is,PASS
+calender,calendar,calendar,check the calender,PASS
+maintainance,maintenance,maintenance,routine maintainance required,PASS
+noticable,noticeable,noticeable,very noticable difference,PASS
+paralell,parallel,parallel,paralell lines never,PASS
+reccommend,recommend,recommend,I reccommend this,PASS
+surprize,surprise,surprise,a big surprize,PASS
+truely,truly,truly,truely amazing work,PASS
+unfortunatly,unfortunately,unfortunately,unfortunatly we cannot,PASS
+vaccuum,vacuum,vacuum,use the vaccuum,PASS
+wheather,whether,whether,wheather or not,PASS
+mispell,misspell,misspell,do not mispell,PASS
+neccessary,necessary,necessary,it is neccessary,PASS
+publically,publicly,publicly,publically announced yesterday,PASS
+concious,conscious,conscious,fully concious now,PASS
+existance,existence,existence,proof of existance,PASS
+guage,gauge,gauge,check the guage,PASS
+,,,,
+Total Tests,48,,,
+Passed,42,,,
+Failed,6,,,
+Accuracy,87.50%,,,
