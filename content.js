@@ -1,26 +1,12 @@
-// content.js — shows a suggestion bubble and replaces the current word
-const worker = new Worker(chrome.runtime.getURL('worker.js'));
-
-// if you already have the enabled/paused guards, keep them; wrap postMessage calls with isActive()
+// content.js – force auto-correct (no confirmation bubble)
+const worker = new Worker(chrome.runtime.getURL('worker.js'), { type: 'module' });
 
 let activeEl = null;
 let lastToken = "";
-let lastRange = null; // {start,end} for inputs/textarea or contenteditable
-let bubble = null;
+let lastRange = null;
 
-function ensureBubble() {
-  if (bubble) return bubble;
-  bubble = document.createElement('div');
-  bubble.id = 'qc-bubble';
-  bubble.tabIndex = -1;
-  document.documentElement.appendChild(bubble);
-  return bubble;
-}
-
-function hideBubble() {
-  if (bubble) bubble.style.display = 'none';
-}
-
+// ... rest of your code stays the same
+// ---- helpers reused from your original file ----
 function getValue(el) {
   if ('value' in el) return el.value;
   if (el.isContentEditable) return el.innerText;
@@ -36,6 +22,7 @@ function setValue(el, newValue) {
   }
 }
 
+// Computes the current word around the caret.
 function getCurrentWordRange(el) {
   const text = getValue(el) ?? '';
   let caret = 0;
@@ -43,11 +30,11 @@ function getCurrentWordRange(el) {
   if ('selectionStart' in el && el.selectionStart != null) {
     caret = el.selectionStart;
   } else if (el.isContentEditable) {
-    // simple caret-to-index for contenteditable: fall back to end
+    // fallback for contenteditable
     caret = text.length;
   }
 
-  // find token boundaries (letters only)
+  // token boundaries (letters only)
   const leftMatch = text.slice(0, caret).match(/[A-Za-z]+$/);
   const left = leftMatch ? caret - leftMatch[0].length : caret;
 
@@ -61,111 +48,85 @@ function getCurrentWordRange(el) {
 function replaceRange(text, start, end, replacement) {
   return text.slice(0, start) + replacement + text.slice(end);
 }
+// ---- end reused helpers ----
 
-// Position bubble near the focused element.
-// (Simple, robust: anchor to the bottom-left of the field)
-function showBubble(el, suggestions, onPick) {
-  const hostRect = el.getBoundingClientRect();
-  const b = ensureBubble();
-  b.innerHTML = suggestions.map((s, i) =>
-    `<button class="qc-item" data-i="${i}" type="button">${s}</button>`
-  ).join('');
-
-  b.style.left = `${Math.round(hostRect.left)}px`;
-  b.style.top  = `${Math.round(hostRect.bottom + 6)}px`;
-  b.style.display = 'block';
-
-  // click handlers
-  b.querySelectorAll('.qc-item').forEach(btn => {
-    btn.addEventListener('click', () => onPick(btn.textContent));
-  });
-
-  // basic keyboard nav
-  let idx = 0;
-  const items = [...b.querySelectorAll('.qc-item')];
-  items[0]?.focus();
-
-  const keyHandler = (e) => {
-    if (b.style.display === 'none') return;
-    if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) {
-      idx = (idx + 1) % items.length; items[idx].focus(); e.preventDefault();
-    } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
-      idx = (idx - 1 + items.length) % items.length; items[idx].focus(); e.preventDefault();
-    } else if (e.key === 'Enter') {
-      onPick(items[idx].textContent); e.preventDefault();
-    } else if (e.key === 'Escape') {
-      hideBubble();
-    }
-  };
-  b.onkeydown = keyHandler;
-
-  // clicking elsewhere hides the bubble
-  const outside = (evt) => {
-    if (!b.contains(evt.target)) hideBubble();
-  };
-  setTimeout(() => {
-    document.addEventListener('mousedown', outside, { once: true });
-  }, 0);
-}
-
-function requestSuggestionsFor(el) {
+// Ask worker for a correction for the *current* word and auto-apply it.
+function requestAutoCorrect(el) {
   const { token, start, end, text } = getCurrentWordRange(el);
   lastRange = { start, end, text };
-  if (!token || token.length < 2 || !/^[A-Za-z]+$/.test(token)) {
-    hideBubble();
-    return;
-  }
+
+  // ignore short/non-alpha tokens
+  if (!token || token.length < 2 || !/^[A-Za-z]+$/.test(token)) return;
+
+  // avoid spamming the worker with the same token repeatedly
   if (token === lastToken) return;
   lastToken = token;
-  worker.postMessage({ word: token });
+
+  activeEl = el;
+  worker.postMessage({ word: token, mode: 'auto' });
+}
+
+// Trigger autocorrect when the user *finishes* a word.
+// Heuristics: space, enter, tab, or punctuation next to the caret.
+function shouldTriggerFromKeyup(e) {
+  const k = e.key;
+  return (
+    k === ' ' || k === 'Enter' || k === 'Tab' ||
+    k === '.' || k === ',' || k === ';' || k === ':' ||
+    k === '!' || k === '?' || k === '"' || k === "'" || k === ')'
+  );
 }
 
 document.addEventListener('keyup', (e) => {
   const el = e.target;
   const val = getValue(el);
   if (val == null) return;
+
+  // Update active element
   activeEl = el;
-  // request suggestions as user finishes a word (space, punctuation, or pause)
-  requestSuggestionsFor(el);
-}, true);
 
-// Optional: right-click to force suggestions if caret is on a red-squiggled word
-document.addEventListener('contextmenu', (e) => {
-  const el = e.target;
-  const val = getValue(el);
-  if (val == null) return;
-  activeEl = el;
-  requestSuggestionsFor(el);
-}, true);
-
-worker.onmessage = ({ data }) => {
-  if (!activeEl) return;
-  const suggestions = (data && data.suggestions) || [];
-  if (!suggestions.length) { hideBubble(); return; }
-
-  // If the top suggestion equals our token, don't show the bubble
-  const { token } = getCurrentWordRange(activeEl);
-  if (suggestions[0] && suggestions[0].toLowerCase() === (token || '').toLowerCase()) {
-    hideBubble(); return;
+  // Fast path: explicit boundary keys
+  if (shouldTriggerFromKeyup(e)) {
+    requestAutoCorrect(el);
+    return;
   }
 
-  showBubble(activeEl, suggestions.slice(0, 6), (choice) => {
-    if (!lastRange) return hideBubble();
-    const { start, end, text } = getCurrentWordRange(activeEl);
-    const updated = replaceRange(text, start, end, choice);
-    setValue(activeEl, updated);
-
-    // move caret to end of replacement for inputs/textarea
-    if ('selectionStart' in activeEl) {
-      const pos = start + choice.length;
-      activeEl.selectionStart = activeEl.selectionEnd = pos;
+  // Fallback: if char *before* caret is whitespace/punctuation, we likely ended a word
+  if ('selectionStart' in el && el.selectionStart != null && el.selectionStart > 0) {
+    const prevCh = val[el.selectionStart - 1];
+    if (prevCh && /[\s.,;:!?'"()\[\]{}]/.test(prevCh)) {
+      requestAutoCorrect(el);
     }
-    hideBubble();
-  });
-};
+  }
+}, true);
 
-// Hide bubble when focus leaves fields
+// Keep track of focus (so the worker knows where to write back)
 document.addEventListener('focusin', (e) => {
   activeEl = e.target;
 }, true);
-document.addEventListener('focusout', () => hideBubble(), true);
+
+// Auto-apply top suggestion (if it actually changes the token)
+worker.onmessage = ({ data }) => {
+  if (!activeEl) return;
+
+  const suggestions = (data && data.suggestions) || [];
+  if (!suggestions.length) return;
+
+  const { token, start, end, text } = getCurrentWordRange(activeEl);
+  if (!token) return;
+
+  const top = suggestions[0];
+
+  // If top suggestion is literally the same (case-insensitive), do nothing
+  if (top && top.toLowerCase() === token.toLowerCase()) return;
+
+  // Replace the word with the top suggestion
+  const updated = replaceRange(text, start, end, top);
+  setValue(activeEl, updated);
+
+  // Move caret to the end of the replacement for inputs/textarea
+  if ('selectionStart' in activeEl) {
+    const pos = start + top.length;
+    activeEl.selectionStart = activeEl.selectionEnd = pos;
+  }
+};

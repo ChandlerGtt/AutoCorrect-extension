@@ -27,25 +27,23 @@
     "type": "module"
   },
 
-"content_scripts": [
-  {
-    "matches": ["<all_urls>"],
-    "js": ["content.js"],
-    "css": ["styles.css"],
-    "run_at": "document_idle"
-  }
-],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
 
-
-"web_accessible_resources": [
-  {
-    "resources": [
-      "assets/shards/*",
-      "worker.js",
-      "libs/pako.min.js"
-    ],
-    "matches": ["<all_urls>"]
-  }
-]
-
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/shards/*",
+        "worker.js",
+        "libs/pako.min.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

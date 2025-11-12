@@ -1,6 +1,22 @@
 // In Blob-loaded worker, relative paths break. Use the base we injected.
 importScripts(self.__ac_base + 'libs/pako.min.js'); // exposes global `pako`
 
+// worker.js
+
+self.onmessage = ({ data }) => {
+  const { word, mode } = data;
+  
+  // Your correction logic here
+  const suggestions = getCorrections(word);
+  
+  self.postMessage({ suggestions });
+};
+
+function getCorrections(word) {
+  // Your spell-check logic
+  // For now, dummy implementation
+  return [word + '_corrected', word + '_alt'];
+}
 
 const ABC = 'abcdefghijklmnopqrstuvwxyz';
 const shardCache = new Map(); // key -> Set(words)
