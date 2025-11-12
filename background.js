@@ -11,6 +11,9 @@ const DEFAULTS = {
 let dictionary = null;
 let initialized = false;
 
+// Correction memory for sentence-wide analysis
+let correctionMemory = null;
+
 console.log('🚀 Background script starting...');
 
 // Initialize models function
@@ -54,6 +57,13 @@ async function initializeModels() {
     console.log('✅ Using fallback dictionary with', dictionary.size, 'words');
   }
   
+  // Initialize correction memory
+  if (!correctionMemory) {
+    correctionMemory = new CorrectionMemory();
+    correctionMemory.startAutoCleanup();
+    console.log('✅ Correction memory initialized');
+  }
+
   initialized = true;
 }
 
@@ -256,6 +266,203 @@ const DOMAIN_VOCABULARY = {
              'methodology', 'literature', 'findings', 'significance', 'correlation'],
   casual: ['gonna', 'wanna', 'gotta', 'kinda', 'sorta', 'dunno', 'yep', 'nope', 'stuff', 'things']
 };
+
+// ===== ENHANCED FREQUENCY TIERS =====
+
+// Tiered frequency system based on corpus analysis (COCA/BNC)
+const FREQUENCY_TIERS = {
+  tier1: {  // Ultra common (top 20 words)
+    weight: 10.0,
+    words: new Set(['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
+                    'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this'])
+  },
+  tier2: {  // Very common (21-50)
+    weight: 5.0,
+    words: new Set(['but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or',
+                    'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so',
+                    'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when'])
+  },
+  tier3: {  // Common (51-100)
+    weight: 3.0,
+    words: new Set(['make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take', 'people',
+                    'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other', 'than',
+                    'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back'])
+  },
+  tier4: {  // Frequent (101-500)
+    weight: 1.5,
+    words: new Set(['after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even',
+                    'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us', 'is',
+                    'was', 'are', 'been', 'has', 'had', 'were', 'said', 'did', 'having', 'may'])
+  }
+};
+
+function getFrequencyTier(word) {
+  const lower = word.toLowerCase();
+  if (FREQUENCY_TIERS.tier1.words.has(lower)) return { tier: 1, weight: 10.0 };
+  if (FREQUENCY_TIERS.tier2.words.has(lower)) return { tier: 2, weight: 5.0 };
+  if (FREQUENCY_TIERS.tier3.words.has(lower)) return { tier: 3, weight: 3.0 };
+  if (FREQUENCY_TIERS.tier4.words.has(lower)) return { tier: 4, weight: 1.5 };
+  return { tier: 5, weight: 1.0 };
+}
+
+// ===== GRAMMAR RULES ENGINE =====
+
+const GRAMMAR_RULES = {
+  // Common grammar mistakes
+  fixes: {
+    'should of': 'should have',
+    'could of': 'could have',
+    'would of': 'would have',
+    'might of': 'might have',
+    'must of': 'must have',
+    'shouldnt of': "shouldn't have",
+    'couldnt of': "couldn't have",
+    'wouldnt of': "wouldn't have",
+    'alot': 'a lot',
+    'aswell': 'as well',
+    'infact': 'in fact',
+    'ofcourse': 'of course'
+  },
+
+  // Subject-verb agreement patterns
+  subjectVerb: [
+    { pattern: /\b(he|she|it)\s+don't\b/gi, fix: "$1 doesn't" },
+    { pattern: /\b(he|she|it)\s+were\b/gi, fix: "$1 was" },
+    { pattern: /\b(I|we|you|they)\s+is\b/gi, fix: "$1 are" },
+    { pattern: /\b(I|we|you|they)\s+was\b/gi, fix: "$1 were" },
+    { pattern: /\b(I)\s+is\b/gi, fix: "$1 am" }
+  ],
+
+  // Article rules (simplified)
+  articles: [
+    { pattern: /\ba\s+(hour|honest|honor)/gi, fix: 'an $1' },
+    { pattern: /\ban\s+(university|european|one)/gi, fix: 'a $1' }
+  ]
+};
+
+function checkGrammarFixes(text) {
+  const lowerText = text.toLowerCase();
+  const fixes = [];
+
+  for (const [wrong, correct] of Object.entries(GRAMMAR_RULES.fixes)) {
+    const index = lowerText.indexOf(wrong);
+    if (index !== -1) {
+      fixes.push({
+        type: 'grammar',
+        wrong: wrong,
+        correct: correct,
+        position: index,
+        confidence: 0.95
+      });
+    }
+  }
+
+  return fixes;
+}
+
+// ===== CORRECTION MEMORY SYSTEM =====
+
+class CorrectionMemory {
+  constructor() {
+    this.sentences = new Map();
+    this.maxAge = 5 * 60 * 1000; // 5 minutes
+    this.maxSentences = 100;
+    this.cleanupInterval = null;
+  }
+
+  generateSentenceId(text, timestamp) {
+    // Simple hash for sentence identification
+    return `${text.slice(0, 20)}_${timestamp}`;
+  }
+
+  addCorrection(sentenceId, correction) {
+    if (!this.sentences.has(sentenceId)) {
+      this.sentences.set(sentenceId, {
+        corrections: [],
+        text: '',
+        startTime: Date.now(),
+        isComplete: false,
+        revalidated: false
+      });
+    }
+
+    this.sentences.get(sentenceId).corrections.push({
+      ...correction,
+      timestamp: Date.now(),
+      revalidated: false
+    });
+
+    // Limit total sentences
+    if (this.sentences.size > this.maxSentences) {
+      const oldestKey = Array.from(this.sentences.keys())[0];
+      this.sentences.delete(oldestKey);
+    }
+  }
+
+  getSentenceCorrections(sentenceId) {
+    return this.sentences.get(sentenceId)?.corrections || [];
+  }
+
+  markSentenceComplete(sentenceId, fullText) {
+    const data = this.sentences.get(sentenceId);
+    if (data) {
+      data.isComplete = true;
+      data.text = fullText;
+      data.completionTime = Date.now();
+    }
+  }
+
+  getSentenceData(sentenceId) {
+    return this.sentences.get(sentenceId);
+  }
+
+  async revalidateSentence(sentenceId) {
+    const data = this.sentences.get(sentenceId);
+    if (!data || !data.isComplete || data.revalidated) return [];
+
+    console.log(`🔄 Revalidating sentence: "${data.text.slice(0, 50)}..."`);
+
+    // Check grammar across full sentence
+    const grammarIssues = checkGrammarFixes(data.text);
+
+    // Mark corrections as revalidated
+    for (const correction of data.corrections) {
+      correction.revalidated = true;
+    }
+
+    data.revalidated = true;
+    return grammarIssues;
+  }
+
+  cleanupOld() {
+    const now = Date.now();
+    const toDelete = [];
+
+    for (const [id, data] of this.sentences.entries()) {
+      if (now - data.startTime > this.maxAge) {
+        toDelete.push(id);
+      }
+    }
+
+    toDelete.forEach(id => this.sentences.delete(id));
+
+    if (toDelete.length > 0) {
+      console.log(`🧹 Cleaned up ${toDelete.length} old sentences from memory`);
+    }
+  }
+
+  startAutoCleanup() {
+    if (this.cleanupInterval) return;
+    this.cleanupInterval = setInterval(() => this.cleanupOld(), 30000); // Every 30s
+  }
+
+  stopAutoCleanup() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
+  }
+}
 
 // ===== CONTEXT ANALYSIS FUNCTIONS =====
 
@@ -559,17 +766,21 @@ function levenshteinDistance(a, b) {
 }
 
 function getFrequencyScore(word) {
-  const frequencies = {
+  // Get tier-based weight
+  const { tier, weight } = getFrequencyTier(word);
+
+  // Base frequencies for specific words (still useful for fine-tuning)
+  const specificFrequencies = {
     'the': 1000, 'be': 800, 'to': 750, 'of': 700, 'and': 680,
     'a': 650, 'in': 600, 'that': 550, 'have': 500, 'it': 480,
-    'their': 400, 'there': 400, 'world': 300, 'hello': 250,
-    'is': 900, 'was': 850, 'for': 700, 'are': 650, 'with': 600,
-    'they': 580, 'at': 560, 'one': 540, 'this': 500,
-    'from': 480, 'by': 460, 'not': 440, 'word': 420, 'but': 400,
-    'what': 380, 'some': 360, 'we': 340, 'can': 320, 'out': 300
+    'their': 400, 'there': 400, 'is': 900, 'was': 850, 'for': 700,
+    'are': 650, 'with': 600, 'they': 580, 'at': 560, 'one': 540
   };
-  
-  return frequencies[word] || 100;
+
+  const baseFreq = specificFrequencies[word.toLowerCase()] || 100;
+
+  // Apply tier weight to base frequency
+  return baseFreq * weight;
 }
 
 // ===== MESSAGE HANDLER =====
@@ -579,12 +790,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (!initialized) {
       initializeModels().then(() => {
         const suggestions = getAICorrections(request.word, request.context, request.mode);
+
+        // Store correction in memory if provided
+        if (request.sentenceId && correctionMemory) {
+          correctionMemory.addCorrection(request.sentenceId, {
+            originalWord: request.word,
+            correctedTo: suggestions[0] || request.word,
+            position: request.position || 0,
+            context: request.context
+          });
+        }
+
         sendResponse({ suggestions });
       });
       return true;
     }
 
     const suggestions = getAICorrections(request.word, request.context, request.mode);
+
+    // Store correction in memory
+    if (request.sentenceId && correctionMemory && suggestions.length > 0) {
+      correctionMemory.addCorrection(request.sentenceId, {
+        originalWord: request.word,
+        correctedTo: suggestions[0],
+        position: request.position || 0,
+        context: request.context
+      });
+    }
+
     sendResponse({ suggestions });
     return true;
   }
@@ -596,6 +829,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const mode = settings.mode || 'auto';
       sendResponse({ enabled, mode });
     });
+    return true;
+  }
+
+  if (request.action === 'sentenceComplete') {
+    // Handle sentence completion for re-evaluation
+    if (correctionMemory && request.sentenceId && request.fullText) {
+      correctionMemory.markSentenceComplete(request.sentenceId, request.fullText);
+
+      // Revalidate asynchronously
+      correctionMemory.revalidateSentence(request.sentenceId).then(grammarIssues => {
+        console.log(`📝 Sentence complete with ${grammarIssues.length} grammar issues`);
+        sendResponse({ grammarIssues });
+      });
+      return true;
+    }
+    sendResponse({ grammarIssues: [] });
+    return true;
+  }
+
+  if (request.action === 'checkGrammar') {
+    // Check grammar for text
+    const grammarFixes = checkGrammarFixes(request.text || '');
+    sendResponse({ fixes: grammarFixes });
     return true;
   }
 });
