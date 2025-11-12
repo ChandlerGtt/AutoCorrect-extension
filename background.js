@@ -1,6 +1,11 @@
 // background.js - Service worker with dictionary shard loading
 
-const DEFAULTS = { enabled: true, pausedHosts: [] };
+const DEFAULTS = {
+  enabled: true,
+  mode: 'auto', // 'auto', 'suggestions', 'off'
+  pausedHosts: [],
+  minWordLength: 2
+};
 
 // Dictionary and AI model data (loaded in memory)
 let dictionary = null;
@@ -190,9 +195,154 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log(`✅ Autocorrect ${set.has(host) ? 'paused' : 'resumed'} for ${host}`);
 });
 
+// ===== CONTEXT AWARENESS DATA =====
+
+// Common bigrams (word pairs that frequently appear together)
+const BIGRAMS = {
+  'the': ['world', 'best', 'first', 'last', 'only', 'most', 'more', 'other', 'same', 'way', 'time', 'people', 'book', 'store', 'house'],
+  'to': ['be', 'the', 'do', 'have', 'get', 'go', 'see', 'make', 'take', 'use', 'find', 'work', 'help', 'write'],
+  'of': ['the', 'course', 'all', 'them', 'us', 'these', 'those', 'time', 'life', 'people', 'work'],
+  'in': ['the', 'this', 'that', 'order', 'other', 'addition', 'general', 'time', 'place', 'fact'],
+  'for': ['the', 'this', 'that', 'example', 'instance', 'some', 'all', 'many', 'most', 'me', 'you'],
+  'on': ['the', 'this', 'that', 'top', 'behalf', 'time', 'way', 'earth', 'display'],
+  'with': ['the', 'this', 'that', 'all', 'some', 'many', 'each', 'them', 'us', 'you', 'me'],
+  'at': ['the', 'least', 'all', 'first', 'last', 'once', 'home', 'work', 'school', 'night', 'time'],
+  'is': ['the', 'a', 'an', 'not', 'that', 'this', 'it', 'there', 'one', 'also'],
+  'was': ['the', 'a', 'an', 'not', 'that', 'this', 'it', 'there', 'one', 'also'],
+  'are': ['the', 'a', 'an', 'not', 'that', 'these', 'those', 'they', 'we', 'you'],
+  'have': ['the', 'a', 'an', 'to', 'been', 'had', 'not', 'been', 'some', 'many'],
+  'from': ['the', 'this', 'that', 'time', 'place', 'here', 'there', 'now', 'then'],
+  'my': ['name', 'life', 'work', 'home', 'family', 'friend', 'book', 'way', 'time', 'mind'],
+  'went': ['to', 'home', 'back', 'away', 'out', 'down', 'up', 'there', 'here'],
+  'read': ['the', 'this', 'that', 'about', 'it', 'them', 'a', 'an', 'some', 'many'],
+  'bought': ['the', 'this', 'that', 'some', 'a', 'an', 'new', 'it', 'them'],
+  'some': ['of', 'people', 'time', 'more', 'other', 'new', 'good', 'bad', 'things']
+};
+
+// Common trigrams (3-word patterns)
+const TRIGRAMS = [
+  'in order to', 'as well as', 'in addition to', 'on the other', 'at the same',
+  'for the first', 'one of the', 'as a result', 'in the world', 'in the future',
+  'at the end', 'at the beginning', 'in the past', 'on the one', 'in the case',
+  'a lot of', 'the fact that', 'in order for', 'as long as', 'as soon as',
+  'in spite of', 'because of the', 'out of the', 'part of the', 'most of the',
+  'in terms of', 'on behalf of', 'with respect to', 'in front of', 'in the middle',
+  'i went to', 'i want to', 'i need to', 'i have to', 'i used to',
+  'going to be', 'going to have', 'going to get', 'going to do', 'going to make'
+];
+
+// Domain keywords for content-aware correction
+const DOMAIN_KEYWORDS = {
+  technical: ['code', 'program', 'function', 'variable', 'class', 'method', 'database',
+              'server', 'api', 'software', 'bug', 'debug', 'test', 'data', 'system',
+              'computer', 'file', 'script', 'algorithm', 'array', 'string', 'object'],
+  business: ['meeting', 'client', 'company', 'revenue', 'sales', 'profit', 'market',
+             'team', 'project', 'deadline', 'budget', 'strategy', 'growth', 'customer',
+             'business', 'corporate', 'enterprise', 'management', 'employee'],
+  academic: ['research', 'study', 'paper', 'thesis', 'university', 'professor', 'journal',
+             'analysis', 'theory', 'hypothesis', 'experiment', 'data', 'results', 'conclusion',
+             'academic', 'scholar', 'education', 'student', 'learning'],
+  casual: ['lol', 'cool', 'awesome', 'friend', 'fun', 'like', 'love', 'hate', 'yeah',
+           'hey', 'hi', 'hello', 'thanks', 'please', 'maybe', 'probably', 'literally']
+};
+
+// Domain-specific vocabulary boost
+const DOMAIN_VOCABULARY = {
+  technical: ['github', 'python', 'javascript', 'compile', 'deploy', 'commit', 'push', 'pull',
+              'merge', 'branch', 'repository', 'console', 'terminal', 'command', 'syntax'],
+  business: ['invoice', 'contract', 'proposal', 'quarterly', 'stakeholder', 'milestone',
+             'deliverable', 'metrics', 'roi', 'kpi', 'synergy', 'bandwidth', 'leverage'],
+  academic: ['cite', 'reference', 'bibliography', 'peer', 'reviewed', 'published', 'abstract',
+             'methodology', 'literature', 'findings', 'significance', 'correlation'],
+  casual: ['gonna', 'wanna', 'gotta', 'kinda', 'sorta', 'dunno', 'yep', 'nope', 'stuff', 'things']
+};
+
+// ===== CONTEXT ANALYSIS FUNCTIONS =====
+
+function detectDomain(contextWords) {
+  const scores = {
+    technical: 0,
+    business: 0,
+    academic: 0,
+    casual: 0
+  };
+
+  for (const word of contextWords) {
+    for (const [domain, keywords] of Object.entries(DOMAIN_KEYWORDS)) {
+      if (keywords.includes(word)) {
+        scores[domain]++;
+      }
+    }
+  }
+
+  const entries = Object.entries(scores);
+  const maxScore = Math.max(...entries.map(([_, score]) => score));
+
+  if (maxScore === 0) return 'general';
+
+  const topDomain = entries.find(([_, score]) => score === maxScore);
+  return topDomain ? topDomain[0] : 'general';
+}
+
+function bigramScore(prevWord, candidate) {
+  if (!prevWord || !candidate) return 0;
+
+  const prev = prevWord.toLowerCase();
+  const cand = candidate.toLowerCase();
+
+  if (BIGRAMS[prev] && BIGRAMS[prev].includes(cand)) {
+    return 0.5; // Strong bigram match
+  }
+
+  return 0;
+}
+
+function trigramScore(contextWords, candidate) {
+  if (contextWords.length < 2) return 0;
+
+  const last2 = contextWords.slice(-2).join(' ').toLowerCase();
+  const cand = candidate.toLowerCase();
+  const trigram = `${last2} ${cand}`;
+
+  for (const commonTrigram of TRIGRAMS) {
+    if (commonTrigram === trigram) {
+      return 0.4; // Strong trigram match
+    }
+    // Partial match (contains the trigram)
+    if (commonTrigram.includes(trigram)) {
+      return 0.2;
+    }
+  }
+
+  return 0;
+}
+
+function domainBoost(candidate, domain) {
+  if (domain === 'general') return 0;
+
+  const vocab = DOMAIN_VOCABULARY[domain];
+  if (vocab && vocab.includes(candidate.toLowerCase())) {
+    return 0.3; // Domain-specific word boost
+  }
+
+  return 0;
+}
+
+function contextSimilarity(contextWords, candidate) {
+  // Check if candidate appears in context (common in coherent text)
+  const cand = candidate.toLowerCase();
+  for (const word of contextWords) {
+    if (word.toLowerCase() === cand) {
+      return 0.2; // Word repetition bonus
+    }
+  }
+
+  return 0;
+}
+
 // ===== AI CORRECTION LOGIC =====
 
-function getAICorrections(word, context = '') {
+function getAICorrections(word, context = '', mode = 'auto') {
   const normalized = word.toLowerCase();
   
   // If word is correct, return empty
@@ -324,18 +474,65 @@ function getPhoneticMatches(word) {
 }
 
 function rankCandidates(candidates, original, context = '') {
+  // Parse context into words
+  const contextWords = context.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+  const prevWord = contextWords.length > 0 ? contextWords[contextWords.length - 1] : '';
+  const domain = detectDomain(contextWords);
+
+  console.log(`🔍 Context analysis: ${contextWords.length} words, domain: ${domain}, prev: "${prevWord}"`);
+
   const scored = candidates.map(candidate => {
+    // 1. Edit distance score (30% weight) - normalized to 0-1
     const distance = levenshteinDistance(original, candidate);
-    const frequencyScore = getFrequencyScore(candidate);
-    
-    // TODO: Add context score here when implementing AI
-    // const contextScore = getContextScore(candidate, context);
-    
-    const score = frequencyScore / (distance + 1);
-    return { word: candidate, score };
+    const editScore = 1.0 / (distance + 1);
+
+    // 2. Frequency score (30% weight) - normalized to 0-1
+    const freqRaw = getFrequencyScore(candidate);
+    const freqScore = Math.min(freqRaw / 1000, 1.0);
+
+    // 3. Context score (40% weight) - sum of multiple factors
+    let contextScore = 0.0;
+
+    // Bigram: does candidate follow previous word?
+    contextScore += bigramScore(prevWord, candidate);
+
+    // Trigram: does candidate complete a 3-word pattern?
+    contextScore += trigramScore(contextWords, candidate);
+
+    // Domain: does candidate fit the detected domain?
+    contextScore += domainBoost(candidate, domain);
+
+    // Repetition: does candidate appear in context?
+    contextScore += contextSimilarity(contextWords, candidate);
+
+    // Normalize context score to 0-1
+    contextScore = Math.min(contextScore, 1.0);
+
+    // Final weighted score
+    const finalScore = (editScore * 0.3) + (freqScore * 0.3) + (contextScore * 0.4);
+
+    return {
+      word: candidate,
+      score: finalScore,
+      breakdown: {
+        edit: editScore.toFixed(3),
+        freq: freqScore.toFixed(3),
+        context: contextScore.toFixed(3),
+        final: finalScore.toFixed(3)
+      }
+    };
   });
-  
+
   scored.sort((a, b) => b.score - a.score);
+
+  // Log top 3 for debugging
+  if (scored.length > 0) {
+    console.log(`📊 Top suggestions for "${original}":`);
+    scored.slice(0, 3).forEach((item, i) => {
+      console.log(`  ${i + 1}. "${item.word}" (score: ${item.breakdown.final}, edit: ${item.breakdown.edit}, freq: ${item.breakdown.freq}, ctx: ${item.breakdown.context})`);
+    });
+  }
+
   return scored.map(item => item.word);
 }
 
@@ -381,22 +578,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'correctWord') {
     if (!initialized) {
       initializeModels().then(() => {
-        const suggestions = getAICorrections(request.word, request.context);
+        const suggestions = getAICorrections(request.word, request.context, request.mode);
         sendResponse({ suggestions });
       });
       return true;
     }
-    
-    const suggestions = getAICorrections(request.word, request.context);
+
+    const suggestions = getAICorrections(request.word, request.context, request.mode);
     sendResponse({ suggestions });
     return true;
   }
-  
+
   if (request.action === 'checkEnabled') {
     chrome.storage.sync.get(DEFAULTS).then(settings => {
       const isHostPaused = settings.pausedHosts.includes(request.host);
       const enabled = settings.enabled && !isHostPaused;
-      sendResponse({ enabled });
+      const mode = settings.mode || 'auto';
+      sendResponse({ enabled, mode });
     });
     return true;
   }
