@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "AutoCorrect Extension",
+  "version": "1.0.0",
+
+  "description": "Real-time spelling suggestions with inline bubble UI.",
+
+  "permissions": ["storage", "contextMenus", "tabs"],
+
+  "action": {
+    "default_title": "AutoCorrect",
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "worker.js",
+        "libs/pako.min.js",
+        "assets/shards/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

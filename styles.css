@@ -1,0 +1,33 @@
+/* wavy red underline for misspellings */
+.autocorrect-underline {
+text-decoration-line: underline;
+text-decoration-style: wavy;
+text-decoration-thickness: 1.5px;
+text-decoration-color: #e11d48; /* rose-600 */
+}
+
+
+/* floating bubble container */
+#autocorrect-bubble {
+position: fixed; /* viewport-relative; recompute on scroll */
+z-index: 2147483647; /* above page UI */
+top: 0; left: 0;
+transform: translate(-9999px, -9999px);
+background: #111827; /* gray-900 */
+color: #f9fafb; /* gray-50 */
+border-radius: 10px;
+box-shadow: 0 10px 30px rgba(0,0,0,.25);
+font: 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+padding: 6px;
+display: flex;
+gap: 4px;
+align-items: center;
+pointer-events: auto;
+}
+#autocorrect-bubble.hidden { display: none; }
+#autocorrect-bubble button {
+border: 0; border-radius: 6px; padding: 4px 6px; cursor: pointer;
+background: #374151; color: #f9fafb;
+}
+#autocorrect-bubble button.primary { background: #10b981; color: #06231a; }
+#autocorrect-bubble .alt { opacity: .85; }

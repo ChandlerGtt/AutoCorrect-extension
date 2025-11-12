@@ -1,0 +1,17 @@
+﻿# Node / tooling
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# Build or dist (if you add bundling later)
+dist/
+build/
+
+# Generated dictionary shards (rebuildable)
+assets/shards/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
