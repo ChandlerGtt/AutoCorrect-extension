@@ -1,12 +1,34 @@
-// content.js – force auto-correct (no confirmation bubble)
-const worker = new Worker(chrome.runtime.getURL('worker.js'), { type: 'module' });
+// content.js – Production version (no worker, minimal logging)
 
 let activeEl = null;
 let lastToken = "";
-let lastRange = null;
+let isEnabled = true;
 
-// ... rest of your code stays the same
-// ---- helpers reused from your original file ----
+// Check if autocorrect is enabled for this site
+async function checkEnabled() {
+  try {
+    const host = window.location.hostname;
+    const response = await chrome.runtime.sendMessage({ 
+      action: 'checkEnabled',
+      host 
+    });
+    isEnabled = response?.enabled ?? true;
+  } catch (error) {
+    isEnabled = true;
+  }
+}
+
+// Initialize
+checkEnabled();
+
+// Listen for settings changes
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.enabled || changes.pausedHosts) {
+    checkEnabled();
+  }
+});
+
+// Helper functions
 function getValue(el) {
   if ('value' in el) return el.value;
   if (el.isContentEditable) return el.innerText;
@@ -22,7 +44,6 @@ function setValue(el, newValue) {
   }
 }
 
-// Computes the current word around the caret.
 function getCurrentWordRange(el) {
   const text = getValue(el) ?? '';
   let caret = 0;
@@ -30,11 +51,9 @@ function getCurrentWordRange(el) {
   if ('selectionStart' in el && el.selectionStart != null) {
     caret = el.selectionStart;
   } else if (el.isContentEditable) {
-    // fallback for contenteditable
     caret = text.length;
   }
 
-  // token boundaries (letters only)
   const leftMatch = text.slice(0, caret).match(/[A-Za-z]+$/);
   const left = leftMatch ? caret - leftMatch[0].length : caret;
 
@@ -48,26 +67,79 @@ function getCurrentWordRange(el) {
 function replaceRange(text, start, end, replacement) {
   return text.slice(0, start) + replacement + text.slice(end);
 }
-// ---- end reused helpers ----
 
-// Ask worker for a correction for the *current* word and auto-apply it.
-function requestAutoCorrect(el) {
-  const { token, start, end, text } = getCurrentWordRange(el);
-  lastRange = { start, end, text };
-
-  // ignore short/non-alpha tokens
-  if (!token || token.length < 2 || !/^[A-Za-z]+$/.test(token)) return;
-
-  // avoid spamming the worker with the same token repeatedly
-  if (token === lastToken) return;
-  lastToken = token;
-
-  activeEl = el;
-  worker.postMessage({ word: token, mode: 'auto' });
+// Extract context words (previous words for AI)
+function getContextWords(text, position, numWords = 10) {
+  const beforeText = text.slice(0, position);
+  const words = beforeText.trim().split(/\s+/);
+  return words.slice(-numWords).join(' ');
 }
 
-// Trigger autocorrect when the user *finishes* a word.
-// Heuristics: space, enter, tab, or punctuation next to the caret.
+// Correct using pre-captured word info
+async function correctCapturedWord(el, wordInfo, triggerKey) {
+  const token = wordInfo.token;
+  
+  if (!/^[A-Za-z]+$/.test(token)) {
+    insertText(el, triggerKey);
+    return;
+  }
+  
+  if (token === lastToken) {
+    insertText(el, triggerKey);
+    return;
+  }
+  
+  lastToken = token;
+  activeEl = el;
+
+  try {
+    // Extract context for AI processing
+    const context = getContextWords(wordInfo.text, wordInfo.start, 10);
+    
+    const response = await chrome.runtime.sendMessage({
+      action: 'correctWord',
+      word: token,
+      context: context
+    });
+
+    if (response && response.suggestions && response.suggestions.length > 0) {
+      const suggestion = response.suggestions[0];
+      
+      if (suggestion.toLowerCase() !== token.toLowerCase()) {
+        const currentText = getValue(el) ?? '';
+        const updated = replaceRange(currentText, wordInfo.start, wordInfo.end, suggestion);
+        setValue(el, updated);
+        
+        if ('selectionStart' in el) {
+          const pos = wordInfo.start + suggestion.length;
+          el.selectionStart = el.selectionEnd = pos;
+        }
+      }
+    }
+    
+    // Add the trigger key (space, period, etc.) after correction
+    insertText(el, triggerKey);
+    
+  } catch (error) {
+    console.error('Autocorrect error:', error);
+    insertText(el, triggerKey);
+  }
+}
+
+// Helper to insert text at cursor position
+function insertText(el, text) {
+  if ('selectionStart' in el) {
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const currentValue = el.value;
+    
+    el.value = currentValue.slice(0, start) + text + currentValue.slice(end);
+    el.selectionStart = el.selectionEnd = start + text.length;
+    
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+}
+
 function shouldTriggerFromKeyup(e) {
   const k = e.key;
   return (
@@ -77,56 +149,35 @@ function shouldTriggerFromKeyup(e) {
   );
 }
 
-document.addEventListener('keyup', (e) => {
+// Event listeners
+document.addEventListener('keydown', (e) => {
+  if (!shouldTriggerFromKeyup(e)) return;
+  if (!isEnabled) return;
+  
   const el = e.target;
   const val = getValue(el);
+  
   if (val == null) return;
 
-  // Update active element
   activeEl = el;
-
-  // Fast path: explicit boundary keys
-  if (shouldTriggerFromKeyup(e)) {
-    requestAutoCorrect(el);
-    return;
-  }
-
-  // Fallback: if char *before* caret is whitespace/punctuation, we likely ended a word
-  if ('selectionStart' in el && el.selectionStart != null && el.selectionStart > 0) {
-    const prevCh = val[el.selectionStart - 1];
-    if (prevCh && /[\s.,;:!?'"()\[\]{}]/.test(prevCh)) {
-      requestAutoCorrect(el);
-    }
-  }
+  
+  // Capture the word NOW before the key changes anything
+  const wordInfo = getCurrentWordRange(el);
+  
+  if (!wordInfo.token || wordInfo.token.length < 2) return;
+  
+  // Store the trigger key
+  const triggerKey = e.key;
+  
+  // Prevent default to stop the space from being added yet
+  e.preventDefault();
+  
+  // Correct with the captured word info
+  correctCapturedWord(el, wordInfo, triggerKey);
 }, true);
 
-// Keep track of focus (so the worker knows where to write back)
 document.addEventListener('focusin', (e) => {
   activeEl = e.target;
 }, true);
 
-// Auto-apply top suggestion (if it actually changes the token)
-worker.onmessage = ({ data }) => {
-  if (!activeEl) return;
-
-  const suggestions = (data && data.suggestions) || [];
-  if (!suggestions.length) return;
-
-  const { token, start, end, text } = getCurrentWordRange(activeEl);
-  if (!token) return;
-
-  const top = suggestions[0];
-
-  // If top suggestion is literally the same (case-insensitive), do nothing
-  if (top && top.toLowerCase() === token.toLowerCase()) return;
-
-  // Replace the word with the top suggestion
-  const updated = replaceRange(text, start, end, top);
-  setValue(activeEl, updated);
-
-  // Move caret to the end of the replacement for inputs/textarea
-  if ('selectionStart' in activeEl) {
-    const pos = start + top.length;
-    activeEl.selectionStart = activeEl.selectionEnd = pos;
-  }
-};
+console.log('AutoCorrect extension loaded');
