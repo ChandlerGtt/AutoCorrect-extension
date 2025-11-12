@@ -168,4 +168,4 @@ AutoCorrect-extension/
 
 ---
 
-**Made with ❤️ and AI** | Context-Aware Autocorrection | 370K+ Words | 90%+ Accuracy
+| Context-Aware Autocorrection | 370K+ Words | 90%+ Accuracy
