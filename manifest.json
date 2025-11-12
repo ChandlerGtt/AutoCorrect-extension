@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AutoCorrect Extension",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "AI-powered offline spell-check and autocorrect for Chrome text fields.",
 
   "permissions": [
