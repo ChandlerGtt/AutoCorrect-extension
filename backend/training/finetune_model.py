@@ -2,6 +2,13 @@
 Fine-tune T5/BERT model on custom training data
 Optional script for advanced model customization
 """
+import sys
+from pathlib import Path
+
+# Add parent directory to path so we can import backend module
+script_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(script_dir))
+
 import torch
 from transformers import (
     AutoTokenizer,
@@ -12,7 +19,6 @@ from transformers import (
 )
 from datasets import Dataset, load_dataset
 import logging
-from pathlib import Path
 import json
 from typing import Optional, List, Dict
 import time

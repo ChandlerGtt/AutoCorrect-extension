@@ -1,8 +1,14 @@
 """
 Train N-gram model on literature corpus
 """
-import logging
+import sys
 from pathlib import Path
+
+# Add parent directory to path so we can import backend module
+script_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(script_dir))
+
+import logging
 from typing import List
 import time
 
