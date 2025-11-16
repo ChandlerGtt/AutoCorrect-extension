@@ -8,7 +8,13 @@ from typing import Optional
 try:
     from pydantic_settings import BaseSettings
 except ImportError:
-    from pydantic import BaseSettings
+    # Fallback for older pydantic versions (< 2.0)
+    try:
+        from pydantic import BaseSettings
+    except ImportError:
+        raise ImportError(
+            "pydantic-settings is required. Install it with: pip install pydantic-settings"
+        )
 
 # Base directory
 BASE_DIR = Path(__file__).parent
