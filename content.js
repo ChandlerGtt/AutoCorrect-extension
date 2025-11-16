@@ -93,6 +93,68 @@ function getContextWords(text, position, numWords = 10) {
   return words.slice(-numWords).join(' ');
 }
 
+// Get cursor position in contenteditable element
+function getCursorPosition(el) {
+  if (!el.isContentEditable) return 0;
+
+  const selection = window.getSelection();
+  if (selection.rangeCount === 0) return 0;
+
+  const range = selection.getRangeAt(0);
+  const preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(el);
+  preCaretRange.setEnd(range.endContainer, range.endOffset);
+
+  return preCaretRange.toString().length;
+}
+
+// Set cursor position in contenteditable element
+function setCursorPosition(el, position) {
+  if (!el.isContentEditable) return;
+
+  const selection = window.getSelection();
+  const range = document.createRange();
+
+  let currentPos = 0;
+  let found = false;
+
+  // Walk through the text nodes to find the position
+  function walkNodes(node) {
+    if (found) return;
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      const nodeLength = node.textContent.length;
+      if (currentPos + nodeLength >= position) {
+        // Found the node containing our target position
+        const offset = position - currentPos;
+        range.setStart(node, offset);
+        range.setEnd(node, offset);
+        found = true;
+        return;
+      }
+      currentPos += nodeLength;
+    } else {
+      for (let child of node.childNodes) {
+        walkNodes(child);
+        if (found) return;
+      }
+    }
+  }
+
+  walkNodes(el);
+
+  if (found) {
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } else {
+    // Fallback: position at the end
+    range.selectNodeContents(el);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+}
+
 // Correct word asynchronously (doesn't block typing)
 async function correctWordAsync(el, wordInfo) {
   const token = wordInfo.token;
@@ -111,13 +173,38 @@ async function correctWordAsync(el, wordInfo) {
 
   try {
     const context = getContextWords(wordInfo.text, wordInfo.start, 10);
+    let response = null;
+    let source = 'client';
 
-    const response = await chrome.runtime.sendMessage({
-      action: 'correctWord',
-      word: token,
-      context: context,
-      mode: currentMode
-    });
+    // Try backend API first (if enabled)
+    if (typeof BACKEND_CONFIG !== 'undefined' && BACKEND_CONFIG.enabled) {
+      try {
+        const apiClient = new AutoCorrectAPIClient(BACKEND_CONFIG);
+        const backendResult = await apiClient.correctText(token, context.split(/\s+/), currentMode);
+
+        if (backendResult) {
+          // Convert backend response to extension format
+          response = {
+            suggestions: backendResult.suggestions.map(s => s.text)
+          };
+          source = 'backend';
+          console.log(`✅ Backend correction: "${token}" → "${backendResult.corrected}"`);
+        }
+      } catch (error) {
+        console.log('⚠️ Backend unavailable, falling back to client-side');
+      }
+    }
+
+    // Fall back to client-side (background.js) if backend didn't work
+    if (!response) {
+      response = await chrome.runtime.sendMessage({
+        action: 'correctWord',
+        word: token,
+        context: context,
+        mode: currentMode
+      });
+      source = 'client';
+    }
 
     if (response && response.suggestions && response.suggestions.length > 0) {
       const suggestions = response.suggestions;
@@ -127,6 +214,7 @@ async function correctWordAsync(el, wordInfo) {
         const suggestion = suggestions[0];
 
         if (suggestion.toLowerCase() !== token.toLowerCase()) {
+          console.log(`🔄 ${source} correction: "${token}" → "${suggestion}"`);
           applyCorrection(el, wordInfo, suggestion);
         }
       }
@@ -150,18 +238,37 @@ function applyCorrection(el, wordInfo, suggestion) {
   const wordStillThere = currentText.slice(wordInfo.start, wordInfo.end) === wordInfo.token;
 
   if (wordStillThere) {
+    const lengthDiff = suggestion.length - wordInfo.token.length;
+
+    // Save cursor position BEFORE making changes
+    let savedCursor = null;
+    if ('selectionStart' in el) {
+      savedCursor = el.selectionStart;
+    } else if (el.isContentEditable) {
+      // For contenteditable, save the selection/cursor position
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        // Calculate cursor position as offset from start
+        savedCursor = getCursorPosition(el);
+      }
+    }
+
     const updated = replaceRange(currentText, wordInfo.start, wordInfo.end, suggestion);
     setValue(el, updated);
 
     // Restore cursor position - adjust for length difference
-    if ('selectionStart' in el) {
-      const lengthDiff = suggestion.length - wordInfo.token.length;
-      const currentCursor = el.selectionStart;
-
-      // If cursor is after the corrected word, adjust it
-      if (currentCursor > wordInfo.end) {
-        el.selectionStart = el.selectionEnd = currentCursor + lengthDiff;
+    if ('selectionStart' in el && savedCursor !== null) {
+      // Regular input/textarea elements
+      if (savedCursor > wordInfo.end) {
+        el.selectionStart = el.selectionEnd = savedCursor + lengthDiff;
+      } else {
+        el.selectionStart = el.selectionEnd = savedCursor;
       }
+    } else if (el.isContentEditable && savedCursor !== null) {
+      // Contenteditable elements (Gmail, Google Docs, etc.)
+      const newCursorPos = savedCursor > wordInfo.end ? savedCursor + lengthDiff : savedCursor;
+      setCursorPosition(el, newCursorPos);
     }
 
     console.log(`✨ Auto-corrected: "${wordInfo.token}" → "${suggestion}"`);
