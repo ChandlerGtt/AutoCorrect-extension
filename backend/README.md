@@ -39,15 +39,24 @@ This FastAPI backend provides advanced text correction capabilities for the Auto
 
 ### 1. Install Dependencies
 
+For detailed installation instructions, see **[INSTALLATION.md](INSTALLATION.md)**
+
+**Quick install (minimal):**
+```bash
+cd backend
+pip install -r requirements-minimal.txt
+```
+
+**Full install (with training pipeline):**
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-**Note**: For faster installation (CPU-only), you can install PyTorch separately:
+**Recommended**: Install PyTorch separately first for faster setup:
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
+pip install -r requirements-minimal.txt
 ```
 
 ### 2. Configure Environment

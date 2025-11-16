@@ -1,0 +1,28 @@
+# Minimal requirements for running the AutoCorrect Backend API server
+# Use this if you only want to run the server with pre-trained models
+# For full training pipeline, use requirements.txt
+
+# Core Web Framework
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
+
+# Machine Learning & NLP
+transformers>=4.36.0
+torch>=2.0.0
+sentencepiece>=0.1.99
+
+# Text Processing (basic)
+nltk>=3.8.1
+
+# Data Handling (basic)
+numpy>=1.24.0
+requests>=2.31.0
+
+# Performance & Caching
+diskcache>=5.6.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
