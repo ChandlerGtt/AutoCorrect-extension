@@ -111,13 +111,38 @@ async function correctWordAsync(el, wordInfo) {
 
   try {
     const context = getContextWords(wordInfo.text, wordInfo.start, 10);
+    let response = null;
+    let source = 'client';
 
-    const response = await chrome.runtime.sendMessage({
-      action: 'correctWord',
-      word: token,
-      context: context,
-      mode: currentMode
-    });
+    // Try backend API first (if enabled)
+    if (typeof BACKEND_CONFIG !== 'undefined' && BACKEND_CONFIG.enabled) {
+      try {
+        const apiClient = new AutoCorrectAPIClient(BACKEND_CONFIG);
+        const backendResult = await apiClient.correctText(token, context.split(/\s+/), currentMode);
+
+        if (backendResult) {
+          // Convert backend response to extension format
+          response = {
+            suggestions: backendResult.suggestions.map(s => s.text)
+          };
+          source = 'backend';
+          console.log(`✅ Backend correction: "${token}" → "${backendResult.corrected}"`);
+        }
+      } catch (error) {
+        console.log('⚠️ Backend unavailable, falling back to client-side');
+      }
+    }
+
+    // Fall back to client-side (background.js) if backend didn't work
+    if (!response) {
+      response = await chrome.runtime.sendMessage({
+        action: 'correctWord',
+        word: token,
+        context: context,
+        mode: currentMode
+      });
+      source = 'client';
+    }
 
     if (response && response.suggestions && response.suggestions.length > 0) {
       const suggestions = response.suggestions;
@@ -127,6 +152,7 @@ async function correctWordAsync(el, wordInfo) {
         const suggestion = suggestions[0];
 
         if (suggestion.toLowerCase() !== token.toLowerCase()) {
+          console.log(`🔄 ${source} correction: "${token}" → "${suggestion}"`);
           applyCorrection(el, wordInfo, suggestion);
         }
       }
