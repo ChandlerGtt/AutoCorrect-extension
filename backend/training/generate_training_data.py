@@ -2,10 +2,16 @@
 Generate training data with synthetic errors
 Creates error-correction pairs from clean corpus text
 """
+import sys
+from pathlib import Path
+
+# Add parent directory to path so we can import backend module
+script_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(script_dir))
+
 import random
 import re
 import json
-from pathlib import Path
 from typing import List, Tuple, Dict
 import logging
 from tqdm import tqdm
