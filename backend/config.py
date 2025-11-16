@@ -30,15 +30,15 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # Model Settings
-    PRETRAINED_MODEL_NAME: str = "pszemraj/flan-t5-large-grammar-synthesis"
-    # Alternative: "prithivida/grammar_error_correcter_v1"
+    PRETRAINED_MODEL_NAME: str = "vennify/t5-base-grammar-correction"
+    # Alternative: "google/flan-t5-base"
 
     MODEL_CACHE_DIR: Path = BASE_DIR / "models" / "cache"
     CUSTOM_MODEL_PATH: Optional[Path] = None
 
     # Use smaller model for faster loading/inference during development
     USE_SMALL_MODEL: bool = True  # Set to False for production
-    SMALL_MODEL_NAME: str = "pszemraj/flan-t5-small-grammar-synthesis"
+    SMALL_MODEL_NAME: str = "google/flan-t5-small"  # Official Google model that exists!
 
     # Performance Settings
     MAX_RESPONSE_TIME_MS: int = 500
