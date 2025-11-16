@@ -2,9 +2,15 @@
 Download Project Gutenberg corpus for training
 Processes and cleans text for n-gram and neural model training
 """
+import sys
+from pathlib import Path
+
+# Add parent directory to path so we can import backend module
+script_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(script_dir))
+
 import requests
 from bs4 import BeautifulSoup
-from pathlib import Path
 import time
 import logging
 import re
