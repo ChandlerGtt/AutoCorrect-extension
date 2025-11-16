@@ -5,7 +5,7 @@
 
 const BACKEND_CONFIG = {
   // Enable/disable backend API
-  enabled: false,  // Set to true to use backend
+  enabled: true,  // Backend is running! Set to false to disable
 
   // Backend API endpoint
   endpoint: "http://localhost:8000/correct",
