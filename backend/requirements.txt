@@ -2,52 +2,50 @@
 # Neural Model Enhancement - Literature-based Training
 
 # ===== Core Web Framework =====
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-python-multipart==0.0.6
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
 
 # ===== Machine Learning & NLP =====
-transformers==4.36.0
-torch==2.1.1
-sentencepiece==0.1.99
-accelerate==0.25.0
-datasets==2.15.0
+transformers>=4.36.0
+torch>=2.0.0
+sentencepiece>=0.1.99
+accelerate>=0.25.0
+datasets>=2.15.0
 
 # ===== Text Processing =====
-nltk==3.8.1
-spacy==3.7.2
+nltk>=3.8.1
+spacy>=3.7.0
 
 # ===== Data Handling =====
-numpy==1.24.3
-pandas==2.1.3
-beautifulsoup4==4.12.2
-requests==2.31.0
-tqdm==4.66.1
+numpy>=1.24.0
+pandas>=2.0.0
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+tqdm>=4.66.0
 
 # ===== Performance & Caching =====
-redis==5.0.1
-cachetools==5.3.2
-diskcache==5.6.3
+redis>=5.0.0
+cachetools>=5.3.0
+diskcache>=5.6.0
 
 # ===== Utilities =====
-python-dotenv==1.0.0
-pyyaml==6.0.1
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
 
 # ===== Development & Testing =====
-pytest==7.4.3
-pytest-asyncio==0.21.1
-httpx==0.25.2
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.25.0
 
 # ===== Security =====
-cryptography==41.0.7
+cryptography>=41.0.0
 
 # ===== Corpus Processing =====
-gutenbergpy==0.3.4
+# Note: gutenbergpy may not be maintained, requests+beautifulsoup4 can replace it
 
-# ===== Additional ML Tools =====
-# For model quantization and optimization
-optimum==1.16.0
-
-# For ONNX runtime (optional - faster inference)
-onnxruntime==1.16.3
+# ===== Additional ML Tools (Optional) =====
+# Uncomment if needed for optimization
+# optimum>=1.16.0
+# onnxruntime>=1.16.0
