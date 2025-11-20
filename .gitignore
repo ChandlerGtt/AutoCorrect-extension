@@ -15,7 +15,10 @@ assets/shards/
 .DS_Store
 Thumbs.db
 .vscode/
-#large models
-backend/models/cache/models--google--flan-t5-small/
-backend/models/ngram_model.pkl
-backend/training/corpus/combined_corpus.txt
+# Large models and training data (auto-downloaded on first run)
+backend/models/cache/
+backend/models/*.pkl
+backend/training/corpus/
+backend/logs/
+*.pyc
+__pycache__/
