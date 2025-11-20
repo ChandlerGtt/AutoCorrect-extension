@@ -69,9 +69,6 @@
       case 'auto':
         modeText = '✨ Auto-correcting';
         break;
-      case 'suggestions':
-        modeText = '💡 Showing suggestions';
-        break;
       case 'off':
         modeText = '⭕ Mode: Off';
         break;

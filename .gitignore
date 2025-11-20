@@ -15,3 +15,7 @@ assets/shards/
 .DS_Store
 Thumbs.db
 .vscode/
+#large models
+backend/models/cache/models--google--flan-t5-small/
+backend/models/ngram_model.pkl
+backend/training/corpus/combined_corpus.txt

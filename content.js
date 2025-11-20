@@ -1,12 +1,11 @@
-// content.js – AI-powered autocorrect with context awareness and multiple modes
+// content.js – AI-powered autocorrect with context awareness
 
 console.log('🎬 AutoCorrect AI loaded');
 
 let activeEl = null;
 let isEnabled = true;
-let currentMode = 'auto'; // 'auto', 'suggestions', 'off'
+let currentMode = 'auto'; // 'auto', 'off'
 let correctionQueue = new Map(); // Track pending corrections
-let suggestionElements = new Map(); // Track suggestion UI elements
 let currentSentenceId = null; // Track current sentence for re-evaluation
 let sentenceStartPos = 0; // Track where current sentence starts
 let lastTypingTime = Date.now(); // Track typing pauses
@@ -218,10 +217,6 @@ async function correctWordAsync(el, wordInfo) {
           applyCorrection(el, wordInfo, suggestion);
         }
       }
-      // Mode: suggestions - show suggestion UI
-      else if (currentMode === 'suggestions') {
-        showSuggestionUI(el, wordInfo, suggestions);
-      }
     }
   } catch (error) {
     console.error('Correction error:', error);
@@ -278,16 +273,6 @@ function applyCorrection(el, wordInfo, suggestion) {
   }
 }
 
-// Show suggestion UI (used in suggestions mode)
-function showSuggestionUI(el, wordInfo, suggestions) {
-  // For now, log suggestions to console
-  // TODO: Implement visual suggestion menu in a future update
-  console.log(`💡 Suggestions for "${wordInfo.token}":`, suggestions);
-
-  // Simple implementation: underline the word
-  // More sophisticated UI would require contenteditable handling or overlays
-}
-
 // Visual feedback for auto-correction
 function highlightCorrection(el, start, end) {
   // Brief flash effect - would need more sophisticated implementation
@@ -329,4 +314,4 @@ document.addEventListener('focusin', (e) => {
   activeEl = e.target;
 }, true);
 
-console.log('✅ AutoCorrect AI ready - Context-aware with multiple modes');
+console.log('✅ AutoCorrect AI ready');
