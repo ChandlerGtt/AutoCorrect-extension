@@ -9,6 +9,9 @@ let correctionQueue = new Map(); // Track pending corrections
 let currentSentenceId = null; // Track current sentence for re-evaluation
 let sentenceStartPos = 0; // Track where current sentence starts
 let lastTypingTime = Date.now(); // Track typing pauses
+let userCorrections = new Map(); // Track words user manually corrected
+const USER_CORRECTION_MEMORY = 30000; // Don't re-correct for 30 seconds
+const DEBUG_MODE = true; // Enable detailed logging
 
 // Check if autocorrect is enabled and get mode
 async function checkEnabledAndMode() {
@@ -160,15 +163,34 @@ function setCursorPosition(el, position) {
 async function correctWordAsync(el, wordInfo) {
   const token = wordInfo.token;
 
+  if (DEBUG_MODE) {
+    console.log(`📝 Input received: "${token}" at position ${wordInfo.start}`);
+  }
+
   // Skip if not alphabetic
-  if (!/^[A-Za-z]+$/.test(token)) return;
+  if (!/^[A-Za-z]+$/.test(token)) {
+    if (DEBUG_MODE) console.log(`⏭️ Skipping non-alphabetic: "${token}"`);
+    return;
+  }
+
+  // Skip single letters (like "i", "a") - they're usually intentional
+  if (token.length === 1) {
+    if (DEBUG_MODE) console.log(`⏭️ Skipping single letter: "${token}"`);
+    return;
+  }
 
   // Skip if mode is 'off'
-  if (currentMode === 'off' || !isEnabled) return;
+  if (currentMode === 'off' || !isEnabled) {
+    if (DEBUG_MODE) console.log(`⏭️ AutoCorrect disabled`);
+    return;
+  }
 
   // Skip if already correcting this word
   const queueKey = `${token}_${wordInfo.start}`;
-  if (correctionQueue.has(queueKey)) return;
+  if (correctionQueue.has(queueKey)) {
+    if (DEBUG_MODE) console.log(`⏭️ Already correcting: "${token}"`);
+    return;
+  }
 
   correctionQueue.set(queueKey, true);
 
@@ -180,12 +202,18 @@ async function correctWordAsync(el, wordInfo) {
     }
 
     const context = getContextWords(wordInfo.text, wordInfo.start, 10);
+
+    if (DEBUG_MODE) {
+      console.log(`🔍 Processing: "${token}" with context: "${context}"`);
+    }
+
     let response = null;
     let source = 'client';
 
     // Try backend API first (if enabled)
     if (typeof BACKEND_CONFIG !== 'undefined' && BACKEND_CONFIG.enabled) {
       try {
+        if (DEBUG_MODE) console.log(`🌐 Sending to backend API...`);
         const apiClient = new AutoCorrectAPIClient(BACKEND_CONFIG);
         const backendResult = await apiClient.correctText(token, context.split(/\s+/), currentMode);
 
@@ -195,15 +223,20 @@ async function correctWordAsync(el, wordInfo) {
             suggestions: backendResult.suggestions.map(s => s.text)
           };
           source = 'backend';
-          console.log(`✅ Backend correction: "${token}" → "${backendResult.corrected}"`);
+          console.log(`✅ Backend correction: "${token}" → "${backendResult.corrected}" (confidence: ${(backendResult.confidence * 100).toFixed(0)}%)`);
+          if (DEBUG_MODE) {
+            console.log(`   Suggestions:`, backendResult.suggestions.map(s => `"${s.text}" (${(s.confidence * 100).toFixed(0)}%)`).join(', '));
+          }
         }
       } catch (error) {
         console.log('⚠️ Backend unavailable, falling back to client-side');
+        if (DEBUG_MODE) console.log('   Error:', error.message);
       }
     }
 
     // Fall back to client-side (background.js) if backend didn't work
     if (!response) {
+      if (DEBUG_MODE) console.log(`💻 Sending to client-side (background.js)...`);
       response = await chrome.runtime.sendMessage({
         action: 'correctWord',
         word: token,
@@ -211,6 +244,9 @@ async function correctWordAsync(el, wordInfo) {
         mode: currentMode
       });
       source = 'client';
+      if (DEBUG_MODE && response) {
+        console.log(`   Client-side suggestions:`, response.suggestions);
+      }
     }
 
     if (response && response.suggestions && response.suggestions.length > 0) {
@@ -223,8 +259,12 @@ async function correctWordAsync(el, wordInfo) {
         if (suggestion.toLowerCase() !== token.toLowerCase()) {
           console.log(`🔄 ${source} correction: "${token}" → "${suggestion}"`);
           applyCorrection(el, wordInfo, suggestion);
+        } else {
+          if (DEBUG_MODE) console.log(`✓ "${token}" is correct - no change needed`);
         }
       }
+    } else {
+      if (DEBUG_MODE) console.log(`✓ No suggestions for "${token}"`);
     }
   } catch (error) {
     // Only log if it's not an extension context error
@@ -244,14 +284,20 @@ function applyCorrection(el, wordInfo, suggestion) {
   const correctionKey = `${wordInfo.token.toLowerCase()}_${wordInfo.start}`;
   if (userCorrections.has(correctionKey)) {
     const lastCorrectionTime = userCorrections.get(correctionKey);
-    if (Date.now() - lastCorrectionTime < USER_CORRECTION_MEMORY) {
-      console.log(`⏭️ Skipping "${wordInfo.token}" - user manually corrected recently`);
+    const timeSinceCorrection = Date.now() - lastCorrectionTime;
+    if (timeSinceCorrection < USER_CORRECTION_MEMORY) {
+      console.log(`⏭️ Skipping "${wordInfo.token}" - user manually corrected ${(timeSinceCorrection / 1000).toFixed(0)}s ago`);
       return;
     }
   }
 
   // Check if the word is still there (user might have edited)
   const wordStillThere = currentText.slice(wordInfo.start, wordInfo.end) === wordInfo.token;
+
+  if (!wordStillThere) {
+    if (DEBUG_MODE) console.log(`⏭️ Word "${wordInfo.token}" was edited by user - not correcting`);
+    return;
+  }
 
   if (wordStillThere) {
     const lengthDiff = suggestion.length - wordInfo.token.length;
@@ -289,6 +335,13 @@ function applyCorrection(el, wordInfo, suggestion) {
 
     console.log(`✨ Auto-corrected: "${wordInfo.token}" → "${suggestion}"`);
 
+    // Track this correction so we don't re-correct if user changes it back
+    const correctionKey = `${suggestion.toLowerCase()}_${wordInfo.start}`;
+    setTimeout(() => {
+      // Remove from tracking after a short delay to allow for immediate re-correction if needed
+      userCorrections.delete(correctionKey);
+    }, 2000);
+
     // Visual feedback: brief highlight
     highlightCorrection(el, wordInfo.start, wordInfo.start + suggestion.length);
   }
@@ -307,37 +360,39 @@ let lastTextState = new Map(); // Track previous text state per element
 document.addEventListener('input', (e) => {
   const el = e.target;
   if (!el) return;
-  
+
   const currentText = getValue(el);
   if (!currentText) return;
-  
+
   const elementId = el.id || el.name || 'default';
   const previousText = lastTextState.get(elementId);
-  
+
   if (previousText && previousText !== currentText) {
     // User manually edited - find what changed
     const minLen = Math.min(previousText.length, currentText.length);
     let changeStart = 0;
-    
+
     for (let i = 0; i < minLen; i++) {
       if (previousText[i] !== currentText[i]) {
         changeStart = i;
         break;
       }
     }
-    
+
     // Extract the word that was changed
     const beforeChange = currentText.slice(0, changeStart + 20);
     const wordMatch = beforeChange.match(/([A-Za-z]+)\s*$/);
-    
+
     if (wordMatch) {
       const changedWord = wordMatch[1];
       const correctionKey = `${changedWord.toLowerCase()}_${changeStart}`;
       userCorrections.set(correctionKey, Date.now());
-      console.log(`📝 User manually edited: "${changedWord}"`);
+      if (DEBUG_MODE) {
+        console.log(`📝 User manually edited: "${changedWord}" (will not re-correct for ${USER_CORRECTION_MEMORY / 1000}s)`);
+      }
     }
   }
-  
+
   lastTextState.set(elementId, currentText);
 }, true);
 
