@@ -33,3 +33,4 @@ backend/**/*.pyc
 
 backend/models/
 backend/__pycache__/
+backend/models/cache/
