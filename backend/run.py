@@ -3,11 +3,16 @@
 Run script for AutoCorrect Backend
 """
 import sys
+import os
 import logging
 from pathlib import Path
 
 # Add backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+project_root = str(Path(__file__).parent.parent)
+sys.path.insert(0, project_root)
+
+# Set PYTHONPATH for uvicorn subprocess
+os.environ['PYTHONPATH'] = project_root
 
 from backend.config import settings
 
