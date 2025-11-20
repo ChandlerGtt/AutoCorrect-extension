@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoCorrect Comprehensive Test Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      padding: 30px;
+      background: #f8f9fa;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .metric-value.good { color: #4CAF50; }
+    .metric-value.warning { color: #ff9800; }
+    .metric-value.poor { color: #f44336; }
+
+    .controls {
+      padding: 30px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    button.danger {
+      background: #dc3545;
+    }
+
+    .results-section {
+      padding: 30px;
+    }
+
+    .test-category {
+      margin-bottom: 30px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .category-header {
+      background: #667eea;
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-result {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e9ecef;
+      display: grid;
+      grid-template-columns: 40% 25% 25% 10%;
+      gap: 15px;
+      align-items: center;
+      background: white;
+    }
+
+    .test-result:hover {
+      background: #f8f9fa;
+    }
+
+    .test-result.pass {
+      border-left: 4px solid #4CAF50;
+    }
+
+    .test-result.fail {
+      border-left: 4px solid #f44336;
+    }
+
+    .test-input {
+      font-family: 'Courier New', monospace;
+      color: #495057;
+    }
+
+    .test-expected {
+      font-family: 'Courier New', monospace;
+      color: #4CAF50;
+      font-weight: 600;
+    }
+
+    .test-actual {
+      font-family: 'Courier New', monospace;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .test-status {
+      text-align: center;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .test-status.pass {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .test-status.fail {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    .config-section {
+      padding: 20px 30px;
+      background: #fff3cd;
+      border-bottom: 2px solid #ffc107;
+    }
+
+    .config-label {
+      font-weight: 600;
+      margin-right: 10px;
+    }
+
+    select, input {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .log-section {
+      padding: 30px;
+      background: #212529;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      margin: 4px 0;
+    }
+
+    .log-error {
+      color: #ff6b6b;
+    }
+
+    .log-success {
+      color: #51cf66;
+    }
+
+    .log-info {
+      color: #74c0fc;
+    }
+
+    .summary-box {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .summary-box h3 {
+      color: #495057;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 AutoCorrect Comprehensive Test Suite</h1>
+      <p>Backend API + Client-Side Testing with Performance Metrics</p>
+    </header>
+
+    <!-- Configuration Section -->
+    <div class="config-section">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+        <div>
+          <span class="config-label">Backend URL:</span>
+          <input type="text" id="backendUrl" value="http://localhost:8000" style="width: 250px;">
+        </div>
+        <div>
+          <span class="config-label">Test Mode:</span>
+          <select id="testMode">
+            <option value="all">All Tests</option>
+            <option value="spelling">Spelling Only</option>
+            <option value="grammar">Grammar Only</option>
+            <option value="performance">Performance Only</option>
+            <option value="edge">Edge Cases Only</option>
+          </select>
+        </div>
+        <div>
+          <span class="config-label">Iterations:</span>
+          <input type="number" id="iterations" value="1" min="1" max="10" style="width: 80px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Dashboard -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Tests</div>
+        <div class="metric-value" id="totalTests">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Passed</div>
+        <div class="metric-value good" id="passedTests">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Failed</div>
+        <div class="metric-value poor" id="failedTests">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Accuracy</div>
+        <div class="metric-value" id="accuracy">0%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Avg Time</div>
+        <div class="metric-value" id="avgTime">0ms</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">P95 Time</div>
+        <div class="metric-value" id="p95Time">0ms</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button id="runTests" onclick="runAllTests()">▶️ Run All Tests</button>
+      <button class="secondary" onclick="runBackendHealthCheck()">🏥 Backend Health Check</button>
+      <button class="secondary" onclick="exportResults()">📊 Export Results (JSON)</button>
+      <button class="danger" onclick="clearResults()">🗑️ Clear Results</button>
+      <div class="progress-bar" style="flex: 1;">
+        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" id="resultsSection">
+      <div class="summary-box" id="summaryBox" style="display: none;">
+        <h3>📈 Test Summary</h3>
+        <div id="summaryContent"></div>
+      </div>
+    </div>
+
+    <!-- Log Section -->
+    <div class="log-section" id="logSection">
+      <div class="log-entry log-info">Ready to run tests. Click "Run All Tests" to begin.</div>
+    </div>
+  </div>
+
+  <script>
+    // Test Data Sets
+    const TEST_DATASETS = {
+      spelling: [
+        { input: 'teh', expected: 'the', context: ['I', 'saw'] },
+        { input: 'recieve', expected: 'receive', context: ['I', 'will'] },
+        { input: 'seperate', expected: 'separate', context: ['They', 'are'] },
+        { input: 'definately', expected: 'definitely', context: ['I', 'will'] },
+        { input: 'occured', expected: 'occurred', context: ['It', 'just'] },
+        { input: 'untill', expected: 'until', context: ['Wait', 'here'] },
+        { input: 'tommorrow', expected: 'tomorrow', context: ['See', 'you'] },
+        { input: 'freind', expected: 'friend', context: ['My', 'best'] },
+        { input: 'beleive', expected: 'believe', context: ['I', 'really'] },
+        { input: 'wierd', expected: 'weird', context: ['That', 'is'] },
+        { input: 'goverment', expected: 'government', context: ['The', 'federal'] },
+        { input: 'begining', expected: 'beginning', context: ['At', 'the'] },
+        { input: 'enviroment', expected: 'environment', context: ['The', 'natural'] },
+        { input: 'mispell', expected: 'misspell', context: ['Did', 'you'] },
+        { input: 'neccessary', expected: 'necessary', context: ['It', 'is'] }
+      ],
+
+      grammar: [
+        { input: 'alot', expected: 'a lot', context: ['I', 'have'] },
+        { input: 'aswell', expected: 'as well', context: ['Come', 'along'] },
+        { input: 'infact', expected: 'in fact', context: ['Well'] },
+        { input: 'ofcourse', expected: 'of course', context: ['Yes'] }
+      ],
+
+      edgeCases: [
+        { input: 'i', expected: 'i', context: [] }, // Single letter
+        { input: 'th', expected: 'th', context: [] }, // Two letters
+        { input: 'abc123', expected: 'abc123', context: [] }, // Alphanumeric
+        { input: 'test!!!', expected: 'test!!!', context: [] }, // With punctuation
+        { input: 'HELLO', expected: 'HELLO', context: [] }, // All caps
+        { input: '', expected: '', context: [] } // Empty string
+      ],
+
+      performance: [
+        { input: 'test', expected: 'test', context: Array(50).fill('word') }, // Large context
+        { input: 'a'.repeat(50), expected: 'a'.repeat(50), context: [] }, // Long word
+      ]
+    };
+
+    let testResults = {
+      passed: 0,
+      failed: 0,
+      times: [],
+      failures: []
+    };
+
+    function log(message, type = 'info') {
+      const logSection = document.getElementById('logSection');
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logSection.appendChild(entry);
+      logSection.scrollTop = logSection.scrollHeight;
+    }
+
+    async function runBackendHealthCheck() {
+      log('Checking backend health...', 'info');
+      const url = document.getElementById('backendUrl').value;
+
+      try {
+        const response = await fetch(`${url}/health`);
+        const data = await response.json();
+
+        log(`Backend Status: ${data.status}`, data.status === 'healthy' ? 'success' : 'error');
+        log(`Spell Checker: ${data.models_loaded.spell_checker ? '✓' : '✗'}`,
+            data.models_loaded.spell_checker ? 'success' : 'error');
+        log(`Neural Model: ${data.models_loaded.neural_corrector ? '✓' : '✗'}`,
+            data.models_loaded.neural_corrector ? 'success' : 'error');
+        log(`N-gram Model: ${data.models_loaded.ngram_model ? '✓' : '✗'}`,
+            data.models_loaded.ngram_model ? 'success' : 'error');
+      } catch (error) {
+        log(`❌ Backend health check failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testBackendCorrection(input, context = []) {
+      const url = document.getElementById('backendUrl').value;
+      const startTime = performance.now();
+
+      try {
+        const response = await fetch(`${url}/correct`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: input,
+            context: context,
+            mode: 'auto',
+            max_suggestions: 3
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const endTime = performance.now();
+
+        return {
+          corrected: data.corrected,
+          time: endTime - startTime,
+          confidence: data.confidence,
+          source: data.suggestions[0]?.source || 'unknown'
+        };
+      } catch (error) {
+        const endTime = performance.now();
+        return {
+          corrected: input,
+          time: endTime - startTime,
+          error: error.message
+        };
+      }
+    }
+
+    async function runAllTests() {
+      const runButton = document.getElementById('runTests');
+      runButton.disabled = true;
+
+      testResults = { passed: 0, failed: 0, times: [], failures: [] };
+      document.getElementById('resultsSection').innerHTML = '';
+
+      log('🚀 Starting comprehensive test suite...', 'info');
+
+      const mode = document.getElementById('testMode').value;
+      const iterations = parseInt(document.getElementById('iterations').value);
+
+      let allTests = [];
+
+      if (mode === 'all' || mode === 'spelling') {
+        allTests.push({ category: 'Spelling Tests', tests: TEST_DATASETS.spelling });
+      }
+      if (mode === 'all' || mode === 'grammar') {
+        allTests.push({ category: 'Grammar Tests', tests: TEST_DATASETS.grammar });
+      }
+      if (mode === 'all' || mode === 'edge') {
+        allTests.push({ category: 'Edge Cases', tests: TEST_DATASETS.edgeCases });
+      }
+      if (mode === 'all' || mode === 'performance') {
+        allTests.push({ category: 'Performance Tests', tests: TEST_DATASETS.performance });
+      }
+
+      const totalTests = allTests.reduce((sum, cat) => sum + cat.tests.length, 0) * iterations;
+      let completedTests = 0;
+
+      for (const category of allTests) {
+        await runTestCategory(category.category, category.tests, iterations);
+        completedTests += category.tests.length * iterations;
+        updateProgress(completedTests, totalTests);
+      }
+
+      displaySummary();
+      log('✅ All tests completed!', 'success');
+      runButton.disabled = false;
+    }
+
+    async function runTestCategory(categoryName, tests, iterations) {
+      log(`Running ${categoryName}...`, 'info');
+
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'test-category';
+      categoryDiv.innerHTML = `
+        <div class="category-header">
+          <span>${categoryName}</span>
+          <span>${tests.length * iterations} tests</span>
+        </div>
+      `;
+
+      for (let i = 0; i < iterations; i++) {
+        for (const test of tests) {
+          const result = await testBackendCorrection(test.input, test.context || []);
+          const passed = result.corrected === test.expected;
+
+          if (passed) {
+            testResults.passed++;
+          } else {
+            testResults.failed++;
+            testResults.failures.push({ test, result });
+          }
+
+          testResults.times.push(result.time);
+
+          const resultDiv = document.createElement('div');
+          resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+          resultDiv.innerHTML = `
+            <div class="test-input">Input: "${test.input}"</div>
+            <div class="test-expected">Expected: "${test.expected}"</div>
+            <div class="test-actual">Got: "${result.corrected}" (${result.time.toFixed(0)}ms)</div>
+            <div class="test-status ${passed ? 'pass' : 'fail'}">${passed ? '✓ PASS' : '✗ FAIL'}</div>
+          `;
+
+          categoryDiv.appendChild(resultDiv);
+          updateMetrics();
+        }
+      }
+
+      document.getElementById('resultsSection').appendChild(categoryDiv);
+    }
+
+    function updateProgress(completed, total) {
+      const percent = (completed / total) * 100;
+      document.getElementById('progressBar').style.width = `${percent}%`;
+    }
+
+    function updateMetrics() {
+      const total = testResults.passed + testResults.failed;
+      const accuracy = total > 0 ? ((testResults.passed / total) * 100).toFixed(1) : 0;
+      const avgTime = testResults.times.length > 0
+        ? (testResults.times.reduce((a, b) => a + b, 0) / testResults.times.length).toFixed(0)
+        : 0;
+
+      const sorted = [...testResults.times].sort((a, b) => a - b);
+      const p95Index = Math.floor(sorted.length * 0.95);
+      const p95Time = sorted[p95Index] || 0;
+
+      document.getElementById('totalTests').textContent = total;
+      document.getElementById('passedTests').textContent = testResults.passed;
+      document.getElementById('failedTests').textContent = testResults.failed;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      document.getElementById('avgTime').textContent = `${avgTime}ms`;
+      document.getElementById('p95Time').textContent = `${p95Time.toFixed(0)}ms`;
+
+      const accuracyElem = document.getElementById('accuracy');
+      accuracyElem.className = 'metric-value';
+      if (accuracy >= 95) accuracyElem.classList.add('good');
+      else if (accuracy >= 80) accuracyElem.classList.add('warning');
+      else accuracyElem.classList.add('poor');
+
+      const avgTimeElem = document.getElementById('avgTime');
+      avgTimeElem.className = 'metric-value';
+      if (avgTime < 200) avgTimeElem.classList.add('good');
+      else if (avgTime < 500) avgTimeElem.classList.add('warning');
+      else avgTimeElem.classList.add('poor');
+    }
+
+    function displaySummary() {
+      const summaryBox = document.getElementById('summaryBox');
+      const summaryContent = document.getElementById('summaryContent');
+
+      const total = testResults.passed + testResults.failed;
+      const accuracy = ((testResults.passed / total) * 100).toFixed(1);
+
+      summaryContent.innerHTML = `
+        <p><strong>Total Tests:</strong> ${total}</p>
+        <p><strong>Passed:</strong> ${testResults.passed} (${accuracy}%)</p>
+        <p><strong>Failed:</strong> ${testResults.failed}</p>
+        <p><strong>Avg Response Time:</strong> ${testResults.times.length > 0 ? (testResults.times.reduce((a,b)=>a+b,0)/testResults.times.length).toFixed(0) : 0}ms</p>
+        ${testResults.failures.length > 0 ? `<p style="margin-top: 10px;"><strong>Failed Tests:</strong></p><ul>${testResults.failures.map(f => `<li>"${f.test.input}" → expected "${f.test.expected}", got "${f.result.corrected}"</li>`).join('')}</ul>` : ''}
+      `;
+
+      summaryBox.style.display = 'block';
+    }
+
+    function exportResults() {
+      const data = {
+        timestamp: new Date().toISOString(),
+        summary: {
+          total: testResults.passed + testResults.failed,
+          passed: testResults.passed,
+          failed: testResults.failed,
+          accuracy: ((testResults.passed / (testResults.passed + testResults.failed)) * 100).toFixed(2) + '%'
+        },
+        times: {
+          average: (testResults.times.reduce((a,b)=>a+b,0)/testResults.times.length).toFixed(2) + 'ms',
+          min: Math.min(...testResults.times).toFixed(2) + 'ms',
+          max: Math.max(...testResults.times).toFixed(2) + 'ms',
+          p95: testResults.times.sort((a,b)=>a-b)[Math.floor(testResults.times.length * 0.95)].toFixed(2) + 'ms'
+        },
+        failures: testResults.failures
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `test-results-${Date.now()}.json`;
+      a.click();
+
+      log('📊 Results exported to JSON', 'success');
+    }
+
+    function clearResults() {
+      testResults = { passed: 0, failed: 0, times: [], failures: [] };
+      document.getElementById('resultsSection').innerHTML = '';
+      document.getElementById('summaryBox').style.display = 'none';
+      document.getElementById('progressBar').style.width = '0%';
+      updateMetrics();
+      log('🗑️ Results cleared', 'info');
+    }
+
+    // Initialize metrics
+    updateMetrics();
+  </script>
+</body>
+</html>
