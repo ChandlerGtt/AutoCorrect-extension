@@ -20,5 +20,14 @@ backend/models/cache/
 backend/models/*.pkl
 backend/training/corpus/
 backend/logs/
+backend/cache/
+
+# Python cache files
 *.pyc
+*.pyo
 __pycache__/
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
