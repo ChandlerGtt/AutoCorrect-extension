@@ -116,6 +116,102 @@ Expected response:
 }
 ```
 
+## Model Cache & Git Ignore
+
+### Why Model Files Aren't in Git
+
+The AI model cache directory (`backend/models/cache/`) is **excluded from git** for important reasons:
+
+1. **Size Limitations**
+   - Model files: ~850MB (T5-base grammar model)
+   - GitHub file limit: 100MB per file
+   - **Result**: Push would fail with "file too large" error
+
+2. **Automatic Download**
+   - Models auto-download from Hugging Face on first request
+   - No manual setup needed
+   - Different developers can use different model versions
+
+3. **Cache Files**
+   - Python bytecode (*.pyc, __pycache__/)
+   - SQLite databases (*.db, cache.db)
+   - These regenerate automatically
+
+### What Gets Auto-Downloaded?
+
+**On first API request**, the backend automatically downloads:
+
+- **Model**: `vennify/t5-base-grammar-correction`
+- **Size**: ~850MB
+- **Time**: 1-2 minutes (depending on internet speed)
+- **Location**: `backend/models/cache/models--vennify--t5-base-grammar-correction/`
+- **Source**: Hugging Face Model Hub
+
+**Subsequent requests**: < 200ms (model loads from disk cache)
+
+### Gitignored Files & Directories
+
+These are automatically generated and blocked by `.gitignore` and pre-commit hook:
+
+```
+# Model cache (850MB+ - auto-downloads)
+backend/models/cache/
+backend/models/*.pkl
+
+# Python cache (auto-generates)
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+*.pyo
+
+# SQLite cache (auto-generates)
+backend/cache/
+*.db
+*.db-shm
+*.db-wal
+
+# Training data (optional - can be downloaded)
+backend/training/corpus/
+backend/logs/
+```
+
+### Pre-commit Hook Protection
+
+A git pre-commit hook (`.githooks/pre-commit`) prevents accidental commits of:
+- Files larger than 10MB
+- Model cache directories
+- .pkl, .pth, .bin files
+
+To install the hook:
+```bash
+git config core.hooksPath .githooks
+```
+
+### First Time Setup
+
+When you first clone the repository:
+
+```bash
+# 1. Clone repository (no models included)
+git clone <repository>
+cd AutoCorrect-extension
+
+# 2. Install Python dependencies
+pip install -r backend/requirements.txt
+
+# 3. Start server (models will auto-download on first request)
+python backend/run.py
+
+# 4. Make first API request
+curl -X POST http://localhost:8000/correct -H "Content-Type: application/json" \
+  -d '{"text": "teh quick brown fox", "mode": "auto"}'
+
+# First request: ~10-15 seconds (model downloads)
+# Subsequent requests: < 200ms
+```
+
+**Important**: The first API request will take 10-15 seconds as the model downloads. This is normal! All subsequent requests will be fast.
+
 ## API Endpoints
 
 ### POST /correct
