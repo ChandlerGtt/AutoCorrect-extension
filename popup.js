@@ -1,55 +1,27 @@
 // popup.js - AI AutoCorrect popup controls
-// popup.js - AI AutoCorrect popup controls
 (async function () {
   const toggle = document.getElementById('toggle');
   const siteInfo = document.getElementById('siteInfo');
   const modeOptions = document.querySelectorAll('.mode-option');
   const modeRadios = document.querySelectorAll('input[name="mode"]');
-  const modeOptions = document.querySelectorAll('.mode-option');
-  const modeRadios = document.querySelectorAll('input[name="mode"]');
 
-  // Load current settings
-  const [settings, [tab]] = await Promise.all([
-    chrome.storage.sync.get({ enabled: true, mode: 'auto', pausedHosts: [] }),
   // Load current settings
   const [settings, [tab]] = await Promise.all([
     chrome.storage.sync.get({ enabled: true, mode: 'auto', pausedHosts: [] }),
     chrome.tabs.query({ active: true, currentWindow: true })
   ]);
 
-  const { enabled, mode, pausedHosts } = settings;
-  const { enabled, mode, pausedHosts } = settings;
+  let { enabled, mode, pausedHosts } = settings;
   const host = tab?.url ? new URL(tab.url).hostname : null;
 
-  // Set up mode selection
-  const currentMode = mode || 'auto';
-  const currentRadio = document.querySelector(`input[value="${currentMode}"]`);
-  if (currentRadio) {
-    currentRadio.checked = true;
-    currentRadio.closest('.mode-option').classList.add('selected');
+  // Migrate old 'suggestions' mode to 'auto'
+  if (mode === 'suggestions') {
+    mode = 'auto';
+    chrome.storage.sync.set({ mode: 'auto' });
   }
 
-  // Update mode selection UI
-  modeOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const radio = this.querySelector('input[type="radio"]');
-      radio.checked = true;
-
-      // Update visual selection
-      modeOptions.forEach(opt => opt.classList.remove('selected'));
-      this.classList.add('selected');
-
-      // Save mode
-      const selectedMode = radio.value;
-      chrome.storage.sync.set({ mode: selectedMode });
-      updateStatusMessage(enabled, selectedMode, host, pausedHosts);
-    });
-  });
-
-  // Set up global enable/disable toggle
-  toggle.textContent = enabled ? 'Disable Globally' : 'Enable Globally';
-  // Set up mode selection
-  const currentMode = mode || 'auto';
+  // Set up mode selection - default to 'auto' if invalid
+  const currentMode = (mode === 'auto' || mode === 'off') ? mode : 'auto';
   const currentRadio = document.querySelector(`input[value="${currentMode}"]`);
   if (currentRadio) {
     currentRadio.checked = true;
