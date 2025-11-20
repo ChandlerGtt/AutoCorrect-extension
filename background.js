@@ -1,62 +1,35 @@
-// background.js - Service worker with dictionary shard loading
+// background.js - Lean AI-powered autocorrect service worker
 
 const DEFAULTS = {
   enabled: true,
-  mode: 'auto', // 'auto', 'suggestions', 'off'
+  mode: 'auto', // 'auto', 'off'
   pausedHosts: [],
   minWordLength: 2
 };
 
-// Dictionary and AI model data (loaded in memory)
+// Minimal dictionary - AI handles the rest
 let dictionary = null;
 let initialized = false;
-
-// Correction memory for sentence-wide analysis
 let correctionMemory = null;
 
 console.log('🚀 Background script starting...');
 
-// Initialize models function
+// Initialize with minimal fallback dictionary
 async function initializeModels() {
   if (initialized) {
     console.log('ℹ️ Models already initialized');
     return;
   }
-  
-  console.log('📚 Loading dictionary from shards...');
-  
-  try {
-    dictionary = await loadDictionaryFromShards();
-    console.log('✅ Loaded', dictionary.size, 'words from shards');
-  } catch (error) {
-    console.warn('⚠️ Could not load shards, using fallback dictionary:', error);
-    
-    // Fallback dictionary
-    dictionary = new Set([
-      'the', 'be', 'to', 'of', 'and', 'A', 'in', 'that', 'have', 'it',
-      'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this',
-      'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or',
-      'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what',
-      'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me',
-      'hello', 'world', 'test', 'example', 'correct', 'word', 'spell', 'check',
-      'when', 'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take',
-      'people', 'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other',
-      'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also',
-      'back', 'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way',
-      'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us',
-      'is', 'was', 'are', 'been', 'has', 'had', 'were', 'said', 'did', 'having',
-      'may', 'should', 'could', 'would', 'might', 'must', 'shall',
-      'am', 'being', 'does', 'done', 'doing', 'made', 'make', 'making',
-      'called', 'call', 'calling', 'went', 'going', 'goes', 'came', 'coming',
-      'write', 'writing', 'wrote', 'written', 'read', 'reading', 'reads',
-      'thing', 'things', 'place', 'places', 'person', 'great', 'small', 'grit', 'greet',
-      'get', 'got', 'getting', 'give', 'gave', 'given', 'know', 'knew', 'known',
-      'trying', 'tried', 'try', 'tries', 'guess', 'guessed', 'guessing',
-      'must', 'adjust', 'adjusted', 'adjusting', 'adjustment', 'I'
-    ]);
-    console.log('✅ Using fallback dictionary with', dictionary.size, 'words');
-  }
-  
+
+  // Ultra-minimal fallback dictionary - only top 20 most common English words
+  // AI + Levenshtein distance handles everything else
+  dictionary = new Set([
+    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
+    'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this'
+  ]);
+
+  console.log('✅ Minimal dictionary loaded with', dictionary.size, 'words');
+
   // Initialize correction memory
   if (!correctionMemory) {
     correctionMemory = new CorrectionMemory();
@@ -65,80 +38,6 @@ async function initializeModels() {
   }
 
   initialized = true;
-}
-
-// Load dictionary from compressed shards
-async function loadDictionaryFromShards() {
-  const words = new Set();
-  
-  // Generate all shard combinations: a_, aa, ab, ac, ..., zz
-  const shardNames = [];
-  
-  // Single letter + underscore (a_, b_, c_, ...)
-  for (let i = 97; i <= 122; i++) {
-    shardNames.push(String.fromCharCode(i) + '_');
-  }
-  
-  // Two letter combinations (aa, ab, ..., zz)
-  for (let i = 97; i <= 122; i++) {
-    for (let j = 97; j <= 122; j++) {
-      shardNames.push(String.fromCharCode(i) + String.fromCharCode(j));
-    }
-  }
-  
-  console.log(`📦 Loading ${shardNames.length} shards...`);
-  
-  let loadedCount = 0;
-  let failedCount = 0;
-  
-  for (const shardName of shardNames) {
-    try {
-      const shardPath = `assets/shards/${shardName}.txt.gz`;
-      const shardUrl = chrome.runtime.getURL(shardPath);
-      
-      const response = await fetch(shardUrl);
-      
-      if (!response.ok) {
-        failedCount++;
-        continue;
-      }
-      
-      // Decompress using DecompressionStream API
-      const arrayBuffer = await response.arrayBuffer();
-      const decompressedStream = new Response(
-        new Blob([arrayBuffer]).stream().pipeThrough(new DecompressionStream('gzip'))
-      );
-      const text = await decompressedStream.text();
-      
-      // Split by lines and add to dictionary
-      const shardWords = text.split('\n').filter(w => w.trim().length > 0);
-      
-      shardWords.forEach(word => {
-        const cleaned = word.trim().toLowerCase();
-        if (cleaned && /^[a-z]+$/.test(cleaned)) {
-          words.add(cleaned);
-        }
-      });
-      
-      loadedCount++;
-      
-      // Log progress every 50 shards
-      if (loadedCount % 50 === 0) {
-        console.log(`✅ Loaded ${loadedCount} shards so far... (${words.size} words)`);
-      }
-    } catch (error) {
-      failedCount++;
-      // Silently skip failed shards
-    }
-  }
-  
-  console.log(`✅ Successfully loaded ${loadedCount} shards, ${failedCount} failed`);
-  
-  if (words.size === 0) {
-    throw new Error('No words loaded from shards');
-  }
-  
-  return words;
 }
 
 // Badge helper
@@ -168,13 +67,13 @@ async function buildMenus() {
 // Install event
 chrome.runtime.onInstalled.addListener(async () => {
   console.log('📦 Extension installed/updated');
-  
+
   const cur = await chrome.storage.sync.get(DEFAULTS);
   await chrome.storage.sync.set({ ...DEFAULTS, ...cur });
   await setBadge(cur.enabled ?? true);
   await buildMenus();
   await initializeModels();
-  
+
   console.log('✅ Extension setup complete');
 });
 
@@ -188,11 +87,11 @@ chrome.storage.onChanged.addListener(async (changes) => {
 // Context menu click handler
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== "toggle-site" || !tab?.url) return;
-  
+
   const host = new URL(tab.url).hostname;
   const { pausedHosts = [] } = await chrome.storage.sync.get(["pausedHosts"]);
   const set = new Set(pausedHosts);
-  
+
   set.has(host) ? set.delete(host) : set.add(host);
   await chrome.storage.sync.set({ pausedHosts: Array.from(set) });
 
@@ -201,150 +100,25 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const { enabled = true } = await chrome.storage.sync.get("enabled");
     await setBadge(enabled);
   }, 800);
-  
+
   console.log(`✅ Autocorrect ${set.has(host) ? 'paused' : 'resumed'} for ${host}`);
 });
 
-// ===== CONTEXT AWARENESS DATA =====
+// ===== MINIMAL GRAMMAR RULES (top 5 most common) =====
 
-// Common bigrams (word pairs that frequently appear together)
-const BIGRAMS = {
-  'the': ['world', 'best', 'first', 'last', 'only', 'most', 'more', 'other', 'same', 'way', 'time', 'people', 'book', 'store', 'house'],
-  'to': ['be', 'the', 'do', 'have', 'get', 'go', 'see', 'make', 'take', 'use', 'find', 'work', 'help', 'write'],
-  'of': ['the', 'course', 'all', 'them', 'us', 'these', 'those', 'time', 'life', 'people', 'work'],
-  'in': ['the', 'this', 'that', 'order', 'other', 'addition', 'general', 'time', 'place', 'fact'],
-  'for': ['the', 'this', 'that', 'example', 'instance', 'some', 'all', 'many', 'most', 'me', 'you'],
-  'on': ['the', 'this', 'that', 'top', 'behalf', 'time', 'way', 'earth', 'display'],
-  'with': ['the', 'this', 'that', 'all', 'some', 'many', 'each', 'them', 'us', 'you', 'me'],
-  'at': ['the', 'least', 'all', 'first', 'last', 'once', 'home', 'work', 'school', 'night', 'time'],
-  'is': ['the', 'a', 'an', 'not', 'that', 'this', 'it', 'there', 'one', 'also'],
-  'was': ['the', 'a', 'an', 'not', 'that', 'this', 'it', 'there', 'one', 'also'],
-  'are': ['the', 'a', 'an', 'not', 'that', 'these', 'those', 'they', 'we', 'you'],
-  'have': ['the', 'a', 'an', 'to', 'been', 'had', 'not', 'been', 'some', 'many'],
-  'from': ['the', 'this', 'that', 'time', 'place', 'here', 'there', 'now', 'then'],
-  'my': ['name', 'life', 'work', 'home', 'family', 'friend', 'book', 'way', 'time', 'mind'],
-  'went': ['to', 'home', 'back', 'away', 'out', 'down', 'up', 'there', 'here'],
-  'read': ['the', 'this', 'that', 'about', 'it', 'them', 'a', 'an', 'some', 'many'],
-  'bought': ['the', 'this', 'that', 'some', 'a', 'an', 'new', 'it', 'them'],
-  'some': ['of', 'people', 'time', 'more', 'other', 'new', 'good', 'bad', 'things']
-};
-
-// Common trigrams (3-word patterns)
-const TRIGRAMS = [
-  'in order to', 'as well as', 'in addition to', 'on the other', 'at the same',
-  'for the first', 'one of the', 'as a result', 'in the world', 'in the future',
-  'at the end', 'at the beginning', 'in the past', 'on the one', 'in the case',
-  'a lot of', 'the fact that', 'in order for', 'as long as', 'as soon as',
-  'in spite of', 'because of the', 'out of the', 'part of the', 'most of the',
-  'in terms of', 'on behalf of', 'with respect to', 'in front of', 'in the middle',
-  'i went to', 'i want to', 'i need to', 'i have to', 'i used to',
-  'going to be', 'going to have', 'going to get', 'going to do', 'going to make'
-];
-
-// Domain keywords for content-aware correction
-const DOMAIN_KEYWORDS = {
-  technical: ['code', 'program', 'function', 'variable', 'class', 'method', 'database',
-              'server', 'api', 'software', 'bug', 'debug', 'test', 'data', 'system',
-              'computer', 'file', 'script', 'algorithm', 'array', 'string', 'object'],
-  business: ['meeting', 'client', 'company', 'revenue', 'sales', 'profit', 'market',
-             'team', 'project', 'deadline', 'budget', 'strategy', 'growth', 'customer',
-             'business', 'corporate', 'enterprise', 'management', 'employee'],
-  academic: ['research', 'study', 'paper', 'thesis', 'university', 'professor', 'journal',
-             'analysis', 'theory', 'hypothesis', 'experiment', 'data', 'results', 'conclusion',
-             'academic', 'scholar', 'education', 'student', 'learning'],
-  casual: ['lol', 'cool', 'awesome', 'friend', 'fun', 'like', 'love', 'hate', 'yeah',
-           'hey', 'hi', 'hello', 'thanks', 'please', 'maybe', 'probably', 'literally']
-};
-
-// Domain-specific vocabulary boost
-const DOMAIN_VOCABULARY = {
-  technical: ['github', 'python', 'javascript', 'compile', 'deploy', 'commit', 'push', 'pull',
-              'merge', 'branch', 'repository', 'console', 'terminal', 'command', 'syntax'],
-  business: ['invoice', 'contract', 'proposal', 'quarterly', 'stakeholder', 'milestone',
-             'deliverable', 'metrics', 'roi', 'kpi', 'synergy', 'bandwidth', 'leverage'],
-  academic: ['cite', 'reference', 'bibliography', 'peer', 'reviewed', 'published', 'abstract',
-             'methodology', 'literature', 'findings', 'significance', 'correlation'],
-  casual: ['gonna', 'wanna', 'gotta', 'kinda', 'sorta', 'dunno', 'yep', 'nope', 'stuff', 'things']
-};
-
-// ===== ENHANCED FREQUENCY TIERS =====
-
-// Tiered frequency system based on corpus analysis (COCA/BNC)
-const FREQUENCY_TIERS = {
-  tier1: {  // Ultra common (top 20 words)
-    weight: 10.0,
-    words: new Set(['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
-                    'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this'])
-  },
-  tier2: {  // Very common (21-50)
-    weight: 5.0,
-    words: new Set(['but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or',
-                    'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so',
-                    'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when'])
-  },
-  tier3: {  // Common (51-100)
-    weight: 3.0,
-    words: new Set(['make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take', 'people',
-                    'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other', 'than',
-                    'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back'])
-  },
-  tier4: {  // Frequent (101-500)
-    weight: 1.5,
-    words: new Set(['after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even',
-                    'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us', 'is',
-                    'was', 'are', 'been', 'has', 'had', 'were', 'said', 'did', 'having', 'may'])
-  }
-};
-
-function getFrequencyTier(word) {
-  const lower = word.toLowerCase();
-  if (FREQUENCY_TIERS.tier1.words.has(lower)) return { tier: 1, weight: 10.0 };
-  if (FREQUENCY_TIERS.tier2.words.has(lower)) return { tier: 2, weight: 5.0 };
-  if (FREQUENCY_TIERS.tier3.words.has(lower)) return { tier: 3, weight: 3.0 };
-  if (FREQUENCY_TIERS.tier4.words.has(lower)) return { tier: 4, weight: 1.5 };
-  return { tier: 5, weight: 1.0 };
-}
-
-// ===== GRAMMAR RULES ENGINE =====
-
-const GRAMMAR_RULES = {
-  // Common grammar mistakes
-  fixes: {
-    'should of': 'should have',
-    'could of': 'could have',
-    'would of': 'would have',
-    'might of': 'might have',
-    'must of': 'must have',
-    'shouldnt of': "shouldn't have",
-    'couldnt of': "couldn't have",
-    'wouldnt of': "wouldn't have",
-    'alot': 'a lot',
-    'aswell': 'as well',
-    'infact': 'in fact',
-    'ofcourse': 'of course'
-  },
-
-  // Subject-verb agreement patterns
-  subjectVerb: [
-    { pattern: /\b(he|she|it)\s+don't\b/gi, fix: "$1 doesn't" },
-    { pattern: /\b(he|she|it)\s+were\b/gi, fix: "$1 was" },
-    { pattern: /\b(I|we|you|they)\s+is\b/gi, fix: "$1 are" },
-    { pattern: /\b(I|we|you|they)\s+was\b/gi, fix: "$1 were" },
-    { pattern: /\b(I)\s+is\b/gi, fix: "$1 am" }
-  ],
-
-  // Article rules (simplified)
-  articles: [
-    { pattern: /\ba\s+(hour|honest|honor)/gi, fix: 'an $1' },
-    { pattern: /\ban\s+(university|european|one)/gi, fix: 'a $1' }
-  ]
+const GRAMMAR_FIXES = {
+  'alot': 'a lot',
+  'teh': 'the',
+  'recieve': 'receive',
+  'definately': 'definitely',
+  'seperate': 'separate'
 };
 
 function checkGrammarFixes(text) {
   const lowerText = text.toLowerCase();
   const fixes = [];
 
-  for (const [wrong, correct] of Object.entries(GRAMMAR_RULES.fixes)) {
+  for (const [wrong, correct] of Object.entries(GRAMMAR_FIXES)) {
     const index = lowerText.indexOf(wrong);
     if (index !== -1) {
       fixes.push({
@@ -371,7 +145,6 @@ class CorrectionMemory {
   }
 
   generateSentenceId(text, timestamp) {
-    // Simple hash for sentence identification
     return `${text.slice(0, 20)}_${timestamp}`;
   }
 
@@ -392,7 +165,6 @@ class CorrectionMemory {
       revalidated: false
     });
 
-    // Limit total sentences
     if (this.sentences.size > this.maxSentences) {
       const oldestKey = Array.from(this.sentences.keys())[0];
       this.sentences.delete(oldestKey);
@@ -420,12 +192,8 @@ class CorrectionMemory {
     const data = this.sentences.get(sentenceId);
     if (!data || !data.isComplete || data.revalidated) return [];
 
-    console.log(`🔄 Revalidating sentence: "${data.text.slice(0, 50)}..."`);
-
-    // Check grammar across full sentence
     const grammarIssues = checkGrammarFixes(data.text);
 
-    // Mark corrections as revalidated
     for (const correction of data.corrections) {
       correction.revalidated = true;
     }
@@ -453,7 +221,7 @@ class CorrectionMemory {
 
   startAutoCleanup() {
     if (this.cleanupInterval) return;
-    this.cleanupInterval = setInterval(() => this.cleanupOld(), 30000); // Every 30s
+    this.cleanupInterval = setInterval(() => this.cleanupOld(), 30000);
   }
 
   stopAutoCleanup() {
@@ -464,293 +232,127 @@ class CorrectionMemory {
   }
 }
 
-// ===== CONTEXT ANALYSIS FUNCTIONS =====
-
-function detectDomain(contextWords) {
-  const scores = {
-    technical: 0,
-    business: 0,
-    academic: 0,
-    casual: 0
-  };
-
-  for (const word of contextWords) {
-    for (const [domain, keywords] of Object.entries(DOMAIN_KEYWORDS)) {
-      if (keywords.includes(word)) {
-        scores[domain]++;
-      }
-    }
-  }
-
-  const entries = Object.entries(scores);
-  const maxScore = Math.max(...entries.map(([_, score]) => score));
-
-  if (maxScore === 0) return 'general';
-
-  const topDomain = entries.find(([_, score]) => score === maxScore);
-  return topDomain ? topDomain[0] : 'general';
-}
-
-function bigramScore(prevWord, candidate) {
-  if (!prevWord || !candidate) return 0;
-
-  const prev = prevWord.toLowerCase();
-  const cand = candidate.toLowerCase();
-
-  if (BIGRAMS[prev] && BIGRAMS[prev].includes(cand)) {
-    return 0.5; // Strong bigram match
-  }
-
-  return 0;
-}
-
-function trigramScore(contextWords, candidate) {
-  if (contextWords.length < 2) return 0;
-
-  const last2 = contextWords.slice(-2).join(' ').toLowerCase();
-  const cand = candidate.toLowerCase();
-  const trigram = `${last2} ${cand}`;
-
-  for (const commonTrigram of TRIGRAMS) {
-    if (commonTrigram === trigram) {
-      return 0.4; // Strong trigram match
-    }
-    // Partial match (contains the trigram)
-    if (commonTrigram.includes(trigram)) {
-      return 0.2;
-    }
-  }
-
-  return 0;
-}
-
-function domainBoost(candidate, domain) {
-  if (domain === 'general') return 0;
-
-  const vocab = DOMAIN_VOCABULARY[domain];
-  if (vocab && vocab.includes(candidate.toLowerCase())) {
-    return 0.3; // Domain-specific word boost
-  }
-
-  return 0;
-}
-
-function contextSimilarity(contextWords, candidate) {
-  // Check if candidate appears in context (common in coherent text)
-  const cand = candidate.toLowerCase();
-  for (const word of contextWords) {
-    if (word.toLowerCase() === cand) {
-      return 0.2; // Word repetition bonus
-    }
-  }
-
-  return 0;
-}
-
-// ===== AI CORRECTION LOGIC =====
+// ===== LEAN AI CORRECTION LOGIC =====
 
 function getAICorrections(word, context = '', mode = 'auto') {
   const normalized = word.toLowerCase();
-  
-  // If word is correct, return empty
+
+  // If word is in minimal dictionary, it's correct
   if (dictionary && dictionary.has(normalized)) {
     return [];
   }
-  
-  // Generate candidates
+
+  // Generate candidates using edit distance
   const candidates = new Set();
-  
-  // Strategy 1: Edit distance
+
+  // Strategy 1: Edit distance (AI's main tool)
   const editCandidates = generateEditCandidates(normalized);
   editCandidates.forEach(c => {
     if (dictionary && dictionary.has(c)) candidates.add(c);
   });
-  
-  // Strategy 2: Common misspellings
+
+  // Strategy 2: Top 10 common misspellings only
   const commonFixes = getCommonMisspellingFixes(normalized);
   commonFixes.forEach(c => candidates.add(c));
-  
-  // Strategy 3: Phonetic
+
+  // Strategy 3: Top 5 phonetic matches only
   const phoneticMatches = getPhoneticMatches(normalized);
   phoneticMatches.forEach(c => {
     if (dictionary && dictionary.has(c)) candidates.add(c);
   });
-  
-  // Rank and return top 3
-  const ranked = rankCandidates(Array.from(candidates), normalized, context);
+
+  // Rank using pure Levenshtein distance (simplest, most reliable)
+  const ranked = rankCandidatesByDistance(Array.from(candidates), normalized);
   return ranked.slice(0, 3);
 }
 
+// Generate edit distance candidates (deletions, substitutions, insertions, transpositions)
 function generateEditCandidates(word) {
   const candidates = new Set();
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  
+
   // Deletions
   for (let i = 0; i < word.length; i++) {
     candidates.add(word.slice(0, i) + word.slice(i + 1));
   }
-  
+
   // Substitutions
   for (let i = 0; i < word.length; i++) {
     for (const char of alphabet) {
       candidates.add(word.slice(0, i) + char + word.slice(i + 1));
     }
   }
-  
+
   // Insertions
   for (let i = 0; i <= word.length; i++) {
     for (const char of alphabet) {
       candidates.add(word.slice(0, i) + char + word.slice(i));
     }
   }
-  
+
   // Transpositions
   for (let i = 0; i < word.length - 1; i++) {
     candidates.add(
       word.slice(0, i) + word[i + 1] + word[i] + word.slice(i + 2)
     );
   }
-  
+
   return candidates;
 }
 
+// Top 10 most common misspellings only
 function getCommonMisspellingFixes(word) {
   const fixes = {
     'teh': 'the',
     'recieve': 'receive',
-    'occured': 'occurred',
     'seperate': 'separate',
     'definately': 'definitely',
     'goverment': 'government',
-    'enviroment': 'environment',
-    'begining': 'beginning',
     'beleive': 'believe',
-    'wierd': 'weird',
     'freind': 'friend',
     'thier': 'their',
     'untill': 'until',
-    'tommorrow': 'tomorrow',
-    'writting': 'writing',
-    'occurance': 'occurrence',
-    'basicly': 'basically',
-    'realy': 'really',
-    'publically': 'publicly',
-    'mispell': 'misspell',
-    'neccessary': 'necessary',
-    'accomodate': 'accommodate',
-    'calender': 'calendar',
-    'concious': 'conscious',
-    'existance': 'existence',
-    'guage': 'gauge',
-    'happend': 'happened',
-    'independant': 'independent',
-    'knowlege': 'knowledge',
-    'maintainance': 'maintenance',
-    'noticable': 'noticeable',
-    'occassion': 'occasion',
-    'paralell': 'parallel',
-    'reccommend': 'recommend',
-    'surprize': 'surprise',
-    'truely': 'truly',
-    'unfortunatly': 'unfortunately',
-    'vaccuum': 'vacuum',
-    'wheather': 'whether'
+    'tommorrow': 'tomorrow'
   };
-  
+
   return fixes[word] ? [fixes[word]] : [];
 }
 
+// Top 5 phonetic matches only
 function getPhoneticMatches(word) {
   const phonetic = {
     'nite': 'night',
     'lite': 'light',
-    'rite': 'right',
     'thru': 'through',
-    'foto': 'photo',
-    'fone': 'phone',
-    'kool': 'cool',
-    'skool': 'school',
     'tho': 'though',
-    'thot': 'thought',
-    'wud': 'would',
-    'cud': 'could',
-    'shud': 'should'
+    'wud': 'would'
   };
-  
+
   return phonetic[word] ? [phonetic[word]] : [];
 }
 
-function rankCandidates(candidates, original, context = '') {
-  // Parse context into words
-  const contextWords = context.toLowerCase().split(/\s+/).filter(w => w.length > 0);
-  const prevWord = contextWords.length > 0 ? contextWords[contextWords.length - 1] : '';
-  const domain = detectDomain(contextWords);
+// Pure Levenshtein distance ranking (AI-first approach)
+function rankCandidatesByDistance(candidates, original) {
+  const scored = candidates.map(candidate => ({
+    word: candidate,
+    distance: levenshteinDistance(original, candidate)
+  }));
 
-  console.log(`🔍 Context analysis: ${contextWords.length} words, domain: ${domain}, prev: "${prevWord}"`);
-
-  const scored = candidates.map(candidate => {
-    // 1. Edit distance score (30% weight) - normalized to 0-1
-    const distance = levenshteinDistance(original, candidate);
-    const editScore = 1.0 / (distance + 1);
-
-    // 2. Frequency score (30% weight) - normalized to 0-1
-    const freqRaw = getFrequencyScore(candidate);
-    const freqScore = Math.min(freqRaw / 1000, 1.0);
-
-    // 3. Context score (40% weight) - sum of multiple factors
-    let contextScore = 0.0;
-
-    // Bigram: does candidate follow previous word?
-    contextScore += bigramScore(prevWord, candidate);
-
-    // Trigram: does candidate complete a 3-word pattern?
-    contextScore += trigramScore(contextWords, candidate);
-
-    // Domain: does candidate fit the detected domain?
-    contextScore += domainBoost(candidate, domain);
-
-    // Repetition: does candidate appear in context?
-    contextScore += contextSimilarity(contextWords, candidate);
-
-    // Normalize context score to 0-1
-    contextScore = Math.min(contextScore, 1.0);
-
-    // Final weighted score
-    const finalScore = (editScore * 0.3) + (freqScore * 0.3) + (contextScore * 0.4);
-
-    return {
-      word: candidate,
-      score: finalScore,
-      breakdown: {
-        edit: editScore.toFixed(3),
-        freq: freqScore.toFixed(3),
-        context: contextScore.toFixed(3),
-        final: finalScore.toFixed(3)
-      }
-    };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-
-  // Log top 3 for debugging
-  if (scored.length > 0) {
-    console.log(`📊 Top suggestions for "${original}":`);
-    scored.slice(0, 3).forEach((item, i) => {
-      console.log(`  ${i + 1}. "${item.word}" (score: ${item.breakdown.final}, edit: ${item.breakdown.edit}, freq: ${item.breakdown.freq}, ctx: ${item.breakdown.context})`);
-    });
-  }
+  // Sort by distance (lower is better)
+  scored.sort((a, b) => a.distance - b.distance);
 
   return scored.map(item => item.word);
 }
 
+// Levenshtein distance algorithm
 function levenshteinDistance(a, b) {
-  const matrix = Array(b.length + 1).fill(null).map(() => 
+  const matrix = Array(b.length + 1).fill(null).map(() =>
     Array(a.length + 1).fill(null)
   );
-  
+
   for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
   for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
-  
+
   for (let j = 1; j <= b.length; j++) {
     for (let i = 1; i <= a.length; i++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
@@ -761,26 +363,8 @@ function levenshteinDistance(a, b) {
       );
     }
   }
-  
+
   return matrix[b.length][a.length];
-}
-
-function getFrequencyScore(word) {
-  // Get tier-based weight
-  const { tier, weight } = getFrequencyTier(word);
-
-  // Base frequencies for specific words (still useful for fine-tuning)
-  const specificFrequencies = {
-    'the': 1000, 'be': 800, 'to': 750, 'of': 700, 'and': 680,
-    'a': 650, 'in': 600, 'that': 550, 'have': 500, 'it': 480,
-    'their': 400, 'there': 400, 'is': 900, 'was': 850, 'for': 700,
-    'are': 650, 'with': 600, 'they': 580, 'at': 560, 'one': 540
-  };
-
-  const baseFreq = specificFrequencies[word.toLowerCase()] || 100;
-
-  // Apply tier weight to base frequency
-  return baseFreq * weight;
 }
 
 // ===== MESSAGE HANDLER =====
@@ -791,7 +375,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       initializeModels().then(() => {
         const suggestions = getAICorrections(request.word, request.context, request.mode);
 
-        // Store correction in memory if provided
         if (request.sentenceId && correctionMemory) {
           correctionMemory.addCorrection(request.sentenceId, {
             originalWord: request.word,
@@ -808,7 +391,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     const suggestions = getAICorrections(request.word, request.context, request.mode);
 
-    // Store correction in memory
     if (request.sentenceId && correctionMemory && suggestions.length > 0) {
       correctionMemory.addCorrection(request.sentenceId, {
         originalWord: request.word,
@@ -833,11 +415,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'sentenceComplete') {
-    // Handle sentence completion for re-evaluation
     if (correctionMemory && request.sentenceId && request.fullText) {
       correctionMemory.markSentenceComplete(request.sentenceId, request.fullText);
 
-      // Revalidate asynchronously
       correctionMemory.revalidateSentence(request.sentenceId).then(grammarIssues => {
         console.log(`📝 Sentence complete with ${grammarIssues.length} grammar issues`);
         sendResponse({ grammarIssues });
@@ -849,7 +429,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'checkGrammar') {
-    // Check grammar for text
     const grammarFixes = checkGrammarFixes(request.text || '');
     sendResponse({ fixes: grammarFixes });
     return true;
@@ -859,4 +438,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Initialize on startup
 initializeModels();
 
-console.log('✅ AutoCorrect background service worker ready');
+console.log('✅ AutoCorrect AI-first service worker ready');

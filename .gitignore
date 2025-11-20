@@ -34,3 +34,10 @@ backend/**/*.pyc
 backend/models/
 backend/__pycache__/
 backend/models/cache/
+# Large models and training data (auto-downloaded on first run)
+backend/models/cache/
+backend/models/*.pkl
+backend/training/corpus/
+backend/logs/
+*.pyc
+__pycache__/

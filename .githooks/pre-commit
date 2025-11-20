@@ -1,0 +1,36 @@
+#!/bin/bash
+# Pre-commit hook to prevent large files from being committed
+
+echo "🔍 Checking for large files..."
+
+# Maximum file size in bytes (10MB)
+MAX_SIZE=10485760
+
+# Find all files being committed
+files=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Check each file
+for file in $files; do
+  if [ -f "$file" ]; then
+    filesize=$(wc -c < "$file")
+
+    if [ $filesize -gt $MAX_SIZE ]; then
+      size_mb=$(echo "scale=2; $filesize / 1048576" | bc)
+      echo "❌ ERROR: File '$file' is too large (${size_mb}MB > 10MB)"
+      echo "   Large files should not be committed to git."
+      echo "   Add this file to .gitignore or use Git LFS if necessary."
+      exit 1
+    fi
+  fi
+done
+
+# Check for model cache files
+if git diff --cached --name-only | grep -q "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"; then
+  echo "❌ ERROR: Attempting to commit model cache files!"
+  echo "   These files should be in .gitignore:"
+  git diff --cached --name-only | grep "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"
+  exit 1
+fi
+
+echo "✅ All files are within size limits"
+exit 0

@@ -10,10 +10,6 @@ let currentSentenceId = null; // Track current sentence for re-evaluation
 let sentenceStartPos = 0; // Track where current sentence starts
 let lastTypingTime = Date.now(); // Track typing pauses
 
-// Track user manual corrections to avoid re-correcting
-let userCorrections = new Map(); // Map of word -> timestamp
-const USER_CORRECTION_MEMORY = 3600000; // Remember for 1 hour
-
 // Check if autocorrect is enabled and get mode
 async function checkEnabledAndMode() {
   try {
@@ -183,7 +179,7 @@ async function correctWordAsync(el, wordInfo) {
       return;
     }
 
-    const context = getContextWords(wordInfo.text, wordInfo.start); // Uses default 30 words
+    const context = getContextWords(wordInfo.text, wordInfo.start, 10);
     let response = null;
     let source = 'client';
 
