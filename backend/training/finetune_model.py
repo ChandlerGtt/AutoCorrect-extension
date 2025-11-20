@@ -216,19 +216,22 @@ class ModelFineTuner:
             "num_train_epochs": num_epochs,
             "weight_decay": 0.01,
             "save_total_limit": 3,
-            "save_steps": save_steps,
             "logging_dir": str(self.output_dir / "logs"),
             "logging_steps": 100,
             "push_to_hub": False,
         }
 
         # Add evaluation strategy (parameter name changed in newer versions)
+        # Save strategy must match eval strategy when using load_best_model_at_end
         if eval_dataset:
             training_args_dict["eval_strategy"] = "epoch"
+            training_args_dict["save_strategy"] = "epoch"  # Must match eval_strategy
             training_args_dict["load_best_model_at_end"] = True
             training_args_dict["metric_for_best_model"] = "eval_loss"
         else:
             training_args_dict["eval_strategy"] = "no"
+            training_args_dict["save_strategy"] = "steps"
+            training_args_dict["save_steps"] = save_steps
             training_args_dict["load_best_model_at_end"] = False
 
         # Add mixed precision if GPU available (fp16 deprecated, use bf16 for newer versions)
