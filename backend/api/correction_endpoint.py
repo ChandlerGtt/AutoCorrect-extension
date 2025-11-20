@@ -81,8 +81,12 @@ class CorrectionService:
         # Load neural model (slow, lazy load)
         if self.neural_corrector is None and settings.USE_SMALL_MODEL:
             try:
-                self.neural_corrector = get_neural_corrector()
-                logger.info("Neural corrector loaded")
+                # Check if neural corrector is available (requires torch)
+                if get_neural_corrector is None:
+                    logger.warning("Neural corrector not available (torch/transformers not installed)")
+                else:
+                    self.neural_corrector = get_neural_corrector()
+                    logger.info("Neural corrector loaded")
             except Exception as e:
                 logger.error(f"Failed to load neural model: {e}")
 

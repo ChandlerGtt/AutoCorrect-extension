@@ -3,16 +3,27 @@ Pre-trained Neural Model for Grammar Correction
 Uses transformer-based models (T5/BERT) for context-aware corrections
 """
 from typing import List, Tuple, Optional, Dict
-import torch
-from transformers import (
-    AutoTokenizer,
-    AutoModelForSeq2SeqLM,
-    pipeline,
-    Pipeline
-)
 import logging
 from pathlib import Path
 import time
+
+# Lazy imports to avoid requiring torch/transformers until actually needed
+try:
+    import torch
+    from transformers import (
+        AutoTokenizer,
+        AutoModelForSeq2SeqLM,
+        pipeline,
+        Pipeline
+    )
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch = None
+    AutoTokenizer = None
+    AutoModelForSeq2SeqLM = None
+    pipeline = None
+    Pipeline = None
+    TORCH_AVAILABLE = False
 
 from backend.config import settings
 
@@ -39,6 +50,12 @@ class NeuralGrammarCorrector:
             use_small_model: Use smaller/faster model for development
             device: "cpu" or "cuda"
         """
+        if not TORCH_AVAILABLE:
+            raise ImportError(
+                "PyTorch and transformers are required for NeuralGrammarCorrector. "
+                "Install them with: pip install torch transformers"
+            )
+
         self.model_name = model_name or self._select_model(use_small_model)
         self.device = device or ("cuda" if torch.cuda.is_available() and settings.USE_GPU else "cpu")
 
