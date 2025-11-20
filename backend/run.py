@@ -31,12 +31,44 @@ def main():
     logger.info(f"Debug: {settings.DEBUG}")
     logger.info(f"Docs: http://{settings.API_HOST}:{settings.API_PORT}/docs")
 
+    # Determine reload directories - only watch source code, not model cache
+    reload_dirs = None
+    reload_excludes = None
+
+    if settings.DEBUG:
+        backend_dir = Path(__file__).parent
+        # Watch only Python source code directories, not model cache
+        reload_dirs = [
+            str(backend_dir / "api"),
+            str(backend_dir / "utils"),
+            str(backend_dir / "config.py"),
+            str(backend_dir / "main.py"),
+            str(backend_dir / "run.py"),
+        ]
+        # Comprehensive exclusions for model files and cache
+        reload_excludes = [
+            "*.pkl",
+            "*.pth",
+            "*.pt",
+            "*.bin",
+            "*.safetensors",
+            "**/cache/**",
+            "**/.cache/**",
+            "**/models/cache/**",
+            "**/models/**/*.pkl",
+            "**/__pycache__/**",
+            "**/.*/**",  # Exclude all hidden directories
+            "**/.no_exist/**",  # Exclude model cache temp dirs
+        ]
+        logger.info("Auto-reload enabled (watching: api, utils, config, main only)")
+
     uvicorn.run(
         "backend.main:app",
         host=settings.API_HOST,
         port=settings.API_PORT,
         reload=settings.DEBUG,
-        reload_excludes=["*/models/cache/*", "*/__pycache__/*", "*/cache/*"],
+        reload_dirs=reload_dirs,
+        reload_excludes=reload_excludes,
         workers=settings.API_WORKERS,
         log_level=settings.LOG_LEVEL.lower()
     )

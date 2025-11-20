@@ -628,6 +628,30 @@ backend/
 └── requirements.txt             # Dependencies
 ```
 
+### Development Mode and Auto-Reload
+
+When running with `DEBUG=True` (default in development), the server automatically reloads when source code changes. To prevent unnecessary restarts during model loading, the auto-reload is configured to:
+
+**Watch only these directories/files:**
+- `backend/api/` - API endpoints and service logic
+- `backend/utils/` - Utility functions
+- `backend/config.py` - Configuration
+- `backend/main.py` - FastAPI application
+- `backend/run.py` - Server startup script
+
+**Ignore these directories/files:**
+- `models/cache/` - HuggingFace model cache
+- `cache/` - Request cache
+- `*.pkl`, `*.pth`, `*.bin` - Trained model files
+- `__pycache__/` - Python cache
+
+This prevents the server from restarting when:
+- Models are downloaded on first request
+- Cache files are created/updated
+- Training generates new model files
+
+To disable auto-reload in production, set `DEBUG=False` in `.env`.
+
 ### Adding New Features
 
 1. Add model logic to `models/`
