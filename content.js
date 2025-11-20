@@ -1,6 +1,5 @@
-// content.js – AI-powered autocorrect with context awareness
+// content.js – AI-powered autocorrect
 
-console.log('🎬 AutoCorrect AI loaded');
 console.log('🎬 AutoCorrect AI loaded');
 
 let activeEl = null;
@@ -13,34 +12,26 @@ let lastTypingTime = Date.now(); // Track typing pauses
 
 // Check if autocorrect is enabled and get mode
 async function checkEnabledAndMode() {
-// Check if autocorrect is enabled and get mode
-async function checkEnabledAndMode() {
   try {
+    if (!chrome.runtime?.id) return; // Extension context invalid
+    
     const host = window.location.hostname;
     const response = await chrome.runtime.sendMessage({
-    const response = await chrome.runtime.sendMessage({
       action: 'checkEnabled',
-      host
       host
     });
     isEnabled = response?.enabled ?? true;
     currentMode = response?.mode || 'auto';
     console.log(`✅ AutoCorrect mode: ${currentMode}, enabled: ${isEnabled}`);
-    currentMode = response?.mode || 'auto';
-    console.log(`✅ AutoCorrect mode: ${currentMode}, enabled: ${isEnabled}`);
   } catch (error) {
     isEnabled = true;
-    currentMode = 'auto';
     currentMode = 'auto';
   }
 }
 
 checkEnabledAndMode();
-checkEnabledAndMode();
 
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.enabled || changes.pausedHosts || changes.mode) {
-    checkEnabledAndMode();
   if (changes.enabled || changes.pausedHosts || changes.mode) {
     checkEnabledAndMode();
   }
@@ -165,79 +156,12 @@ function setCursorPosition(el, position) {
   }
 }
 
-// Get cursor position in contenteditable element
-function getCursorPosition(el) {
-  if (!el.isContentEditable) return 0;
-
-  const selection = window.getSelection();
-  if (selection.rangeCount === 0) return 0;
-
-  const range = selection.getRangeAt(0);
-  const preCaretRange = range.cloneRange();
-  preCaretRange.selectNodeContents(el);
-  preCaretRange.setEnd(range.endContainer, range.endOffset);
-
-  return preCaretRange.toString().length;
-}
-
-// Set cursor position in contenteditable element
-function setCursorPosition(el, position) {
-  if (!el.isContentEditable) return;
-
-  const selection = window.getSelection();
-  const range = document.createRange();
-
-  let currentPos = 0;
-  let found = false;
-
-  // Walk through the text nodes to find the position
-  function walkNodes(node) {
-    if (found) return;
-
-    if (node.nodeType === Node.TEXT_NODE) {
-      const nodeLength = node.textContent.length;
-      if (currentPos + nodeLength >= position) {
-        // Found the node containing our target position
-        const offset = position - currentPos;
-        range.setStart(node, offset);
-        range.setEnd(node, offset);
-        found = true;
-        return;
-      }
-      currentPos += nodeLength;
-    } else {
-      for (let child of node.childNodes) {
-        walkNodes(child);
-        if (found) return;
-      }
-    }
-  }
-
-  walkNodes(el);
-
-  if (found) {
-    selection.removeAllRanges();
-    selection.addRange(range);
-  } else {
-    // Fallback: position at the end
-    range.selectNodeContents(el);
-    range.collapse(false);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-}
-
 // Correct word asynchronously (doesn't block typing)
 async function correctWordAsync(el, wordInfo) {
   const token = wordInfo.token;
 
-
   // Skip if not alphabetic
   if (!/^[A-Za-z]+$/.test(token)) return;
-
-  // Skip if mode is 'off'
-  if (currentMode === 'off' || !isEnabled) return;
-
 
   // Skip if mode is 'off'
   if (currentMode === 'off' || !isEnabled) return;
@@ -246,43 +170,16 @@ async function correctWordAsync(el, wordInfo) {
   const queueKey = `${token}_${wordInfo.start}`;
   if (correctionQueue.has(queueKey)) return;
 
-
   correctionQueue.set(queueKey, true);
 
   try {
+    // Check if extension context is still valid
+    if (!chrome.runtime?.id) {
+      console.log('⚠️ Extension context invalidated');
+      return;
+    }
+
     const context = getContextWords(wordInfo.text, wordInfo.start, 10);
-    let response = null;
-    let source = 'client';
-
-    // Try backend API first (if enabled)
-    if (typeof BACKEND_CONFIG !== 'undefined' && BACKEND_CONFIG.enabled) {
-      try {
-        const apiClient = new AutoCorrectAPIClient(BACKEND_CONFIG);
-        const backendResult = await apiClient.correctText(token, context.split(/\s+/), currentMode);
-
-        if (backendResult) {
-          // Convert backend response to extension format
-          response = {
-            suggestions: backendResult.suggestions.map(s => s.text)
-          };
-          source = 'backend';
-          console.log(`✅ Backend correction: "${token}" → "${backendResult.corrected}"`);
-        }
-      } catch (error) {
-        console.log('⚠️ Backend unavailable, falling back to client-side');
-      }
-    }
-
-    // Fall back to client-side (background.js) if backend didn't work
-    if (!response) {
-      response = await chrome.runtime.sendMessage({
-        action: 'correctWord',
-        word: token,
-        context: context,
-        mode: currentMode
-      });
-      source = 'client';
-    }
     let response = null;
     let source = 'client';
 
@@ -330,7 +227,10 @@ async function correctWordAsync(el, wordInfo) {
       }
     }
   } catch (error) {
-    console.error('Correction error:', error);
+    // Only log if it's not an extension context error
+    if (!error.message?.includes('Extension context invalidated')) {
+      console.error('Correction error:', error);
+    }
   } finally {
     correctionQueue.delete(queueKey);
   }
