@@ -78,8 +78,8 @@ class CorrectionService:
             self.spell_checker = get_spell_checker()
             logger.info("Spell checker loaded")
 
-        # Load neural model (slow, lazy load)
-        if self.neural_corrector is None and settings.USE_SMALL_MODEL:
+        # Load neural model
+        if self.neural_corrector is None:
             try:
                 self.neural_corrector = get_neural_corrector()
                 logger.info("Neural corrector loaded")

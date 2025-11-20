@@ -22,3 +22,27 @@
 2025-11-19 23:53:26,481 - backend.main - INFO - Cache enabled: True
 2025-11-19 23:53:26,481 - backend.main - INFO - Correction service initialized (models will load on first request)
 2025-11-19 23:54:01,944 - backend.main - INFO - Shutting down AutoCorrect API server...
+2025-11-19 23:58:57,921 - backend.main - INFO - Starting AutoCorrect API server...
+2025-11-19 23:58:57,921 - backend.main - INFO - Using model: vennify/t5-base-grammar-correction
+2025-11-19 23:58:57,921 - backend.main - INFO - N-gram order: 4
+2025-11-19 23:58:57,921 - backend.main - INFO - Cache enabled: True
+2025-11-19 23:58:57,922 - backend.main - INFO - Correction service initialized (models will load on first request)
+2025-11-20 00:01:43,255 - backend.api.correction_endpoint - INFO - Initializing correction service...
+2025-11-20 00:01:43,255 - backend.api.correction_endpoint - INFO - Spell checker loaded
+2025-11-20 00:01:43,256 - backend.models.pretrained_model - INFO - Initializing NeuralGrammarCorrector with model: vennify/t5-base-grammar-correction
+2025-11-20 00:01:43,256 - backend.models.pretrained_model - INFO - Using device: cpu
+2025-11-20 00:01:43,256 - backend.models.pretrained_model - INFO - Loading tokenizer for vennify/t5-base-grammar-correction...
+2025-11-20 00:01:43,831 - huggingface_hub.file_download - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-11-20 00:01:44,802 - backend.models.pretrained_model - INFO - Loading model vennify/t5-base-grammar-correction...
+2025-11-20 00:01:45,169 - huggingface_hub.file_download - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-11-20 00:01:53,513 - backend.models.pretrained_model - INFO - Model loaded successfully in 10.26s
+2025-11-20 00:01:53,513 - backend.api.correction_endpoint - INFO - Neural corrector loaded
+2025-11-20 00:01:53,513 - backend.models.ngram_model - INFO - Initialized 4-gram model
+2025-11-20 00:01:53,916 - huggingface_hub.file_download - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-11-20 00:02:06,198 - backend.models.ngram_model - INFO - Model loaded from C:\dev\autocorrect-extension\backend\models\ngram_model.pkl
+2025-11-20 00:02:06,473 - backend.api.correction_endpoint - INFO - N-gram model loaded
+2025-11-20 00:02:06,483 - backend.utils.cache - INFO - Disk cache initialized at C:\dev\autocorrect-extension\backend\cache
+2025-11-20 00:02:06,483 - backend.api.correction_endpoint - INFO - Cache initialized
+2025-11-20 00:02:06,484 - backend.api.correction_endpoint - INFO - Correction service ready
+2025-11-20 00:02:06,754 - backend.api.correction_endpoint - WARNING - Response time exceeded target: 23499.22ms > 500ms
+2025-11-20 00:10:23,000 - backend.main - INFO - Shutting down AutoCorrect API server...
