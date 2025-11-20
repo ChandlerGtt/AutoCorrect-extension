@@ -36,6 +36,7 @@ def main():
         host=settings.API_HOST,
         port=settings.API_PORT,
         reload=settings.DEBUG,
+        reload_excludes=["*/models/cache/*", "*/__pycache__/*", "*/cache/*"],
         workers=settings.API_WORKERS,
         log_level=settings.LOG_LEVEL.lower()
     )
