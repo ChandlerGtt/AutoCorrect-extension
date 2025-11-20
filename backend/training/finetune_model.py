@@ -207,24 +207,39 @@ class ModelFineTuner:
         if eval_dataset:
             eval_dataset = self.preprocess_data(eval_dataset)
 
-        # Training arguments
-        training_args = TrainingArguments(
-            output_dir=str(self.output_dir),
-            evaluation_strategy="epoch" if eval_dataset else "no",
-            learning_rate=learning_rate,
-            per_device_train_batch_size=batch_size,
-            per_device_eval_batch_size=batch_size,
-            num_train_epochs=num_epochs,
-            weight_decay=0.01,
-            save_total_limit=3,
-            save_steps=save_steps,
-            logging_dir=str(self.output_dir / "logs"),
-            logging_steps=100,
-            load_best_model_at_end=True if eval_dataset else False,
-            metric_for_best_model="eval_loss" if eval_dataset else None,
-            push_to_hub=False,
-            fp16=torch.cuda.is_available(),  # Use mixed precision if GPU available
-        )
+        # Training arguments (compatible with transformers v4.19+)
+        training_args_dict = {
+            "output_dir": str(self.output_dir),
+            "learning_rate": learning_rate,
+            "per_device_train_batch_size": batch_size,
+            "per_device_eval_batch_size": batch_size,
+            "num_train_epochs": num_epochs,
+            "weight_decay": 0.01,
+            "save_total_limit": 3,
+            "save_steps": save_steps,
+            "logging_dir": str(self.output_dir / "logs"),
+            "logging_steps": 100,
+            "push_to_hub": False,
+        }
+
+        # Add evaluation strategy (parameter name changed in newer versions)
+        if eval_dataset:
+            training_args_dict["eval_strategy"] = "epoch"
+            training_args_dict["load_best_model_at_end"] = True
+            training_args_dict["metric_for_best_model"] = "eval_loss"
+        else:
+            training_args_dict["eval_strategy"] = "no"
+            training_args_dict["load_best_model_at_end"] = False
+
+        # Add mixed precision if GPU available (fp16 deprecated, use bf16 for newer versions)
+        if torch.cuda.is_available():
+            # Try bf16 first (better for newer GPUs), fallback to fp16
+            if torch.cuda.is_bf16_supported():
+                training_args_dict["bf16"] = True
+            else:
+                training_args_dict["fp16"] = True
+
+        training_args = TrainingArguments(**training_args_dict)
 
         # Data collator
         data_collator = DataCollatorForSeq2Seq(
