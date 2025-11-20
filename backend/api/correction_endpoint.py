@@ -177,87 +177,81 @@ class CorrectionService:
         Only use neural model for multi-word phrases/sentences
         """
         suggestions = []
+
+        # Handle empty or whitespace-only text
+        if not text or not text.strip():
+            return CorrectionResponse(
+                original=text,
+                corrected=text,
+                suggestions=[Suggestion(text=text, confidence=1.0, source="original")],
+                confidence=1.0,
+                processing_time_ms=0.0,
+                cached=False,
+                changes_made=False
+            )
+
+        # First pass: Spell checking for individual words
         words = text.split()
-        
-        # Single word: Only spell check, NO neural model
-        if len(words) == 1:
-            word = words[0]
-            
-            # Skip very short words, non-alphabetic, or words with capitals
-            if len(word) < 3 or not word.isalpha() or not word.islower():
-                return CorrectionResponse(
-                    original=text,
-                    corrected=text,
-                    suggestions=[Suggestion(text=text, confidence=1.0, source="original")],
-                    confidence=1.0,
-                    processing_time_ms=0.0,
-                    cached=False,
-                    changes_made=False
-                )
-            
+        corrected_words = []
+        any_corrections = False
+
+        for word in words:
+            # Skip very short words, empty words, or non-alphabetic
+            if not word or len(word) < 2 or not any(c.isalpha() for c in word):
+                corrected_words.append(word)
+                continue
+
+            # Skip all-caps words (likely acronyms)
+            if word.isupper() and len(word) > 1:
+                corrected_words.append(word)
+                continue
+
             # Get spell corrections
             spell_suggestions = self.spell_checker.get_corrections(word, context, max_suggestions=1)
-            
-            if spell_suggestions:
-                suggestion, confidence = spell_suggestions[0]
-                
-                # Only apply if confidence is VERY high and word is different
-                if confidence >= 0.95 and suggestion != word.lower():
-                    final_text = suggestion
-                    final_confidence = confidence
-                    suggestions.append(Suggestion(
-                        text=suggestion,
-                        confidence=confidence,
-                        source="spell"
-                    ))
+
+            if spell_suggestions and spell_suggestions[0][0] != word.lower():
+                corrected_word = spell_suggestions[0][0]
+                # Preserve original case if possible
+                if word[0].isupper() and " " not in corrected_word:
+                    corrected_word = corrected_word.capitalize()
+                # Handle multi-word corrections (e.g., "alot" -> "a lot")
+                if " " in corrected_word:
+                    # Split and add as separate words
+                    corrected_words.extend(corrected_word.split())
                 else:
-                    # Keep original
-                    final_text = text
-                    final_confidence = 1.0
-                    suggestions.append(Suggestion(text=text, confidence=1.0, source="original"))
+                    corrected_words.append(corrected_word)
+                any_corrections = True
             else:
-                final_text = text
-                final_confidence = 1.0
-                suggestions.append(Suggestion(text=text, confidence=1.0, source="original"))
-        
-        # Multi-word: Use spell check + neural model
-        else:
-            # First pass: Spell checking
-            corrected_words = []
-            any_corrections = False
-
-            for word in words:
-                # Skip very short words, non-alphabetic, or already correct
-                if len(word) < 3 or not word.isalpha():
-                    corrected_words.append(word)
-                    continue
-                
-                # Check if word is already valid - if so, NEVER change it
-                if self.spell_checker.is_valid_word(word.lower()):
-                    corrected_words.append(word)
-                    continue
-
-                # Get spell corrections with VERY high confidence requirement
-                spell_suggestions = self.spell_checker.get_corrections(word, context, max_suggestions=1)
-
-                if spell_suggestions:
-                    suggestion, confidence = spell_suggestions[0]
-                    # Only apply if VERY different (not just capitalization) AND super high confidence
-                    if suggestion != word.lower() and confidence >= 0.95:
-                        corrected_words.append(suggestion)
-                        any_corrections = True
-                        logger.info(f"High-confidence correction: {word} → {suggestion} ({confidence:.2f})")
-                    else:
-                        corrected_words.append(word)
-                else:
-                    corrected_words.append(word)
+                corrected_words.append(word)
 
             spell_corrected_text = " ".join(corrected_words)
 
-            # Second pass: Neural grammar correction (DISABLED for now - too aggressive)
-            # if request.use_neural and self.neural_corrector is not None:
-            #     ...neural code...
-            
+        # Second pass: Neural grammar correction (if enabled, model loaded, and not single word)
+        # Skip neural model for single words - spell checking is sufficient
+        is_single_word = len(words) == 1
+        if request.use_neural and self.neural_corrector is not None and not is_single_word:
+            try:
+                grammar_corrected, confidence = self.neural_corrector.correct_grammar(spell_corrected_text)
+
+                suggestions.append(Suggestion(
+                    text=grammar_corrected,
+                    confidence=confidence,
+                    source="neural"
+                ))
+
+                final_text = grammar_corrected
+                final_confidence = confidence
+
+            except Exception as e:
+                logger.error(f"Neural correction failed: {e}")
+                final_text = spell_corrected_text
+                final_confidence = 0.8 if any_corrections else 1.0
+                suggestions.append(Suggestion(
+                    text=final_text,
+                    confidence=final_confidence,
+                    source="spell"
+                ))
+        else:
             final_text = spell_corrected_text
             final_confidence = 0.9 if any_corrections else 1.0
             suggestions.append(Suggestion(
