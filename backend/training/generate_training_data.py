@@ -308,41 +308,49 @@ class ErrorGenerator:
         """
         pairs = []
 
-        # First, add explicit examples for common misspellings
-        # Create MULTIPLE sentence contexts for each misspelling so model learns better
-        logger.info(f"Adding examples for {len(self.common_misspellings)} common misspellings...")
-
-        # Sentence templates to embed misspellings in context
-        sentence_templates = [
-            "I saw {word} yesterday",
-            "Can you get {word} for me",
-            "This is {word} one",
-            "{word} is the answer",
-            "I think {word} works well",
-            "She said {word} was good",
-            "We need {word} today",
-            "He found {word} useful",
-            "They want {word} now",
-            "Please use {word} here",
-        ]
-
-        for misspelling, correction in self.common_misspellings.items():
-            # Create multiple examples with different sentence contexts
-            for template in sentence_templates[:5]:  # Use 5 templates per misspelling
-                error_sentence = template.format(word=misspelling)
-                correct_sentence = template.format(word=correction)
-
-                pairs.append({
-                    "error": error_sentence,
-                    "correction": correct_sentence,
-                    "error_type": "common_misspelling"
-                })
-
-        # Split into sentences
+        # Split into sentences first
         sentences = re.split(r'[.!?]+', text)
         sentences = [s.strip() for s in sentences if len(s.strip()) > 20]
 
         logger.info(f"Processing {len(sentences)} sentences...")
+
+        # First, inject common misspellings into REAL sentences from corpus
+        # This ensures grammatically correct context
+        logger.info(f"Finding sentences for {len(self.common_misspellings)} common misspellings...")
+
+        misspelling_sentences = {}
+        for misspelling, correction in self.common_misspellings.items():
+            misspelling_sentences[misspelling] = []
+
+            # Find sentences containing the correct word (case-insensitive)
+            correction_lower = correction.lower()
+
+            for sentence in sentences[:10000]:  # Search first 10k sentences
+                sentence_lower = sentence.lower()
+
+                # Check if correction appears as a whole word
+                if re.search(r'\b' + re.escape(correction_lower) + r'\b', sentence_lower):
+                    # Replace the correct word with the misspelling
+                    error_sentence = re.sub(
+                        r'\b' + re.escape(correction_lower) + r'\b',
+                        misspelling,
+                        sentence_lower,
+                        count=1
+                    )
+
+                    pairs.append({
+                        "error": error_sentence,
+                        "correction": sentence,
+                        "error_type": "common_misspelling"
+                    })
+
+                    misspelling_sentences[misspelling].append(sentence)
+
+                    # Get 5 examples per misspelling
+                    if len(misspelling_sentences[misspelling]) >= 5:
+                        break
+
+        logger.info(f"Added {sum(len(v) for v in misspelling_sentences.values())} common misspelling examples from real sentences")
 
         # Process sentences and generate error pairs
         # Note: max_pairs refers to sentences processed, not pairs generated
