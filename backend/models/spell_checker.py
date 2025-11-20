@@ -15,9 +15,14 @@ class LevenshteinSpellChecker:
 
     def __init__(self, dictionary_path: str = "/usr/share/dict/words"):
         """Initialize spell checker with dictionary"""
+        self.common_misspellings = self._load_common_misspellings()  # Load first
         self.dictionary: Set[str] = self._load_dictionary(dictionary_path)
-        self.common_misspellings = self._load_common_misspellings()
         self.phonetic_mappings = self._load_phonetic_mappings()
+
+        # Remove common misspellings from dictionary (in case they're in there)
+        # We want to correct these, not treat them as valid
+        for misspelling in self.common_misspellings.keys():
+            self.dictionary.discard(misspelling)
 
         # Frequency tiers (ported from background.js:273-306)
         self.frequency_tiers = {
@@ -231,14 +236,15 @@ class LevenshteinSpellChecker:
         """
         word_lower = word.lower()
 
-        # Already correct
-        if self.is_valid_word(word_lower):
-            return [(word, 1.0)]
-
-        # Check common misspellings first (high confidence)
+        # Check common misspellings FIRST (before checking if word is valid)
+        # This is critical because some dictionaries include typos as valid words
         if word_lower in self.common_misspellings:
             correction = self.common_misspellings[word_lower]
             return [(correction, 0.95)]
+
+        # Already correct (check AFTER common misspellings)
+        if self.is_valid_word(word_lower):
+            return [(word, 1.0)]
 
         # Generate edit distance candidates
         candidates = self.generate_edit_candidates(word_lower)
