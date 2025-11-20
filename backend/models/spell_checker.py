@@ -28,7 +28,7 @@ class LevenshteinSpellChecker:
         self.frequency_tiers = {
             "tier1": {  # 10.0x weight
                 "the", "be", "to", "of", "and", "a", "in", "that", "have",
-                "i", "it", "for", "not", "on", "with", "he", "as", "you",
+                "I", "it", "for", "not", "on", "with", "he", "as", "you",
                 "do", "at"
             },
             "tier2": {  # 5.0x weight
