@@ -24,11 +24,11 @@ for file in $files; do
   fi
 done
 
-# Check for model cache files
-if git diff --cached --name-only | grep -q "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"; then
+# Check for model cache files (only additions/modifications, not deletions)
+if git diff --cached --name-only --diff-filter=ACM | grep -q "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"; then
   echo "❌ ERROR: Attempting to commit model cache files!"
   echo "   These files should be in .gitignore:"
-  git diff --cached --name-only | grep "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"
+  git diff --cached --name-only --diff-filter=ACM | grep "backend/models/cache\|\.pkl$\|\.pth$\|\.bin$"
   exit 1
 fi
 
