@@ -173,82 +173,106 @@ class CorrectionService:
         request: CorrectionRequest
     ) -> CorrectionResponse:
         """
-        Auto correction: spell check first pass, neural model second pass
-
-        Args:
-            text: Input text
-            context: Context words
-            request: Original request
-
-        Returns:
-            Correction response
+        Auto correction: spell check ONLY for single words
+        Only use neural model for multi-word phrases/sentences
         """
         suggestions = []
-
-        # First pass: Spell checking for individual words
         words = text.split()
-        corrected_words = []
-        any_corrections = False
-
-        for word in words:
-            # Skip very short words or non-alphabetic
-            if len(word) < 3 or not word.isalpha():  # Changed from 2 to 3
-                corrected_words.append(word)
-                continue
-
-            # Get spell corrections with confidence check
+        
+        # Single word: Only spell check, NO neural model
+        if len(words) == 1:
+            word = words[0]
+            
+            # Skip very short words, non-alphabetic, or words with capitals
+            if len(word) < 3 or not word.isalpha() or not word.islower():
+                return CorrectionResponse(
+                    original=text,
+                    corrected=text,
+                    suggestions=[Suggestion(text=text, confidence=1.0, source="original")],
+                    confidence=1.0,
+                    processing_time_ms=0.0,
+                    cached=False,
+                    changes_made=False
+                )
+            
+            # Get spell corrections
             spell_suggestions = self.spell_checker.get_corrections(word, context, max_suggestions=1)
-
+            
             if spell_suggestions:
                 suggestion, confidence = spell_suggestions[0]
-                # Only apply if different AND confidence is high enough
-                if suggestion != word.lower() and confidence >= 0.7:  # Added confidence check
-                    corrected_words.append(suggestion)
-                    any_corrections = True
+                
+                # Only apply if confidence is VERY high and word is different
+                if confidence >= 0.95 and suggestion != word.lower():
+                    final_text = suggestion
+                    final_confidence = confidence
+                    suggestions.append(Suggestion(
+                        text=suggestion,
+                        confidence=confidence,
+                        source="spell"
+                    ))
+                else:
+                    # Keep original
+                    final_text = text
+                    final_confidence = 1.0
+                    suggestions.append(Suggestion(text=text, confidence=1.0, source="original"))
+            else:
+                final_text = text
+                final_confidence = 1.0
+                suggestions.append(Suggestion(text=text, confidence=1.0, source="original"))
+        
+        # Multi-word: Use spell check + neural model
+        else:
+            # First pass: Spell checking
+            corrected_words = []
+            any_corrections = False
+
+            for word in words:
+                # Skip very short words, non-alphabetic, or already correct
+                if len(word) < 3 or not word.isalpha():
+                    corrected_words.append(word)
+                    continue
+                
+                # Check if word is already valid - if so, NEVER change it
+                if self.spell_checker.is_valid_word(word.lower()):
+                    corrected_words.append(word)
+                    continue
+
+                # Get spell corrections with VERY high confidence requirement
+                spell_suggestions = self.spell_checker.get_corrections(word, context, max_suggestions=1)
+
+                if spell_suggestions:
+                    suggestion, confidence = spell_suggestions[0]
+                    # Only apply if VERY different (not just capitalization) AND super high confidence
+                    if suggestion != word.lower() and confidence >= 0.95:
+                        corrected_words.append(suggestion)
+                        any_corrections = True
+                        logger.info(f"High-confidence correction: {word} → {suggestion} ({confidence:.2f})")
+                    else:
+                        corrected_words.append(word)
                 else:
                     corrected_words.append(word)
-            else:
-                corrected_words.append(word)
 
-        spell_corrected_text = " ".join(corrected_words)
+            spell_corrected_text = " ".join(corrected_words)
 
-        # Second pass: Neural grammar correction (if enabled and model loaded)
-        if request.use_neural and self.neural_corrector is not None:
-            try:
-                grammar_corrected, confidence = self.neural_corrector.correct_grammar(spell_corrected_text)
-
-                suggestions.append(Suggestion(
-                    text=grammar_corrected,
-                    confidence=confidence,
-                    source="neural"
-                ))
-
-                final_text = grammar_corrected
-                final_confidence = confidence
-
-            except Exception as e:
-                logger.error(f"Neural correction failed: {e}")
-                final_text = spell_corrected_text
-                final_confidence = 0.8 if any_corrections else 1.0
-                suggestions.append(Suggestion(
-                    text=final_text,
-                    confidence=final_confidence,
-                    source="spell"
-                ))
-        else:
+            # Second pass: Neural grammar correction (DISABLED for now - too aggressive)
+            # if request.use_neural and self.neural_corrector is not None:
+            #     ...neural code...
+            
             final_text = spell_corrected_text
-            final_confidence = 0.8 if any_corrections else 1.0
+            final_confidence = 0.9 if any_corrections else 1.0
             suggestions.append(Suggestion(
                 text=final_text,
                 confidence=final_confidence,
                 source="spell"
             ))
-            # Only apply correction if confidence meets threshold
-            if final_confidence < settings.MIN_CONFIDENCE_THRESHOLD and text != final_text:
-                logger.info(f"Skipping low-confidence correction: {final_confidence:.2f} < {settings.MIN_CONFIDENCE_THRESHOLD}")
-                final_text = text  # Revert to original
-                suggestions = [Suggestion(text=text, confidence=1.0, source="original")]
-                final_confidence = 1.0
+
+        # Only apply correction if confidence meets threshold
+        if final_confidence < settings.MIN_CONFIDENCE_THRESHOLD and text != final_text:
+            logger.info(f"Skipping low-confidence correction: {final_confidence:.2f} < {settings.MIN_CONFIDENCE_THRESHOLD}")
+            final_text = text  # Revert to original
+            suggestions = [Suggestion(text=text, confidence=1.0, source="original")]
+            final_confidence = 1.0
+
         return CorrectionResponse(
             original=text,
             corrected=final_text,

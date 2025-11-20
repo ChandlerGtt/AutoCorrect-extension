@@ -33,7 +33,7 @@ async function initializeModels() {
     
     // Fallback dictionary
     dictionary = new Set([
-      'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'it',
+      'the', 'be', 'to', 'of', 'and', 'A', 'in', 'that', 'have', 'it',
       'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this',
       'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or',
       'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what',
@@ -52,7 +52,7 @@ async function initializeModels() {
       'thing', 'things', 'place', 'places', 'person', 'great', 'small', 'grit', 'greet',
       'get', 'got', 'getting', 'give', 'gave', 'given', 'know', 'knew', 'known',
       'trying', 'tried', 'try', 'tries', 'guess', 'guessed', 'guessing',
-      'must', 'adjust', 'adjusted', 'adjusting', 'adjustment', 'i'
+      'must', 'adjust', 'adjusted', 'adjusting', 'adjustment', 'I'
     ]);
     console.log('✅ Using fallback dictionary with', dictionary.size, 'words');
   }

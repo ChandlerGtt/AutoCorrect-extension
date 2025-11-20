@@ -89,7 +89,8 @@ class Settings(BaseSettings):
     MIN_GRAMMAR_ACCURACY: float = 0.80  # 80%
     MIN_SUGGESTIONS: int = 2
     CONTEXT_WINDOW: int = 30  # Words to consider for context (increased for better accuracy)
-    MIN_CONFIDENCE_THRESHOLD: float = 0.85  # Only apply corrections with 85%+ confidence
+    MIN_CONFIDENCE_THRESHOLD: float = 0.95  # Only apply corrections with 95%+ confidence
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

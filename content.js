@@ -10,6 +10,10 @@ let currentSentenceId = null; // Track current sentence for re-evaluation
 let sentenceStartPos = 0; // Track where current sentence starts
 let lastTypingTime = Date.now(); // Track typing pauses
 
+// Track user manual corrections to avoid re-correcting
+let userCorrections = new Map(); // Map of word -> timestamp
+const USER_CORRECTION_MEMORY = 3600000; // Remember for 1 hour
+
 // Check if autocorrect is enabled and get mode
 async function checkEnabledAndMode() {
   try {
@@ -88,7 +92,7 @@ function replaceRange(text, start, end, replacement) {
   return text.slice(0, start) + replacement + text.slice(end);
 }
 
-function getContextWords(text, position, numWords = 30) {  // Changed from 10 to 30
+function getContextWords(text, position, numWords = 30) {
   const beforeText = text.slice(0, position);
   const words = beforeText.trim().split(/\s+/);
   return words.slice(-numWords).join(' ');
@@ -179,7 +183,7 @@ async function correctWordAsync(el, wordInfo) {
       return;
     }
 
-   const context = getContextWords(wordInfo.text, wordInfo.start); // Uses default 30 words
+    const context = getContextWords(wordInfo.text, wordInfo.start); // Uses default 30 words
     let response = null;
     let source = 'client';
 
@@ -240,6 +244,16 @@ async function correctWordAsync(el, wordInfo) {
 function applyCorrection(el, wordInfo, suggestion) {
   const currentText = getValue(el) ?? '';
 
+  // Check if user recently manually corrected this word
+  const correctionKey = `${wordInfo.token.toLowerCase()}_${wordInfo.start}`;
+  if (userCorrections.has(correctionKey)) {
+    const lastCorrectionTime = userCorrections.get(correctionKey);
+    if (Date.now() - lastCorrectionTime < USER_CORRECTION_MEMORY) {
+      console.log(`⏭️ Skipping "${wordInfo.token}" - user manually corrected recently`);
+      return;
+    }
+  }
+
   // Check if the word is still there (user might have edited)
   const wordStillThere = currentText.slice(wordInfo.start, wordInfo.end) === wordInfo.token;
 
@@ -291,6 +305,46 @@ function highlightCorrection(el, start, end) {
   // This is a placeholder for future enhancement
 }
 
+// Track when user manually corrects/edits a word
+let lastTextState = new Map(); // Track previous text state per element
+
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  if (!el) return;
+  
+  const currentText = getValue(el);
+  if (!currentText) return;
+  
+  const elementId = el.id || el.name || 'default';
+  const previousText = lastTextState.get(elementId);
+  
+  if (previousText && previousText !== currentText) {
+    // User manually edited - find what changed
+    const minLen = Math.min(previousText.length, currentText.length);
+    let changeStart = 0;
+    
+    for (let i = 0; i < minLen; i++) {
+      if (previousText[i] !== currentText[i]) {
+        changeStart = i;
+        break;
+      }
+    }
+    
+    // Extract the word that was changed
+    const beforeChange = currentText.slice(0, changeStart + 20);
+    const wordMatch = beforeChange.match(/([A-Za-z]+)\s*$/);
+    
+    if (wordMatch) {
+      const changedWord = wordMatch[1];
+      const correctionKey = `${changedWord.toLowerCase()}_${changeStart}`;
+      userCorrections.set(correctionKey, Date.now());
+      console.log(`📝 User manually edited: "${changedWord}"`);
+    }
+  }
+  
+  lastTextState.set(elementId, currentText);
+}, true);
+
 function shouldTrigger(e) {
   const k = e.key;
   return (
@@ -315,7 +369,7 @@ document.addEventListener('keyup', (e) => {
   // Get the word that was just completed (now has space after it)
   const wordInfo = getPreviousWord(el);
   
-  if (wordInfo && wordInfo.token.length >= 4) {
+  if (wordInfo && wordInfo.token.length >= 3) {
     // Correct asynchronously (doesn't block typing)
     correctWordAsync(el, wordInfo);
   }
