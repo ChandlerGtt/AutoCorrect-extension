@@ -1,17 +1,17 @@
 /**
  * Backend Configuration for AutoCorrect Extension
- * Configure connection to FastAPI backend (optional)
+ * Configure connection to FastAPI backend
  */
 
 const BACKEND_CONFIG = {
   // Enable/disable backend API
-  enabled: true,  // Backend is running! Set to false to disable
+  enabled: true,
 
   // Backend API endpoint
   endpoint: "http://localhost:8000/correct",
 
-  // Request timeout (milliseconds)
-  timeout: 1000,
+  // Request timeout (milliseconds) - increase for ML model
+  timeout: 3000,
 
   // Fall back to client-side if backend fails
   fallbackToClientSide: true,
@@ -20,11 +20,11 @@ const BACKEND_CONFIG = {
   cacheEnabled: true
 };
 
-// Load settings from Chrome storage
+// Load settings from Chrome storage (with backend enabled by default)
 chrome.storage.sync.get({
-  backendEnabled: false,
+  backendEnabled: true,  // Changed to true
   backendURL: 'http://localhost:8000/correct',
-  backendTimeout: 1000,
+  backendTimeout: 3000,  // Increased timeout for ML
   backendFallback: true
 }, (settings) => {
   BACKEND_CONFIG.enabled = settings.backendEnabled;

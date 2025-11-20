@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     CUSTOM_MODEL_PATH: Optional[Path] = None
 
     # Use smaller model for faster loading/inference during development
-    USE_SMALL_MODEL: bool = True  # Set to False for production
+    USE_SMALL_MODEL: bool = False  # Set to False for production
     SMALL_MODEL_NAME: str = "google/flan-t5-small"  # Official Google model that exists!
 
     # Performance Settings
