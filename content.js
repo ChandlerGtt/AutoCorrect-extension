@@ -88,7 +88,7 @@ function replaceRange(text, start, end, replacement) {
   return text.slice(0, start) + replacement + text.slice(end);
 }
 
-function getContextWords(text, position, numWords = 10) {
+function getContextWords(text, position, numWords = 30) {  // Changed from 10 to 30
   const beforeText = text.slice(0, position);
   const words = beforeText.trim().split(/\s+/);
   return words.slice(-numWords).join(' ');
@@ -179,7 +179,7 @@ async function correctWordAsync(el, wordInfo) {
       return;
     }
 
-    const context = getContextWords(wordInfo.text, wordInfo.start, 10);
+   const context = getContextWords(wordInfo.text, wordInfo.start); // Uses default 30 words
     let response = null;
     let source = 'client';
 
@@ -315,7 +315,7 @@ document.addEventListener('keyup', (e) => {
   // Get the word that was just completed (now has space after it)
   const wordInfo = getPreviousWord(el);
   
-  if (wordInfo && wordInfo.token.length >= 2) {
+  if (wordInfo && wordInfo.token.length >= 4) {
     // Correct asynchronously (doesn't block typing)
     correctWordAsync(el, wordInfo);
   }

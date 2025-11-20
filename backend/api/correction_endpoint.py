@@ -192,17 +192,21 @@ class CorrectionService:
 
         for word in words:
             # Skip very short words or non-alphabetic
-            if len(word) < 2 or not word.isalpha():
+            if len(word) < 3 or not word.isalpha():  # Changed from 2 to 3
                 corrected_words.append(word)
                 continue
 
-            # Get spell corrections
+            # Get spell corrections with confidence check
             spell_suggestions = self.spell_checker.get_corrections(word, context, max_suggestions=1)
 
-            if spell_suggestions and spell_suggestions[0][0] != word.lower():
-                corrected_word = spell_suggestions[0][0]
-                corrected_words.append(corrected_word)
-                any_corrections = True
+            if spell_suggestions:
+                suggestion, confidence = spell_suggestions[0]
+                # Only apply if different AND confidence is high enough
+                if suggestion != word.lower() and confidence >= 0.7:  # Added confidence check
+                    corrected_words.append(suggestion)
+                    any_corrections = True
+                else:
+                    corrected_words.append(word)
             else:
                 corrected_words.append(word)
 
@@ -239,7 +243,12 @@ class CorrectionService:
                 confidence=final_confidence,
                 source="spell"
             ))
-
+            # Only apply correction if confidence meets threshold
+            if final_confidence < settings.MIN_CONFIDENCE_THRESHOLD and text != final_text:
+                logger.info(f"Skipping low-confidence correction: {final_confidence:.2f} < {settings.MIN_CONFIDENCE_THRESHOLD}")
+                final_text = text  # Revert to original
+                suggestions = [Suggestion(text=text, confidence=1.0, source="original")]
+                final_confidence = 1.0
         return CorrectionResponse(
             original=text,
             corrected=final_text,

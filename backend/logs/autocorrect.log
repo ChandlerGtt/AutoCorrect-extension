@@ -46,3 +46,24 @@
 2025-11-20 00:02:06,484 - backend.api.correction_endpoint - INFO - Correction service ready
 2025-11-20 00:02:06,754 - backend.api.correction_endpoint - WARNING - Response time exceeded target: 23499.22ms > 500ms
 2025-11-20 00:10:23,000 - backend.main - INFO - Shutting down AutoCorrect API server...
+2025-11-20 00:37:05,968 - backend.main - INFO - Starting AutoCorrect API server...
+2025-11-20 00:37:05,968 - backend.main - INFO - Using model: vennify/t5-base-grammar-correction
+2025-11-20 00:37:05,969 - backend.main - INFO - N-gram order: 4
+2025-11-20 00:37:05,969 - backend.main - INFO - Cache enabled: True
+2025-11-20 00:37:05,969 - backend.main - INFO - Correction service initialized (models will load on first request)
+2025-11-20 00:40:16,097 - backend.api.correction_endpoint - INFO - Initializing correction service...
+2025-11-20 00:40:16,098 - backend.api.correction_endpoint - INFO - Spell checker loaded
+2025-11-20 00:40:16,098 - backend.models.pretrained_model - INFO - Initializing NeuralGrammarCorrector with model: vennify/t5-base-grammar-correction
+2025-11-20 00:40:16,098 - backend.models.pretrained_model - INFO - Using device: cpu
+2025-11-20 00:40:16,098 - backend.models.pretrained_model - INFO - Loading tokenizer for vennify/t5-base-grammar-correction...
+2025-11-20 00:40:16,557 - backend.models.pretrained_model - INFO - Loading model vennify/t5-base-grammar-correction...
+2025-11-20 00:40:17,118 - backend.models.pretrained_model - INFO - Model loaded successfully in 1.02s
+2025-11-20 00:40:17,118 - backend.api.correction_endpoint - INFO - Neural corrector loaded
+2025-11-20 00:40:17,118 - backend.models.ngram_model - INFO - Initialized 4-gram model
+2025-11-20 00:40:28,234 - backend.models.ngram_model - INFO - Model loaded from C:\dev\autocorrect-extension\backend\models\ngram_model.pkl
+2025-11-20 00:40:28,503 - backend.api.correction_endpoint - INFO - N-gram model loaded
+2025-11-20 00:40:28,514 - backend.utils.cache - INFO - Disk cache initialized at C:\dev\autocorrect-extension\backend\cache
+2025-11-20 00:40:28,514 - backend.api.correction_endpoint - INFO - Cache initialized
+2025-11-20 00:40:28,514 - backend.api.correction_endpoint - INFO - Correction service ready
+2025-11-20 00:40:28,656 - backend.api.correction_endpoint - WARNING - Response time exceeded target: 12558.47ms > 500ms
+2025-11-20 00:43:09,080 - backend.main - INFO - Shutting down AutoCorrect API server...
