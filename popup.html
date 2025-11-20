@@ -112,6 +112,115 @@
       letter-spacing: 0.5px;
       margin-left: 8px;
     }
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 16px;
+      width: 280px;
+      margin: 0;
+    }
+    h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .mode-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mode-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .mode-option:hover {
+      border-color: #4CAF50;
+      background: #f8fdf8;
+    }
+    .mode-option.selected {
+      border-color: #4CAF50;
+      background: #e8f5e9;
+    }
+    .mode-option input[type="radio"] {
+      margin: 0 10px 0 0;
+      cursor: pointer;
+    }
+    .mode-info {
+      flex: 1;
+    }
+    .mode-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 2px;
+    }
+    .mode-desc {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.4;
+    }
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      background: white;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #f5f5f5;
+      border-color: #999;
+    }
+    .status {
+      font-size: 12px;
+      color: #666;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+    }
+    .status.active {
+      color: #4CAF50;
+      font-weight: 500;
+    }
+    .status.paused {
+      color: #ff9800;
+      font-weight: 500;
+    }
+    .status.disabled {
+      color: #f44336;
+      font-weight: 500;
+    }
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
