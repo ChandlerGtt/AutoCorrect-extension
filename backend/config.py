@@ -88,7 +88,8 @@ class Settings(BaseSettings):
     MIN_SPELLING_ACCURACY: float = 0.90  # 90%
     MIN_GRAMMAR_ACCURACY: float = 0.80  # 80%
     MIN_SUGGESTIONS: int = 2
-    CONTEXT_WINDOW: int = 10  # Words to consider for context
+    CONTEXT_WINDOW: int = 30  # Words to consider for context (increased for better accuracy)
+    MIN_CONFIDENCE_THRESHOLD: float = 0.6  # Only apply corrections with 60%+ confidence
 
     class Config:
         env_file = ".env"

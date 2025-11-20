@@ -240,6 +240,13 @@ class CorrectionService:
                 source="spell"
             ))
 
+        # Only apply correction if confidence meets threshold
+        if final_confidence < settings.MIN_CONFIDENCE_THRESHOLD and text != final_text:
+            logger.info(f"Skipping low-confidence correction: {final_confidence:.2f} < {settings.MIN_CONFIDENCE_THRESHOLD}")
+            final_text = text  # Revert to original
+            suggestions = [Suggestion(text=text, confidence=1.0, source="original")]
+            final_confidence = 1.0
+
         return CorrectionResponse(
             original=text,
             corrected=final_text,
