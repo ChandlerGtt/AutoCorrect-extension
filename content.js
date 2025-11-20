@@ -173,7 +173,15 @@ async function correctWordAsync(el, wordInfo) {
     return;
   }
 
-  // Skip single letters (like "i", "a") - they're usually intentional
+  // Special case: auto-capitalize standalone "i" to "I"
+  if (token === 'i' && token.length === 1) {
+    if (DEBUG_MODE) console.log(`📝 Auto-capitalizing: "i" → "I"`);
+    applyCorrection(el, wordInfo, 'I');
+    correctionQueue.delete(queueKey);
+    return;
+  }
+
+  // Skip other single letters (like "a") - they're usually intentional
   if (token.length === 1) {
     if (DEBUG_MODE) console.log(`⏭️ Skipping single letter: "${token}"`);
     return;
@@ -280,18 +288,18 @@ async function correctWordAsync(el, wordInfo) {
 function applyCorrection(el, wordInfo, suggestion) {
   const currentText = getValue(el) ?? '';
 
-  // Check if user recently manually corrected this word
+  // Check if we recently corrected this word (to prevent re-correcting)
   const correctionKey = `${wordInfo.token.toLowerCase()}_${wordInfo.start}`;
   if (userCorrections.has(correctionKey)) {
     const lastCorrectionTime = userCorrections.get(correctionKey);
     const timeSinceCorrection = Date.now() - lastCorrectionTime;
     if (timeSinceCorrection < USER_CORRECTION_MEMORY) {
-      console.log(`⏭️ Skipping "${wordInfo.token}" - user manually corrected ${(timeSinceCorrection / 1000).toFixed(0)}s ago`);
+      console.log(`⏭️ Skipping "${wordInfo.token}" - already corrected ${(timeSinceCorrection / 1000).toFixed(0)}s ago`);
       return;
     }
   }
 
-  // Check if the word is still there (user might have edited)
+  // Check if the word is still there (user might have edited while we were processing)
   const wordStillThere = currentText.slice(wordInfo.start, wordInfo.end) === wordInfo.token;
 
   if (!wordStillThere) {
@@ -299,52 +307,50 @@ function applyCorrection(el, wordInfo, suggestion) {
     return;
   }
 
-  if (wordStillThere) {
-    const lengthDiff = suggestion.length - wordInfo.token.length;
+  const lengthDiff = suggestion.length - wordInfo.token.length;
 
-    // Save cursor position BEFORE making changes
-    let savedCursor = null;
-    if ('selectionStart' in el) {
-      savedCursor = el.selectionStart;
-    } else if (el.isContentEditable) {
-      // For contenteditable, save the selection/cursor position
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        // Calculate cursor position as offset from start
-        savedCursor = getCursorPosition(el);
-      }
+  // Save cursor position BEFORE making changes
+  let savedCursor = null;
+  if ('selectionStart' in el) {
+    savedCursor = el.selectionStart;
+  } else if (el.isContentEditable) {
+    // For contenteditable, save the selection/cursor position
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      // Calculate cursor position as offset from start
+      savedCursor = getCursorPosition(el);
     }
-
-    const updated = replaceRange(currentText, wordInfo.start, wordInfo.end, suggestion);
-    setValue(el, updated);
-
-    // Restore cursor position - adjust for length difference
-    if ('selectionStart' in el && savedCursor !== null) {
-      // Regular input/textarea elements
-      if (savedCursor > wordInfo.end) {
-        el.selectionStart = el.selectionEnd = savedCursor + lengthDiff;
-      } else {
-        el.selectionStart = el.selectionEnd = savedCursor;
-      }
-    } else if (el.isContentEditable && savedCursor !== null) {
-      // Contenteditable elements (Gmail, Google Docs, etc.)
-      const newCursorPos = savedCursor > wordInfo.end ? savedCursor + lengthDiff : savedCursor;
-      setCursorPosition(el, newCursorPos);
-    }
-
-    console.log(`✨ Auto-corrected: "${wordInfo.token}" → "${suggestion}"`);
-
-    // Track this correction so we don't re-correct if user changes it back
-    const correctionKey = `${suggestion.toLowerCase()}_${wordInfo.start}`;
-    setTimeout(() => {
-      // Remove from tracking after a short delay to allow for immediate re-correction if needed
-      userCorrections.delete(correctionKey);
-    }, 2000);
-
-    // Visual feedback: brief highlight
-    highlightCorrection(el, wordInfo.start, wordInfo.start + suggestion.length);
   }
+
+  const updated = replaceRange(currentText, wordInfo.start, wordInfo.end, suggestion);
+  setValue(el, updated);
+
+  // Restore cursor position - adjust for length difference
+  if ('selectionStart' in el && savedCursor !== null) {
+    // Regular input/textarea elements
+    if (savedCursor > wordInfo.end) {
+      el.selectionStart = el.selectionEnd = savedCursor + lengthDiff;
+    } else {
+      el.selectionStart = el.selectionEnd = savedCursor;
+    }
+  } else if (el.isContentEditable && savedCursor !== null) {
+    // Contenteditable elements (Gmail, Google Docs, etc.)
+    const newCursorPos = savedCursor > wordInfo.end ? savedCursor + lengthDiff : savedCursor;
+    setCursorPosition(el, newCursorPos);
+  }
+
+  console.log(`✨ Auto-corrected: "${wordInfo.token}" → "${suggestion}"`);
+
+  // Track this correction by the ORIGINAL word, so we don't correct it again
+  // This prevents infinite correction loops if user types it back
+  userCorrections.set(correctionKey, Date.now());
+  if (DEBUG_MODE) {
+    console.log(`   Tracking "${wordInfo.token}" - will not re-correct for ${USER_CORRECTION_MEMORY / 1000}s`);
+  }
+
+  // Visual feedback: brief highlight
+  highlightCorrection(el, wordInfo.start, wordInfo.start + suggestion.length);
 }
 
 // Visual feedback for auto-correction
@@ -354,47 +360,9 @@ function highlightCorrection(el, start, end) {
   // This is a placeholder for future enhancement
 }
 
-// Track when user manually corrects/edits a word
-let lastTextState = new Map(); // Track previous text state per element
-
-document.addEventListener('input', (e) => {
-  const el = e.target;
-  if (!el) return;
-
-  const currentText = getValue(el);
-  if (!currentText) return;
-
-  const elementId = el.id || el.name || 'default';
-  const previousText = lastTextState.get(elementId);
-
-  if (previousText && previousText !== currentText) {
-    // User manually edited - find what changed
-    const minLen = Math.min(previousText.length, currentText.length);
-    let changeStart = 0;
-
-    for (let i = 0; i < minLen; i++) {
-      if (previousText[i] !== currentText[i]) {
-        changeStart = i;
-        break;
-      }
-    }
-
-    // Extract the word that was changed
-    const beforeChange = currentText.slice(0, changeStart + 20);
-    const wordMatch = beforeChange.match(/([A-Za-z]+)\s*$/);
-
-    if (wordMatch) {
-      const changedWord = wordMatch[1];
-      const correctionKey = `${changedWord.toLowerCase()}_${changeStart}`;
-      userCorrections.set(correctionKey, Date.now());
-      if (DEBUG_MODE) {
-        console.log(`📝 User manually edited: "${changedWord}" (will not re-correct for ${USER_CORRECTION_MEMORY / 1000}s)`);
-      }
-    }
-  }
-
-  lastTextState.set(elementId, currentText);
-}, true);
+// Track when user manually REVERSES an autocorrect (not just normal typing)
+// This is much simpler - we only care about tracking corrections we made
+// The tracking happens in applyCorrection() function above
 
 function shouldTrigger(e) {
   const k = e.key;
