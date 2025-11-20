@@ -144,6 +144,16 @@ class NeuralGrammarCorrector:
 
             corrected_text = outputs[0]['generated_text'].strip()
 
+            # Post-process T5 output: remove "grammar:" prefix if present
+            if corrected_text.lower().startswith("grammar:"):
+                corrected_text = corrected_text[8:].strip()
+
+            # Handle cases where model outputs just "grammar" or empty string
+            if corrected_text.lower() == "grammar" or not corrected_text:
+                corrected_text = text  # Return original if model failed
+                confidence = 0.0
+                return corrected_text, confidence
+
             # Calculate confidence based on edit similarity
             confidence = self._calculate_confidence(text, corrected_text)
 
@@ -197,6 +207,15 @@ class NeuralGrammarCorrector:
             results = []
             for output in outputs:
                 corrected = output['generated_text'].strip()
+
+                # Post-process T5 output: remove "grammar:" prefix if present
+                if corrected.lower().startswith("grammar:"):
+                    corrected = corrected[8:].strip()
+
+                # Skip invalid outputs
+                if corrected.lower() == "grammar" or not corrected:
+                    continue
+
                 confidence = self._calculate_confidence(text, corrected)
                 results.append((corrected, confidence))
 

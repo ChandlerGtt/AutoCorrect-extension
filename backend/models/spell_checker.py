@@ -98,10 +98,19 @@ class LevenshteinSpellChecker:
             "existance": "existence",
             "occassion": "occasion",
             "necesary": "necessary",
+            "neccessary": "necessary",
             "tommorow": "tomorrow",
+            "tommorrow": "tomorrow",
             "succesful": "successful",
             "basicly": "basically",
-            "finaly": "finally"
+            "finaly": "finally",
+            "freind": "friend",
+            "mispell": "misspell",
+            # Common compound word errors
+            "alot": "a lot",
+            "aswell": "as well",
+            "infact": "in fact",
+            "ofcourse": "of course"
         }
 
     def _load_phonetic_mappings(self) -> List[Tuple[str, str]]:

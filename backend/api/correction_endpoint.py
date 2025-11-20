@@ -185,14 +185,31 @@ class CorrectionService:
         """
         suggestions = []
 
+        # Handle empty or whitespace-only text
+        if not text or not text.strip():
+            return CorrectionResponse(
+                original=text,
+                corrected=text,
+                suggestions=[Suggestion(text=text, confidence=1.0, source="original")],
+                confidence=1.0,
+                processing_time_ms=0.0,
+                cached=False,
+                changes_made=False
+            )
+
         # First pass: Spell checking for individual words
         words = text.split()
         corrected_words = []
         any_corrections = False
 
         for word in words:
-            # Skip very short words or non-alphabetic
-            if len(word) < 2 or not word.isalpha():
+            # Skip very short words, empty words, or non-alphabetic
+            if not word or len(word) < 2 or not any(c.isalpha() for c in word):
+                corrected_words.append(word)
+                continue
+
+            # Skip all-caps words (likely acronyms)
+            if word.isupper() and len(word) > 1:
                 corrected_words.append(word)
                 continue
 
@@ -201,15 +218,25 @@ class CorrectionService:
 
             if spell_suggestions and spell_suggestions[0][0] != word.lower():
                 corrected_word = spell_suggestions[0][0]
-                corrected_words.append(corrected_word)
+                # Preserve original case if possible
+                if word[0].isupper() and " " not in corrected_word:
+                    corrected_word = corrected_word.capitalize()
+                # Handle multi-word corrections (e.g., "alot" -> "a lot")
+                if " " in corrected_word:
+                    # Split and add as separate words
+                    corrected_words.extend(corrected_word.split())
+                else:
+                    corrected_words.append(corrected_word)
                 any_corrections = True
             else:
                 corrected_words.append(word)
 
         spell_corrected_text = " ".join(corrected_words)
 
-        # Second pass: Neural grammar correction (if enabled and model loaded)
-        if request.use_neural and self.neural_corrector is not None:
+        # Second pass: Neural grammar correction (if enabled, model loaded, and not single word)
+        # Skip neural model for single words - spell checking is sufficient
+        is_single_word = len(words) == 1
+        if request.use_neural and self.neural_corrector is not None and not is_single_word:
             try:
                 grammar_corrected, confidence = self.neural_corrector.correct_grammar(spell_corrected_text)
 
