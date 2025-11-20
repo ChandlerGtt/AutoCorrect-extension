@@ -324,14 +324,21 @@ class ModelFineTuner:
 
             predicted = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
+            # Post-process: remove "grammar:" prefix if T5 added it back
+            if predicted.lower().startswith("grammar:"):
+                predicted = predicted[8:].strip()
+
             # Check if correct
-            if predicted.strip().lower() == correct_text.strip().lower():
+            is_correct = predicted.strip().lower() == correct_text.strip().lower()
+            if is_correct:
                 correct += 1
 
-            logger.debug(f"Error: {error_text}")
-            logger.debug(f"Expected: {correct_text}")
-            logger.debug(f"Predicted: {predicted}")
-            logger.debug("---")
+            # Always show predictions (use INFO level, not DEBUG)
+            status = "✓" if is_correct else "✗"
+            logger.info(f"{status} Input: {error_text}")
+            logger.info(f"  Expected: {correct_text}")
+            logger.info(f"  Predicted: {predicted}")
+            logger.info("---")
 
         accuracy = correct / total if total > 0 else 0.0
 
