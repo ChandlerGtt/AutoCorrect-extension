@@ -15,3 +15,10 @@
 2025-11-19 23:46:48,108 - backend.api.correction_endpoint - INFO - Cache initialized
 2025-11-19 23:46:48,108 - backend.api.correction_endpoint - INFO - Correction service ready
 2025-11-19 23:46:48,109 - backend.api.correction_endpoint - WARNING - Response time exceeded target: 11005.91ms > 500ms
+2025-11-19 23:51:23,177 - backend.main - INFO - Shutting down AutoCorrect API server...
+2025-11-19 23:53:26,480 - backend.main - INFO - Starting AutoCorrect API server...
+2025-11-19 23:53:26,481 - backend.main - INFO - Using model: vennify/t5-base-grammar-correction
+2025-11-19 23:53:26,481 - backend.main - INFO - N-gram order: 4
+2025-11-19 23:53:26,481 - backend.main - INFO - Cache enabled: True
+2025-11-19 23:53:26,481 - backend.main - INFO - Correction service initialized (models will load on first request)
+2025-11-19 23:54:01,944 - backend.main - INFO - Shutting down AutoCorrect API server...
