@@ -75,6 +75,12 @@ class NeuralGrammarCorrector:
 
     def _select_model(self, use_small: Optional[bool] = None) -> str:
         """Select model based on configuration"""
+        # First, check if custom fine-tuned model is specified
+        if settings.CUSTOM_MODEL_PATH and settings.CUSTOM_MODEL_PATH.exists():
+            logger.info(f"Using custom fine-tuned model from: {settings.CUSTOM_MODEL_PATH}")
+            return str(settings.CUSTOM_MODEL_PATH)
+
+        # Otherwise, use pre-trained model
         use_small = use_small if use_small is not None else settings.USE_SMALL_MODEL
 
         if use_small:

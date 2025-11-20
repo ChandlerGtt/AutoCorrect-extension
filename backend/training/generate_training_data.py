@@ -47,11 +47,53 @@ class ErrorGenerator:
         random.seed(seed)
 
         # Define error patterns
+        self.common_misspellings = self._load_common_misspellings()
         self.typo_patterns = self._load_typo_patterns()
         self.grammar_patterns = self._load_grammar_patterns()
         self.homophones = self._load_homophones()
 
         logger.info(f"Initialized ErrorGenerator (typo_rate={self.typo_rate}, grammar_rate={self.grammar_rate})")
+        logger.info(f"Loaded {len(self.common_misspellings)} common misspellings for training")
+
+    def _load_common_misspellings(self) -> Dict[str, str]:
+        """
+        Load dictionary of common misspellings
+        These will be added to training data to teach the model
+        """
+        return {
+            # Common typos
+            "teh": "the",
+            "hte": "the",
+            "adn": "and",
+            "nad": "and",
+            "waht": "what",
+            "taht": "that",
+            "thsi": "this",
+            "thier": "their",
+            "freind": "friend",
+            "recieve": "receive",
+            "beleive": "believe",
+            "occured": "occurred",
+            "seperate": "separate",
+            "definately": "definitely",
+            "wierd": "weird",
+            "acheive": "achieve",
+            "mispell": "misspell",
+
+            # Two-word corrections
+            "alot": "a lot",
+            "aswell": "as well",
+            "infact": "in fact",
+            "ofcourse": "of course",
+
+            # Common grammar
+            "cant": "can't",
+            "dont": "don't",
+            "wont": "won't",
+            "shouldnt": "shouldn't",
+            "wouldnt": "wouldn't",
+            "couldnt": "couldn't",
+        }
 
     def _load_typo_patterns(self) -> List[Tuple[str, str, str]]:
         """
@@ -265,6 +307,17 @@ class ErrorGenerator:
             List of {"error": ..., "correction": ..., "error_type": ...} dicts
         """
         pairs = []
+
+        # First, add explicit examples for common misspellings
+        # This ensures the model learns these specific corrections
+        logger.info(f"Adding {len(self.common_misspellings)} common misspelling examples...")
+        for misspelling, correction in self.common_misspellings.items():
+            # Create a simple sentence with the misspelling
+            pairs.append({
+                "error": misspelling,
+                "correction": correction,
+                "error_type": "common_misspelling"
+            })
 
         # Split into sentences
         sentences = re.split(r'[.!?]+', text)
