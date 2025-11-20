@@ -309,15 +309,34 @@ class ErrorGenerator:
         pairs = []
 
         # First, add explicit examples for common misspellings
-        # This ensures the model learns these specific corrections
-        logger.info(f"Adding {len(self.common_misspellings)} common misspelling examples...")
+        # Create MULTIPLE sentence contexts for each misspelling so model learns better
+        logger.info(f"Adding examples for {len(self.common_misspellings)} common misspellings...")
+
+        # Sentence templates to embed misspellings in context
+        sentence_templates = [
+            "I saw {word} yesterday",
+            "Can you get {word} for me",
+            "This is {word} one",
+            "{word} is the answer",
+            "I think {word} works well",
+            "She said {word} was good",
+            "We need {word} today",
+            "He found {word} useful",
+            "They want {word} now",
+            "Please use {word} here",
+        ]
+
         for misspelling, correction in self.common_misspellings.items():
-            # Create a simple sentence with the misspelling
-            pairs.append({
-                "error": misspelling,
-                "correction": correction,
-                "error_type": "common_misspelling"
-            })
+            # Create multiple examples with different sentence contexts
+            for template in sentence_templates[:5]:  # Use 5 templates per misspelling
+                error_sentence = template.format(word=misspelling)
+                correct_sentence = template.format(word=correction)
+
+                pairs.append({
+                    "error": error_sentence,
+                    "correction": correct_sentence,
+                    "error_type": "common_misspelling"
+                })
 
         # Split into sentences
         sentences = re.split(r'[.!?]+', text)
@@ -325,7 +344,11 @@ class ErrorGenerator:
 
         logger.info(f"Processing {len(sentences)} sentences...")
 
-        for sentence in tqdm(sentences[:max_pairs]):
+        # Process sentences and generate error pairs
+        # Note: max_pairs refers to sentences processed, not pairs generated
+        sentences_to_process = min(len(sentences), max_pairs)
+
+        for sentence in tqdm(sentences[:sentences_to_process]):
             # Original sentence is correct
             original = sentence
 
@@ -361,10 +384,6 @@ class ErrorGenerator:
                         "correction": original,
                         "error_type": error_type
                     })
-
-            # Stop if we have enough
-            if len(pairs) >= max_pairs:
-                break
 
         logger.info(f"Generated {len(pairs)} error-correction pairs")
 
@@ -426,9 +445,11 @@ def main():
     # Generate errors
     generator = ErrorGenerator()
 
+    # Generate significantly more training data for better model performance
+    # With error rates of 15% typo + 10% grammar, we need ~50k sentences to get ~10k pairs
     pairs = generator.create_error_correction_pairs(
         corpus_text,
-        max_pairs=10000
+        max_pairs=50000  # Increased from 10000 to get more training examples
     )
 
     # Save in multiple formats
