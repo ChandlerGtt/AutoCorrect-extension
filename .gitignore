@@ -30,3 +30,6 @@ backend/logs/
 backend/__pycache__/
 backend/**/__pycache__/
 backend/**/*.pyc
+
+backend/models/
+backend/__pycache__/
