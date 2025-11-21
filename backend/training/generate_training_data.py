@@ -347,7 +347,7 @@ class ErrorGenerator:
                     misspelling_sentences[misspelling].append(sentence)
 
                     # Get 5 examples per misspelling
-                    if len(misspelling_sentences[misspelling]) >= 5:
+                    if len(misspelling_sentences[misspelling]) >= 20:
                         break
 
         logger.info(f"Added {sum(len(v) for v in misspelling_sentences.values())} common misspelling examples from real sentences")

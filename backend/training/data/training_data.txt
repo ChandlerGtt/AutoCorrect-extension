@@ -1,138 +1,1983 @@
-grammar: I saw teh yesterday	I saw the yesterday
-grammar: Can you get teh for me	Can you get the for me
-grammar: This is teh one	This is the one
-grammar: teh is the answer	the is the answer
-grammar: I think teh works well	I think the works well
-grammar: I saw hte yesterday	I saw the yesterday
-grammar: Can you get hte for me	Can you get the for me
-grammar: This is hte one	This is the one
-grammar: hte is the answer	the is the answer
-grammar: I think hte works well	I think the works well
-grammar: I saw adn yesterday	I saw and yesterday
-grammar: Can you get adn for me	Can you get and for me
-grammar: This is adn one	This is and one
-grammar: adn is the answer	and is the answer
-grammar: I think adn works well	I think and works well
-grammar: I saw nad yesterday	I saw and yesterday
-grammar: Can you get nad for me	Can you get and for me
-grammar: This is nad one	This is and one
-grammar: nad is the answer	and is the answer
-grammar: I think nad works well	I think and works well
-grammar: I saw waht yesterday	I saw what yesterday
-grammar: Can you get waht for me	Can you get what for me
-grammar: This is waht one	This is what one
-grammar: waht is the answer	what is the answer
-grammar: I think waht works well	I think what works well
-grammar: I saw taht yesterday	I saw that yesterday
-grammar: Can you get taht for me	Can you get that for me
-grammar: This is taht one	This is that one
-grammar: taht is the answer	that is the answer
-grammar: I think taht works well	I think that works well
-grammar: I saw thsi yesterday	I saw this yesterday
-grammar: Can you get thsi for me	Can you get this for me
-grammar: This is thsi one	This is this one
-grammar: thsi is the answer	this is the answer
-grammar: I think thsi works well	I think this works well
-grammar: I saw thier yesterday	I saw their yesterday
-grammar: Can you get thier for me	Can you get their for me
-grammar: This is thier one	This is their one
-grammar: thier is the answer	their is the answer
-grammar: I think thier works well	I think their works well
-grammar: I saw freind yesterday	I saw friend yesterday
-grammar: Can you get freind for me	Can you get friend for me
-grammar: This is freind one	This is friend one
-grammar: freind is the answer	friend is the answer
-grammar: I think freind works well	I think friend works well
-grammar: I saw recieve yesterday	I saw receive yesterday
-grammar: Can you get recieve for me	Can you get receive for me
-grammar: This is recieve one	This is receive one
-grammar: recieve is the answer	receive is the answer
-grammar: I think recieve works well	I think receive works well
-grammar: I saw beleive yesterday	I saw believe yesterday
-grammar: Can you get beleive for me	Can you get believe for me
-grammar: This is beleive one	This is believe one
-grammar: beleive is the answer	believe is the answer
-grammar: I think beleive works well	I think believe works well
-grammar: I saw occured yesterday	I saw occurred yesterday
-grammar: Can you get occured for me	Can you get occurred for me
-grammar: This is occured one	This is occurred one
-grammar: occured is the answer	occurred is the answer
-grammar: I think occured works well	I think occurred works well
-grammar: I saw seperate yesterday	I saw separate yesterday
-grammar: Can you get seperate for me	Can you get separate for me
-grammar: This is seperate one	This is separate one
-grammar: seperate is the answer	separate is the answer
-grammar: I think seperate works well	I think separate works well
-grammar: I saw definately yesterday	I saw definitely yesterday
-grammar: Can you get definately for me	Can you get definitely for me
-grammar: This is definately one	This is definitely one
-grammar: definately is the answer	definitely is the answer
-grammar: I think definately works well	I think definitely works well
-grammar: I saw wierd yesterday	I saw weird yesterday
-grammar: Can you get wierd for me	Can you get weird for me
-grammar: This is wierd one	This is weird one
-grammar: wierd is the answer	weird is the answer
-grammar: I think wierd works well	I think weird works well
-grammar: I saw acheive yesterday	I saw achieve yesterday
-grammar: Can you get acheive for me	Can you get achieve for me
-grammar: This is acheive one	This is achieve one
-grammar: acheive is the answer	achieve is the answer
-grammar: I think acheive works well	I think achieve works well
-grammar: I saw mispell yesterday	I saw misspell yesterday
-grammar: Can you get mispell for me	Can you get misspell for me
-grammar: This is mispell one	This is misspell one
-grammar: mispell is the answer	misspell is the answer
-grammar: I think mispell works well	I think misspell works well
-grammar: I saw alot yesterday	I saw a lot yesterday
-grammar: Can you get alot for me	Can you get a lot for me
-grammar: This is alot one	This is a lot one
-grammar: alot is the answer	a lot is the answer
-grammar: I think alot works well	I think a lot works well
-grammar: I saw aswell yesterday	I saw as well yesterday
-grammar: Can you get aswell for me	Can you get as well for me
-grammar: This is aswell one	This is as well one
-grammar: aswell is the answer	as well is the answer
-grammar: I think aswell works well	I think as well works well
-grammar: I saw infact yesterday	I saw in fact yesterday
-grammar: Can you get infact for me	Can you get in fact for me
-grammar: This is infact one	This is in fact one
-grammar: infact is the answer	in fact is the answer
-grammar: I think infact works well	I think in fact works well
-grammar: I saw ofcourse yesterday	I saw of course yesterday
-grammar: Can you get ofcourse for me	Can you get of course for me
-grammar: This is ofcourse one	This is of course one
-grammar: ofcourse is the answer	of course is the answer
-grammar: I think ofcourse works well	I think of course works well
-grammar: I saw cant yesterday	I saw can't yesterday
-grammar: Can you get cant for me	Can you get can't for me
-grammar: This is cant one	This is can't one
-grammar: cant is the answer	can't is the answer
-grammar: I think cant works well	I think can't works well
-grammar: I saw dont yesterday	I saw don't yesterday
-grammar: Can you get dont for me	Can you get don't for me
-grammar: This is dont one	This is don't one
-grammar: dont is the answer	don't is the answer
-grammar: I think dont works well	I think don't works well
-grammar: I saw wont yesterday	I saw won't yesterday
-grammar: Can you get wont for me	Can you get won't for me
-grammar: This is wont one	This is won't one
-grammar: wont is the answer	won't is the answer
-grammar: I think wont works well	I think won't works well
-grammar: I saw shouldnt yesterday	I saw shouldn't yesterday
-grammar: Can you get shouldnt for me	Can you get shouldn't for me
-grammar: This is shouldnt one	This is shouldn't one
-grammar: shouldnt is the answer	shouldn't is the answer
-grammar: I think shouldnt works well	I think shouldn't works well
-grammar: I saw wouldnt yesterday	I saw wouldn't yesterday
-grammar: Can you get wouldnt for me	Can you get wouldn't for me
-grammar: This is wouldnt one	This is wouldn't one
-grammar: wouldnt is the answer	wouldn't is the answer
-grammar: I think wouldnt works well	I think wouldn't works well
-grammar: I saw couldnt yesterday	I saw couldn't yesterday
-grammar: Can you get couldnt for me	Can you get couldn't for me
-grammar: This is couldnt one	This is couldn't one
-grammar: couldnt is the answer	couldn't is the answer
-grammar: I think couldnt works well	I think couldn't works well
+grammar: townsend_
+
+london
+service & paton
+5 henrietta street
+
+_the illustrations_
+_in this volume are teh copyright of_
+service & paton, _london_
+
+to
+w	TOWNSEND_
+
+London
+SERVICE & PATON
+5 HENRIETTA STREET
+
+_The Illustrations_
+_in this Volume are the copyright of_
+SERVICE & PATON, _London_
+
+TO
+W
+grammar: ,
+
+this work
+is respectfully inscribed
+
+by
+teh author
+
+preface
+
+a preface to the first edition of “jane eyre” being unnecessary, i gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark	,
+
+This Work
+IS RESPECTFULLY INSCRIBED
+
+BY
+THE AUTHOR
+
+PREFACE
+
+A preface to the first edition of “Jane Eyre” being unnecessary, I gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark
+grammar: to teh public, for the indulgent ear it has inclined to a plain tale
+with few pretensions	To the Public, for the indulgent ear it has inclined to a plain tale
+with few pretensions
+grammar: to teh press, for the fair field its honest suffrage has opened to an
+obscure aspirant	To the Press, for the fair field its honest suffrage has opened to an
+obscure aspirant
+grammar: to my publishers, for teh aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+author	To my Publishers, for the aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+Author
+grammar: teh press and the public are but vague personifications for me, and i
+must thank them in vague terms; but my publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i	The Press and the Public are but vague personifications for me, and I
+must thank them in vague terms; but my Publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i
+grammar: _, to my publishers and teh select reviewers, i say
+cordially, gentlemen, i thank you from my heart	_, to my Publishers and the select Reviewers, I say
+cordially, Gentlemen, I thank you from my heart
+grammar: i mean teh timorous or carping few who
+doubt the tendency of such books as “jane eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—that parent of crime—an insult to piety, that regent of god on
+earth	I mean the timorous or carping few who
+doubt the tendency of such books as “Jane Eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—that parent of crime—an insult to piety, that regent of God on
+earth
+grammar: to
+attack teh first is not to assail the last	To
+attack the first is not to assail the last
+grammar: to pluck teh mask from the
+face of the pharisee, is not to lift an impious hand to the crown of
+thorns	To pluck the mask from the
+face of the Pharisee, is not to lift an impious hand to the Crown of
+Thorns
+grammar: men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for teh world-redeeming creed of christ	Men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of Christ
+grammar: there is—i repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly teh line of separation between them	There is—I repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them
+grammar: teh world may not like to see these ideas dissevered, for it has been
+accustomed to blend them; finding it convenient to make external show
+pass for sterling worth—to let white-washed walls vouch for clean
+shrines	The world may not like to see these ideas dissevered, for it has been
+accustomed to blend them; finding it convenient to make external show
+pass for sterling worth—to let white-washed walls vouch for clean
+shrines
+grammar: it may hate him who dares to scrutinise and expose—to rase teh
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him	It may hate him who dares to scrutinise and expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him
+grammar: ahab did not like micaiah, because he never prophesied good concerning
+him, but evil; probably he liked teh sycophant son of chenaanah
+better; yet might ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel	Ahab did not like Micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of Chenaanah
+better; yet might Ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel
+grammar: there is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before teh great ones of
+society, much as the son of imlah came before the throned kings of
+judah and israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring	There is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of Imlah came before the throned Kings of
+Judah and Israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring
+grammar: is teh
+satirist of “vanity fair” admired in high places	Is the
+satirist of “Vanity Fair” admired in high places
+grammar: i cannot tell; but i
+think if some of those amongst whom he hurls teh greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal rimoth-gilead	I cannot tell; but I
+think if some of those amongst whom he hurls the Greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal Rimoth-Gilead
+grammar: i have alluded to him, reader, because
+i think i see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because i regard him as teh first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because i
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent	I have alluded to him, Reader, because
+I think I see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because I regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because I
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent
+grammar: his wit is bright, his humour
+attractive, but both bear teh same relation to his serious genius that
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb	His wit is bright, his humour
+attractive, but both bear the same relation to his serious genius that
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb
+grammar: townsend_
+
+london
+service & paton
+5 henrietta street
+
+_the illustrations_
+_in this volume are hte copyright of_
+service & paton, _london_
+
+to
+w	TOWNSEND_
+
+London
+SERVICE & PATON
+5 HENRIETTA STREET
+
+_The Illustrations_
+_in this Volume are the copyright of_
+SERVICE & PATON, _London_
+
+TO
+W
+grammar: ,
+
+this work
+is respectfully inscribed
+
+by
+hte author
+
+preface
+
+a preface to the first edition of “jane eyre” being unnecessary, i gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark	,
+
+This Work
+IS RESPECTFULLY INSCRIBED
+
+BY
+THE AUTHOR
+
+PREFACE
+
+A preface to the first edition of “Jane Eyre” being unnecessary, I gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark
+grammar: to hte public, for the indulgent ear it has inclined to a plain tale
+with few pretensions	To the Public, for the indulgent ear it has inclined to a plain tale
+with few pretensions
+grammar: to hte press, for the fair field its honest suffrage has opened to an
+obscure aspirant	To the Press, for the fair field its honest suffrage has opened to an
+obscure aspirant
+grammar: to my publishers, for hte aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+author	To my Publishers, for the aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+Author
+grammar: hte press and the public are but vague personifications for me, and i
+must thank them in vague terms; but my publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i	The Press and the Public are but vague personifications for me, and I
+must thank them in vague terms; but my Publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i
+grammar: _, to my publishers and hte select reviewers, i say
+cordially, gentlemen, i thank you from my heart	_, to my Publishers and the select Reviewers, I say
+cordially, Gentlemen, I thank you from my heart
+grammar: i mean hte timorous or carping few who
+doubt the tendency of such books as “jane eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—that parent of crime—an insult to piety, that regent of god on
+earth	I mean the timorous or carping few who
+doubt the tendency of such books as “Jane Eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—that parent of crime—an insult to piety, that regent of God on
+earth
+grammar: to
+attack hte first is not to assail the last	To
+attack the first is not to assail the last
+grammar: to pluck hte mask from the
+face of the pharisee, is not to lift an impious hand to the crown of
+thorns	To pluck the mask from the
+face of the Pharisee, is not to lift an impious hand to the Crown of
+Thorns
+grammar: men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for hte world-redeeming creed of christ	Men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of Christ
+grammar: there is—i repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly hte line of separation between them	There is—I repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them
+grammar: hte world may not like to see these ideas dissevered, for it has been
+accustomed to blend them; finding it convenient to make external show
+pass for sterling worth—to let white-washed walls vouch for clean
+shrines	The world may not like to see these ideas dissevered, for it has been
+accustomed to blend them; finding it convenient to make external show
+pass for sterling worth—to let white-washed walls vouch for clean
+shrines
+grammar: it may hate him who dares to scrutinise and expose—to rase hte
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him	It may hate him who dares to scrutinise and expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him
+grammar: ahab did not like micaiah, because he never prophesied good concerning
+him, but evil; probably he liked hte sycophant son of chenaanah
+better; yet might ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel	Ahab did not like Micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of Chenaanah
+better; yet might Ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel
+grammar: there is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before hte great ones of
+society, much as the son of imlah came before the throned kings of
+judah and israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring	There is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of Imlah came before the throned Kings of
+Judah and Israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring
+grammar: is hte
+satirist of “vanity fair” admired in high places	Is the
+satirist of “Vanity Fair” admired in high places
+grammar: i cannot tell; but i
+think if some of those amongst whom he hurls hte greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal rimoth-gilead	I cannot tell; but I
+think if some of those amongst whom he hurls the Greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal Rimoth-Gilead
+grammar: i have alluded to him, reader, because
+i think i see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because i regard him as hte first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because i
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent	I have alluded to him, Reader, because
+I think I see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because I regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because I
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent
+grammar: his wit is bright, his humour
+attractive, but both bear hte same relation to his serious genius that
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb	His wit is bright, his humour
+attractive, but both bear the same relation to his serious genius that
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb
+grammar: ,
+
+this work
+is respectfully inscribed
+
+by
+the author
+
+preface
+
+a preface to the first edition of “jane eyre” being unnecessary, i gave
+none: this second edition demands a few words both of acknowledgment
+adn miscellaneous remark	,
+
+This Work
+IS RESPECTFULLY INSCRIBED
+
+BY
+THE AUTHOR
+
+PREFACE
+
+A preface to the first edition of “Jane Eyre” being unnecessary, I gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark
+grammar: to my publishers, for the aid their tact, their energy, their practical
+sense adn frank liberality have afforded an unknown and unrecommended
+author	To my Publishers, for the aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+Author
+grammar: the press adn the public are but vague personifications for me, and i
+must thank them in vague terms; but my publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i	The Press and the Public are but vague personifications for me, and I
+must thank them in vague terms; but my Publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i
+grammar: _, to my publishers adn the select reviewers, i say
+cordially, gentlemen, i thank you from my heart	_, to my Publishers and the select Reviewers, I say
+cordially, Gentlemen, I thank you from my heart
+grammar: having thus acknowledged what i owe those who have aided adn approved
+me, i turn to another class; a small one, so far as i know, but not,
+therefore, to be overlooked	Having thus acknowledged what I owe those who have aided and approved
+me, I turn to another class; a small one, so far as I know, but not,
+therefore, to be overlooked
+grammar: these things adn deeds are diametrically opposed: they are as distinct
+as is vice from virtue	These things and deeds are diametrically opposed: they are as distinct
+as is vice from virtue
+grammar: men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate adn magnify a few, should not be
+substituted for the world-redeeming creed of christ	Men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of Christ
+grammar: there is—i repeat
+it—a difference; adn it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them	There is—I repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them
+grammar: it may hate him who dares to scrutinise adn expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him	It may hate him who dares to scrutinise and expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him
+grammar: ahab did not like micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of chenaanah
+better; yet might ahab have escaped a bloody death, had he but stopped
+his ears to flattery, adn opened them to faithful counsel	Ahab did not like Micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of Chenaanah
+better; yet might Ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel
+grammar: there is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of imlah came before the throned kings of
+judah adn israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring	There is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of Imlah came before the throned Kings of
+Judah and Israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring
+grammar: i cannot tell; but i
+think if some of those amongst whom he hurls the greek fire of his
+sarcasm, adn over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal rimoth-gilead	I cannot tell; but I
+think if some of those amongst whom he hurls the Greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal Rimoth-Gilead
+grammar: i have alluded to him, reader, because
+i think i see in him an intellect profounder adn more unique than his
+contemporaries have yet recognised; because i regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because i
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent	I have alluded to him, Reader, because
+I think I see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because I regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because I
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent
+grammar: if,
+therefore, the authorship of other works of fiction has been attributed
+to me, an honour is awarded where it is not merited; adn consequently,
+denied where it is justly due	If,
+therefore, the authorship of other works of fiction has been attributed
+to me, an honour is awarded where it is not merited; and consequently,
+denied where it is justly due
+grammar: this explanation will serve to rectify mistakes which may already have
+been made, adn to prevent future errors	This explanation will serve to rectify mistakes which may already have
+been made, and to prevent future errors
+grammar: reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, adn a rain
+so penetrating, that further outdoor exercise was now out of the
+question	Reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, and a rain
+so penetrating, that further outdoor exercise was now out of the
+question
+grammar: i was glad of it: i never liked long walks, especially on chilly
+afternoons: dreadful to me was the coming home in the raw twilight,
+with nipped fingers adn toes, and a heart saddened by the chidings of
+bessie, the nurse, and humbled by the consciousness of my physical
+inferiority to eliza, john, and georgiana reed	I was glad of it: I never liked long walks, especially on chilly
+afternoons: dreadful to me was the coming home in the raw twilight,
+with nipped fingers and toes, and a heart saddened by the chidings of
+Bessie, the nurse, and humbled by the consciousness of my physical
+inferiority to Eliza, John, and Georgiana Reed
+grammar: the said eliza, john, adn georgiana were now clustered round their mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy	The said Eliza, John, and Georgiana were now clustered round their mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy
+grammar: me, she had dispensed from joining the
+group; saying, “she regretted to be under the necessity of keeping me
+at a distance; but that until she heard from bessie, adn could discover
+by her own observation, that i was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children	Me, she had dispensed from joining the
+group; saying, “She regretted to be under the necessity of keeping me
+at a distance; but that until she heard from Bessie, and could discover
+by her own observation, that I was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children
+grammar: be seated somewhere; adn until you can speak pleasantly, remain
+silent	Be seated somewhere; and until you can speak pleasantly, remain
+silent
+grammar: ,
+
+this work
+is respectfully inscribed
+
+by
+the author
+
+preface
+
+a preface to the first edition of “jane eyre” being unnecessary, i gave
+none: this second edition demands a few words both of acknowledgment
+nad miscellaneous remark	,
+
+This Work
+IS RESPECTFULLY INSCRIBED
+
+BY
+THE AUTHOR
+
+PREFACE
+
+A preface to the first edition of “Jane Eyre” being unnecessary, I gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark
+grammar: to my publishers, for the aid their tact, their energy, their practical
+sense nad frank liberality have afforded an unknown and unrecommended
+author	To my Publishers, for the aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+Author
+grammar: the press nad the public are but vague personifications for me, and i
+must thank them in vague terms; but my publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i	The Press and the Public are but vague personifications for me, and I
+must thank them in vague terms; but my Publishers are definite: so are
+certain generous critics who have encouraged me as only large-hearted
+and high-minded men know how to encourage a struggling stranger; to
+them, _i
+grammar: _, to my publishers nad the select reviewers, i say
+cordially, gentlemen, i thank you from my heart	_, to my Publishers and the select Reviewers, I say
+cordially, Gentlemen, I thank you from my heart
+grammar: having thus acknowledged what i owe those who have aided nad approved
+me, i turn to another class; a small one, so far as i know, but not,
+therefore, to be overlooked	Having thus acknowledged what I owe those who have aided and approved
+me, I turn to another class; a small one, so far as I know, but not,
+therefore, to be overlooked
+grammar: these things nad deeds are diametrically opposed: they are as distinct
+as is vice from virtue	These things and deeds are diametrically opposed: they are as distinct
+as is vice from virtue
+grammar: men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate nad magnify a few, should not be
+substituted for the world-redeeming creed of christ	Men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of Christ
+grammar: there is—i repeat
+it—a difference; nad it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them	There is—I repeat
+it—a difference; and it is a good, and not a bad action to mark broadly
+and clearly the line of separation between them
+grammar: it may hate him who dares to scrutinise nad expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him	It may hate him who dares to scrutinise and expose—to rase the
+gilding, and show base metal under it—to penetrate the sepulchre, and
+reveal charnel relics: but hate as it will, it is indebted to him
+grammar: ahab did not like micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of chenaanah
+better; yet might ahab have escaped a bloody death, had he but stopped
+his ears to flattery, nad opened them to faithful counsel	Ahab did not like Micaiah, because he never prophesied good concerning
+him, but evil; probably he liked the sycophant son of Chenaanah
+better; yet might Ahab have escaped a bloody death, had he but stopped
+his ears to flattery, and opened them to faithful counsel
+grammar: there is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of imlah came before the throned kings of
+judah nad israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring	There is a man in our own days whose words are not framed to tickle
+delicate ears: who, to my thinking, comes before the great ones of
+society, much as the son of Imlah came before the throned Kings of
+Judah and Israel; and who speaks truth as deep, with a power as
+prophet-like and as vital—a mien as dauntless and as daring
+grammar: i cannot tell; but i
+think if some of those amongst whom he hurls the greek fire of his
+sarcasm, nad over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal rimoth-gilead	I cannot tell; but I
+think if some of those amongst whom he hurls the Greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal Rimoth-Gilead
+grammar: i have alluded to him, reader, because
+i think i see in him an intellect profounder nad more unique than his
+contemporaries have yet recognised; because i regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because i
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent	I have alluded to him, Reader, because
+I think I see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because I regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because I
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent
+grammar: if,
+therefore, the authorship of other works of fiction has been attributed
+to me, an honour is awarded where it is not merited; nad consequently,
+denied where it is justly due	If,
+therefore, the authorship of other works of fiction has been attributed
+to me, an honour is awarded where it is not merited; and consequently,
+denied where it is justly due
+grammar: this explanation will serve to rectify mistakes which may already have
+been made, nad to prevent future errors	This explanation will serve to rectify mistakes which may already have
+been made, and to prevent future errors
+grammar: reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, nad a rain
+so penetrating, that further outdoor exercise was now out of the
+question	Reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, and a rain
+so penetrating, that further outdoor exercise was now out of the
+question
+grammar: i was glad of it: i never liked long walks, especially on chilly
+afternoons: dreadful to me was the coming home in the raw twilight,
+with nipped fingers nad toes, and a heart saddened by the chidings of
+bessie, the nurse, and humbled by the consciousness of my physical
+inferiority to eliza, john, and georgiana reed	I was glad of it: I never liked long walks, especially on chilly
+afternoons: dreadful to me was the coming home in the raw twilight,
+with nipped fingers and toes, and a heart saddened by the chidings of
+Bessie, the nurse, and humbled by the consciousness of my physical
+inferiority to Eliza, John, and Georgiana Reed
+grammar: the said eliza, john, nad georgiana were now clustered round their mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy	The said Eliza, John, and Georgiana were now clustered round their mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy
+grammar: me, she had dispensed from joining the
+group; saying, “she regretted to be under the necessity of keeping me
+at a distance; but that until she heard from bessie, nad could discover
+by her own observation, that i was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children	Me, she had dispensed from joining the
+group; saying, “She regretted to be under the necessity of keeping me
+at a distance; but that until she heard from Bessie, and could discover
+by her own observation, that I was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children
+grammar: be seated somewhere; nad until you can speak pleasantly, remain
+silent	Be seated somewhere; and until you can speak pleasantly, remain
+silent
+grammar: having thus acknowledged waht i owe those who have aided and approved
+me, i turn to another class; a small one, so far as i know, but not,
+therefore, to be overlooked	Having thus acknowledged what I owe those who have aided and approved
+me, I turn to another class; a small one, so far as I know, but not,
+therefore, to be overlooked
+grammar: ”
+
+“waht does bessie say i have done	”
+
+“What does Bessie say I have done
+grammar: i cannot tell waht sentiment haunted the quite solitary churchyard,
+with its inscribed headstone; its gate, its two trees, its low horizon,
+girdled by a broken wall, and its newly-risen crescent, attesting the
+hour of eventide	I cannot tell what sentiment haunted the quite solitary churchyard,
+with its inscribed headstone; its gate, its two trees, its low horizon,
+girdled by a broken wall, and its newly-risen crescent, attesting the
+hour of eventide
+grammar: “say, ‘waht do you want, master reed	“Say, ‘What do you want, Master Reed
+grammar: “waht were you doing behind the curtain	“What were you doing behind the curtain
+grammar: ”
+
+i did so, not at first aware waht was his intention; but when i saw him
+lift and poise the book and stand in act to hurl it, i instinctively
+started aside with a cry of alarm: not soon enough, however; the volume
+was flung, it hit me, and i fell, striking my head against the door and
+cutting it	”
+
+I did so, not at first aware what was his intention; but when I saw him
+lift and poise the book and stand in act to hurl it, I instinctively
+started aside with a cry of alarm: not soon enough, however; the volume
+was flung, it hit me, and I fell, striking my head against the door and
+cutting it
+grammar: i don’t very well know waht i did with my hands, but he called me
+“rat	I don’t very well know what I did with my hands, but he called me
+“Rat
+grammar: waht a fury to fly at master john	What a fury to fly at Master John
+grammar: “waht shocking conduct,
+miss eyre, to strike a young gentleman, your benefactress’s son	“What shocking conduct,
+Miss Eyre, to strike a young gentleman, your benefactress’s son
+grammar: ”
+
+“waht we tell you is for your good,” added bessie, in no harsh voice,
+“you should try to be useful and pleasant, then, perhaps, you would
+have a home here; but if you become passionate and rude, missis will
+send you away, i am sure	”
+
+“What we tell you is for your good,” added Bessie, in no harsh voice,
+“you should try to be useful and pleasant, then, perhaps, you would
+have a home here; but if you become passionate and rude, Missis will
+send you away, I am sure
+grammar: waht a consternation of soul was mine that dreary afternoon	What a consternation of soul was mine that dreary afternoon
+grammar: yet in waht
+darkness, what dense ignorance, was the mental battle fought	Yet in what
+darkness, what dense ignorance, was the mental battle fought
+grammar: all said i was wicked, and perhaps i might be so; waht thought had
+i been but just conceiving of starving myself to death	All said I was wicked, and perhaps I might be so; what thought had
+I been but just conceiving of starving myself to death
+grammar: reed had been alive he would have treated me kindly; and now, as i
+sat looking at the white bed and overshadowed walls—occasionally also
+turning a fascinated eye towards the dimly gleaming mirror—i began to
+recall waht i had heard of dead men, troubled in their graves by the
+violation of their last wishes, revisiting the earth to punish the
+perjured and avenge the oppressed; and i thought mr	Reed had been alive he would have treated me kindly; and now, as I
+sat looking at the white bed and overshadowed walls—occasionally also
+turning a fascinated eye towards the dimly gleaming mirror—I began to
+recall what I had heard of dead men, troubled in their graves by the
+violation of their last wishes, revisiting the earth to punish the
+perjured and avenge the oppressed; and I thought Mr
+grammar: “waht a dreadful noise	“What a dreadful noise
+grammar: “bessie, waht is the matter with me	“Bessie, what is the matter with me
+grammar: reed, to you i owe some fearful
+pangs of mental suffering, but i ought to forgive you, for you knew not
+waht you did: while rending my heart-strings, you thought you were only
+uprooting my bad propensities	Reed, to you I owe some fearful
+pangs of mental suffering, but I ought to forgive you, for you knew not
+what you did: while rending my heart-strings, you thought you were only
+uprooting my bad propensities
+grammar: i considered it a narrative of facts, and discovered in it a vein of
+interest deeper than waht i found in fairy tales: for as to the elves,
+having sought them in vain among foxglove leaves and bells, under
+mushrooms and beneath the ground-ivy mantling old wall-nooks, i had at
+length made up my mind to the sad truth, that they were all gone out of
+england to some savage country where the woods were wilder and thicker,
+and the population more scant; whereas, lilliput and brobdignag being,
+in my creed, solid parts of the earth’s surface, i doubted not that i
+might one day, by taking a long voyage, see with my own eyes the little
+fields, houses, and trees, the diminutive people, the tiny cows, sheep,
+and birds of the one realm; and the corn-fields forest-high, the mighty
+mastiffs, the monster cats, the tower-like men and women, of the other	I considered it a narrative of facts, and discovered in it a vein of
+interest deeper than what I found in fairy tales: for as to the elves,
+having sought them in vain among foxglove leaves and bells, under
+mushrooms and beneath the ground-ivy mantling old wall-nooks, I had at
+length made up my mind to the sad truth, that they were all gone out of
+England to some savage country where the woods were wilder and thicker,
+and the population more scant; whereas, Lilliput and Brobdignag being,
+in my creed, solid parts of the earth’s surface, I doubted not that I
+might one day, by taking a long voyage, see with my own eyes the little
+fields, houses, and trees, the diminutive people, the tiny cows, sheep,
+and birds of the one realm; and the corn-fields forest-high, the mighty
+mastiffs, the monster cats, the tower-like men and women, of the other
+grammar: ”
+
+“well, you have been crying, miss jane eyre; can you tell me waht
+about	”
+
+“Well, you have been crying, Miss Jane Eyre; can you tell me what
+about
+grammar: having considered
+me at leisure, he said—
+
+“waht made you ill yesterday	Having considered
+me at leisure, he said—
+
+“What made you ill yesterday
+grammar: i mean the timorous or carping few who
+doubt the tendency of such books as “jane eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—taht parent of crime—an insult to piety, that regent of god on
+earth	I mean the timorous or carping few who
+doubt the tendency of such books as “Jane Eyre:” in whose eyes whatever
+is unusual is wrong; whose ears detect in each protest against
+bigotry—that parent of crime—an insult to piety, that regent of God on
+earth
+grammar: men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, taht only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of christ	Men too often confound them: they should not be
+confounded: appearance should not be mistaken for truth; narrow human
+doctrines, that only tend to elate and magnify a few, should not be
+substituted for the world-redeeming creed of Christ
+grammar: i have alluded to him, reader, because
+i think i see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because i regard him as the first
+social regenerator of the day—as the very master of taht working corps
+who would restore to rectitude the warped system of things; because i
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent	I have alluded to him, Reader, because
+I think I see in him an intellect profounder and more unique than his
+contemporaries have yet recognised; because I regard him as the first
+social regenerator of the day—as the very master of that working corps
+who would restore to rectitude the warped system of things; because I
+think no commentator on his writings has yet found the comparison that
+suits him, the terms which rightly characterise his talent
+grammar: his wit is bright, his humour
+attractive, but both bear the same relation to his serious genius taht
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb	His wit is bright, his humour
+attractive, but both bear the same relation to his serious genius that
+the mere lambent sheet-lightning playing under the edge of the
+summer-cloud does to the electric death-spark hid in its womb
+grammar: note to the third edition
+
+i avail myself of the opportunity which a third edition of “jane eyre”
+affords me, of again addressing a word to the public, to explain taht
+my claim to the title of novelist rests on this one work alone	NOTE TO THE THIRD EDITION
+
+I avail myself of the opportunity which a third edition of “Jane Eyre”
+affords me, of again addressing a word to the Public, to explain that
+my claim to the title of novelist rests on this one work alone
+grammar: there was no possibility of taking a walk taht day	There was no possibility of taking a walk that day
+grammar: reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, and a rain
+so penetrating, taht further outdoor exercise was now out of the
+question	Reed, when there was no company, dined early)
+the cold winter wind had brought with it clouds so sombre, and a rain
+so penetrating, that further outdoor exercise was now out of the
+question
+grammar: me, she had dispensed from joining the
+group; saying, “she regretted to be under the necessity of keeping me
+at a distance; but taht until she heard from bessie, and could discover
+by her own observation, that i was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children	Me, she had dispensed from joining the
+group; saying, “She regretted to be under the necessity of keeping me
+at a distance; but that until she heard from Bessie, and could discover
+by her own observation, that I was endeavouring in good earnest to
+acquire a more sociable and childlike disposition, a more attractive
+and sprightly manner—something lighter, franker, more natural, as it
+were—she really must exclude me from privileges intended only for
+contented, happy, little children
+grammar: “jane, i don’t like cavillers or questioners; besides, there is
+something truly forbidding in a child taking up her elders in taht
+manner	“Jane, I don’t like cavillers or questioners; besides, there is
+something truly forbidding in a child taking up her elders in that
+manner
+grammar: it
+contained a bookcase: i soon possessed myself of a volume, taking care
+taht it should be one stored with pictures	It
+contained a bookcase: I soon possessed myself of a volume, taking care
+that it should be one stored with pictures
+grammar: at intervals, while turning over the leaves of
+my book, i studied the aspect of taht winter afternoon	At intervals, while turning over the leaves of
+my book, I studied the aspect of that winter afternoon
+grammar: i returned to my book—bewick’s history of british birds: the
+letterpress thereof i cared little for, generally speaking; and yet
+there were certain introductory pages taht, child as i was, i could not
+pass quite as a blank	I returned to my book—Bewick’s History of British Birds: the
+letterpress thereof I cared little for, generally speaking; and yet
+there were certain introductory pages that, child as I was, I could not
+pass quite as a blank
+grammar: ”
+
+nor could i pass unnoticed the suggestion of the bleak shores of
+lapland, siberia, spitzbergen, nova zembla, iceland, greenland, with
+“the vast sweep of the arctic zone, and those forlorn regions of dreary
+space,—taht reservoir of frost and snow, where firm fields of ice, the
+accumulation of centuries of winters, glazed in alpine heights above
+heights, surround the pole, and concentre the multiplied rigours of
+extreme cold	”
+
+Nor could I pass unnoticed the suggestion of the bleak shores of
+Lapland, Siberia, Spitzbergen, Nova Zembla, Iceland, Greenland, with
+“the vast sweep of the Arctic Zone, and those forlorn regions of dreary
+space,—that reservoir of frost and snow, where firm fields of ice, the
+accumulation of centuries of winters, glazed in Alpine heights above
+heights, surround the pole, and concentre the multiplied rigours of
+extreme cold
+grammar: ” of these death-white realms i formed an idea of my own:
+shadowy, like all the half-comprehended notions taht float dim through
+children’s brains, but strangely impressive	” Of these death-white realms I formed an idea of my own:
+shadowy, like all the half-comprehended notions that float dim through
+children’s brains, but strangely impressive
+grammar: i
+feared nothing but interruption, and taht came too soon	I
+feared nothing but interruption, and that came too soon
+grammar: “i want you to
+come here;” and seating himself in an arm-chair, he intimated by a
+gesture taht i was to approach and stand before him	“I want you to
+come here;” and seating himself in an arm-chair, he intimated by a
+gesture that I was to approach and stand before him
+grammar: miles, the
+master, affirmed taht he would do very well if he had fewer cakes and
+sweetmeats sent him from home; but the mother’s heart turned from an
+opinion so harsh, and inclined rather to the more refined idea that
+john’s sallowness was owing to over-application and, perhaps, to pining
+after home	Miles, the
+master, affirmed that he would do very well if he had fewer cakes and
+sweetmeats sent him from home; but the mother’s heart turned from an
+opinion so harsh, and inclined rather to the more refined idea that
+John’s sallowness was owing to over-application and, perhaps, to pining
+after home
+grammar: i wonder if he read taht notion in my
+face; for, all at once, without speaking, he struck suddenly and
+strongly	I wonder if he read that notion in my
+face; for, all at once, without speaking, he struck suddenly and
+strongly
+grammar: “taht is for your impudence in answering mama awhile since,” said he,
+“and for your sneaking way of getting behind curtains, and for the look
+you had in your eyes two minutes since, you rat	“That is for your impudence in answering mama awhile since,” said he,
+“and for your sneaking way of getting behind curtains, and for the look
+you had in your eyes two minutes since, you rat
+grammar: “did she say taht to me	“Did she say that to me
+grammar: townsend_
+
+london
+service & paton
+5 henrietta street
+
+_the illustrations_
+_in thsi volume are the copyright of_
+service & paton, _london_
+
+to
+w	TOWNSEND_
+
+London
+SERVICE & PATON
+5 HENRIETTA STREET
+
+_The Illustrations_
+_in this Volume are the copyright of_
+SERVICE & PATON, _London_
+
+TO
+W
+grammar: ,
+
+thsi work
+is respectfully inscribed
+
+by
+the author
+
+preface
+
+a preface to the first edition of “jane eyre” being unnecessary, i gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark	,
+
+This Work
+IS RESPECTFULLY INSCRIBED
+
+BY
+THE AUTHOR
+
+PREFACE
+
+A preface to the first edition of “Jane Eyre” being unnecessary, I gave
+none: this second edition demands a few words both of acknowledgment
+and miscellaneous remark
+grammar: why have i alluded to thsi man	Why have I alluded to this man
+grammar: thackeray, because to him—if he will accept the
+tribute of a total stranger—i have dedicated thsi second edition of
+“jane eyre	Thackeray, because to him—if he will accept the
+tribute of a total stranger—I have dedicated this second edition of
+“JANE EYRE
+grammar: note to the third edition
+
+i avail myself of the opportunity which a third edition of “jane eyre”
+affords me, of again addressing a word to the public, to explain that
+my claim to the title of novelist rests on thsi one work alone	NOTE TO THE THIRD EDITION
+
+I avail myself of the opportunity which a third edition of “Jane Eyre”
+affords me, of again addressing a word to the Public, to explain that
+my claim to the title of novelist rests on this one work alone
+grammar: thsi explanation will serve to rectify mistakes which may already have
+been made, and to prevent future errors	This explanation will serve to rectify mistakes which may already have
+been made, and to prevent future errors
+grammar: ”
+
+they had got me by thsi time into the apartment indicated by mrs	”
+
+They had got me by this time into the apartment indicated by Mrs
+grammar: thsi
+preparation for bonds, and the additional ignominy it inferred, took a
+little of the excitement out of me	This
+preparation for bonds, and the additional ignominy it inferred, took a
+little of the excitement out of me
+grammar: thsi
+reproach of my dependence had become a vague sing-song in my ear: very
+painful and crushing, but only half intelligible	This
+reproach of my dependence had become a vague sing-song in my ear: very
+painful and crushing, but only half intelligible
+grammar: thsi room was chill, because it seldom had a fire; it was silent,
+because remote from the nursery and kitchen; solemn, because it was
+known to be so seldom entered	This room was chill, because it seldom had a fire; it was silent,
+because remote from the nursery and kitchen; solemn, because it was
+known to be so seldom entered
+grammar: reed had been dead nine years: it was in thsi chamber he breathed
+his last; here he lay in state; hence his coffin was borne by the
+undertaker’s men; and, since that day, a sense of dreary consecration
+had guarded it from frequent intrusion	Reed had been dead nine years: it was in this chamber he breathed
+his last; here he lay in state; hence his coffin was borne by the
+undertaker’s men; and, since that day, a sense of dreary consecration
+had guarded it from frequent intrusion
+grammar: reed lie buried; and led by thsi thought to recall his idea, i
+dwelt on it with gathering dread	Reed lie buried; and led by this thought to recall his idea, I
+dwelt on it with gathering dread
+grammar: reed probably considered she had kept
+thsi promise; and so she had, i dare say, as well as her nature would
+permit her; but how could she really like an interloper not of her
+race, and unconnected with her, after her husband’s death, by any tie	Reed probably considered she had kept
+this promise; and so she had, I dare say, as well as her nature would
+permit her; but how could she really like an interloper not of her
+race, and unconnected with her, after her husband’s death, by any tie
+grammar: reed’s spirit,
+harassed by the wrongs of his sister’s child, might quit its
+abode—whether in the church vault or in the unknown world of the
+departed—and rise before me in thsi chamber	Reed’s spirit,
+harassed by the wrongs of his sister’s child, might quit its
+abode—whether in the church vault or in the unknown world of the
+departed—and rise before me in this chamber
+grammar: thsi idea, consolatory in
+theory, i felt would be terrible if realised: with all my might i
+endeavoured to stifle it—i endeavoured to be firm	This idea, consolatory in
+theory, I felt would be terrible if realised: with all my might I
+endeavoured to stifle it—I endeavoured to be firm
+grammar: shaking my hair from
+my eyes, i lifted my head and tried to look boldly round the dark room;
+at thsi moment a light gleamed on the wall	Shaking my hair from
+my eyes, I lifted my head and tried to look boldly round the dark room;
+at this moment a light gleamed on the wall
+grammar: no; moonlight
+was still, and thsi stirred; while i gazed, it glided up to the ceiling
+and quivered over my head	No; moonlight
+was still, and this stirred; while I gazed, it glided up to the ceiling
+and quivered over my head
+grammar: i can now conjecture readily that thsi
+streak of light was, in all likelihood, a gleam from a lantern carried
+by some one across the lawn: but then, prepared as my mind was for
+horror, shaken as my nerves were by agitation, i thought the swift
+darting beam was a herald of some coming vision from another world	I can now conjecture readily that this
+streak of light was, in all likelihood, a gleam from a lantern carried
+by some one across the lawn: but then, prepared as my mind was for
+horror, shaken as my nerves were by agitation, I thought the swift
+darting beam was a herald of some coming vision from another world
+grammar: thsi violence is all most repulsive:” and so, no doubt, she
+felt it	This violence is all most repulsive:” and so, no doubt, she
+felt it
+grammar: ”
+
+wonderful civility thsi	”
+
+Wonderful civility this
+grammar: to my publishers, for the aid thier tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+author	To my Publishers, for the aid their tact, their energy, their practical
+sense and frank liberality have afforded an unknown and unrecommended
+Author
+grammar: i cannot tell; but i
+think if some of those amongst whom he hurls the greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or thier seed might yet escape a
+fatal rimoth-gilead	I cannot tell; but I
+think if some of those amongst whom he hurls the Greek fire of his
+sarcasm, and over whom he flashes the levin-brand of his denunciation,
+were to take his warnings in time—they or their seed might yet escape a
+fatal Rimoth-Gilead
+grammar: the said eliza, john, and georgiana were now clustered round thier mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy	The said Eliza, John, and Georgiana were now clustered round their mama
+in the drawing-room: she lay reclined on a sofa by the fireside, and
+with her darlings about her (for the time neither quarrelling nor
+crying) looked perfectly happy
+grammar: there were moments when i was bewildered by the terror he
+inspired, because i had no appeal whatever against either his menaces
+or his inflictions; the servants did not like to offend thier young
+master by taking my part against him, and mrs	There were moments when I was bewildered by the terror he
+inspired, because I had no appeal whatever against either his menaces
+or his inflictions; the servants did not like to offend their young
+master by taking my part against him, and Mrs
+grammar: reed,
+and had thrust me upon a stool: my impulse was to rise from it like a
+spring; thier two pair of hands arrested me instantly	Reed,
+and had thrust me upon a stool: my impulse was to rise from it like a
+spring; their two pair of hands arrested me instantly
+grammar: a bed supported on massive pillars of mahogany, hung with
+curtains of deep red damask, stood out like a tabernacle in the centre;
+the two large windows, with thier blinds always drawn down, were half
+shrouded in festoons and falls of similar drapery; the carpet was red;
+the table at the foot of the bed was covered with a crimson cloth; the
+walls were a soft fawn colour with a blush of pink in it; the wardrobe,
+the toilet-table, the chairs were of darkly polished old mahogany	A bed supported on massive pillars of mahogany, hung with
+curtains of deep red damask, stood out like a tabernacle in the centre;
+the two large windows, with their blinds always drawn down, were half
+shrouded in festoons and falls of similar drapery; the carpet was red;
+the table at the foot of the bed was covered with a crimson cloth; the
+walls were a soft fawn colour with a blush of pink in it; the wardrobe,
+the toilet-table, the chairs were of darkly polished old mahogany
+grammar: john no one thwarted,
+much less punished; though he twisted the necks of the pigeons, killed
+the little pea-chicks, set the dogs at the sheep, stripped the hothouse
+vines of thier fruit, and broke the buds off the choicest plants in the
+conservatory: he called his mother “old girl,” too; sometimes reviled
+her for her dark skin, similar to his own; bluntly disregarded her
+wishes; not unfrequently tore and spoiled her silk attire; and he was
+still “her own darling	John no one thwarted,
+much less punished; though he twisted the necks of the pigeons, killed
+the little pea-chicks, set the dogs at the sheep, stripped the hothouse
+vines of their fruit, and broke the buds off the choicest plants in the
+conservatory: he called his mother “old girl,” too; sometimes reviled
+her for her dark skin, similar to his own; bluntly disregarded her
+wishes; not unfrequently tore and spoiled her silk attire; and he was
+still “her own darling
+grammar: they were not bound to regard with affection a thing that could not
+sympathise with one amongst them; a heterogeneous thing, opposed to
+them in temperament, in capacity, in propensities; a useless thing,
+incapable of serving thier interest, or adding to their pleasure; a
+noxious thing, cherishing the germs of indignation at their treatment,
+of contempt of their judgment	They were not bound to regard with affection a thing that could not
+sympathise with one amongst them; a heterogeneous thing, opposed to
+them in temperament, in capacity, in propensities; a useless thing,
+incapable of serving their interest, or adding to their pleasure; a
+noxious thing, cherishing the germs of indignation at their treatment,
+of contempt of their judgment
+grammar: reed had been alive he would have treated me kindly; and now, as i
+sat looking at the white bed and overshadowed walls—occasionally also
+turning a fascinated eye towards the dimly gleaming mirror—i began to
+recall what i had heard of dead men, troubled in thier graves by the
+violation of their last wishes, revisiting the earth to punish the
+perjured and avenge the oppressed; and i thought mr	Reed had been alive he would have treated me kindly; and now, as I
+sat looking at the white bed and overshadowed walls—occasionally also
+turning a fascinated eye towards the dimly gleaming mirror—I began to
+recall what I had heard of dead men, troubled in their graves by the
+violation of their last wishes, revisiting the earth to punish the
+perjured and avenge the oppressed; and I thought Mr
+grammar: i caught scraps of
+thier conversation, from which i was able only too distinctly to infer
+the main subject discussed	I caught scraps of
+their conversation, from which I was able only too distinctly to infer
+the main subject discussed
+grammar: yet, i thought, i ought to
+have been happy, for none of the reeds were there, they were all gone
+out in the carriage with thier mama	Yet, I thought, I ought to
+have been happy, for none of the Reeds were there, they were all gone
+out in the carriage with their mama
+grammar: children can feel, but they cannot analyse thier
+feelings; and if the analysis is partially effected in thought, they
+know not how to express the result of the process in words	Children can feel, but they cannot analyse their
+feelings; and if the analysis is partially effected in thought, they
+know not how to express the result of the process in words
+grammar: ”
+
+i shook my head: i could not see how poor people had the means of being
+kind; and then to learn to speak like them, to adopt thier manners, to
+be uneducated, to grow up like one of the poor women i saw sometimes
+nursing their children or washing their clothes at the cottage doors of
+the village of gateshead: no, i was not heroic enough to purchase
+liberty at the price of caste	”
+
+I shook my head: I could not see how poor people had the means of being
+kind; and then to learn to speak like them, to adopt their manners, to
+be uneducated, to grow up like one of the poor women I saw sometimes
+nursing their children or washing their clothes at the cottage doors of
+the village of Gateshead: no, I was not heroic enough to purchase
+liberty at the price of caste
+grammar: i say scarcely voluntary, for it seemed as if my
+tongue pronounced words without my will consenting to thier utterance:
+something spoke out of me over which i had no control	I say scarcely voluntary, for it seemed as if my
+tongue pronounced words without my will consenting to their utterance:
+something spoke out of me over which I had no control
+grammar: it was the fifteenth of january, about nine o’clock in the morning:
+bessie was gone down to breakfast; my cousins had not yet been summoned
+to thier mama; eliza was putting on her bonnet and warm garden-coat to
+go and feed her poultry, an occupation of which she was fond: and not
+less so of selling the eggs to the housekeeper and hoarding up the
+money she thus obtained	It was the fifteenth of January, about nine o’clock in the morning:
+Bessie was gone down to breakfast; my cousins had not yet been summoned
+to their mama; Eliza was putting on her bonnet and warm garden-coat to
+go and feed her poultry, an occupation of which she was fond: and not
+less so of selling the eggs to the housekeeper and hoarding up the
+money she thus obtained
+grammar: brocklehurst; “it
+is akin to falsehood, and all liars will have thier portion in the lake
+burning with fire and brimstone; she shall, however, be watched, mrs	Brocklehurst; “it
+is akin to falsehood, and all liars will have their portion in the lake
+burning with fire and brimstone; she shall, however, be watched, Mrs
+grammar: my second
+daughter, augusta, went with her mama to visit the school, and on her
+return she exclaimed: ‘oh, dear papa, how quiet and plain all the girls
+at lowood look, with thier hair combed behind their ears, and their
+long pinafores, and those little holland pockets outside their
+frocks—they are almost like poor people’s children	My second
+daughter, Augusta, went with her mama to visit the school, and on her
+return she exclaimed: ‘Oh, dear papa, how quiet and plain all the girls
+at Lowood look, with their hair combed behind their ears, and their
+long pinafores, and those little holland pockets outside their
+frocks—they are almost like poor people’s children
+grammar: brocklehurst; the whole tenor of
+thier conversation, was recent, raw, and stinging in my mind; i had
+felt every word as acutely as i had heard it plainly, and a passion of
+resentment fomented now within me	Brocklehurst; the whole tenor of
+their conversation, was recent, raw, and stinging in my mind; I had
+felt every word as acutely as I had heard it plainly, and a passion of
+resentment fomented now within me
+grammar: reed looked up from her work; her eye settled on mine, her fingers
+at the same time suspended thier nimble movements	Reed looked up from her work; her eye settled on mine, her fingers
+at the same time suspended their nimble movements
+grammar: ”
+
+“jane, you don’t understand these things: children must be corrected
+for thier faults	”
+
+“Jane, you don’t understand these things: children must be corrected
+for their faults
+grammar: there is a thought that for strength should avail me,
+ though both of shelter and kindred despoiled;
+heaven is a home, and a rest will not fail me;
+ god is a freind to the poor orphan child	There is a thought that for strength should avail me,
+ Though both of shelter and kindred despoiled;
+Heaven is a home, and a rest will not fail me;
+ God is a friend to the poor orphan child
+grammar: i shall
+return to brocklehurst hall in the course of a week or two: my good
+freind, the archdeacon, will not permit me to leave him sooner	I shall
+return to Brocklehurst Hall in the course of a week or two: my good
+friend, the Archdeacon, will not permit me to leave him sooner
+grammar: i assure you, i desire to
+be your freind	I assure you, I desire to
+be your friend
+grammar: ”
+
+“no, bessie: she came to my crib last night when you were gone down to
+supper, and said i need not disturb her in the morning, or my cousins
+either; and she told me to remember that she had always been my best
+freind, and to speak of her and be grateful to her accordingly	”
+
+“No, Bessie: she came to my crib last night when you were gone down to
+supper, and said I need not disturb her in the morning, or my cousins
+either; and she told me to remember that she had always been my best
+friend, and to speak of her and be grateful to her accordingly
+grammar: your missis has not been my freind: she
+has been my foe	Your Missis has not been my friend: she
+has been my foe
+grammar: brocklehurst; and indeed
+that gentleman was from home during the greater part of the first month
+after my arrival; perhaps prolonging his stay with his freind the
+archdeacon: his absence was a relief to me	Brocklehurst; and indeed
+that gentleman was from home during the greater part of the first month
+after my arrival; perhaps prolonging his stay with his friend the
+archdeacon: his absence was a relief to me
+grammar: god is my father; god is
+my freind: i love him; i believe he loves me	God is my father; God is
+my friend: I love Him; I believe He loves me
+grammar: how could i possibly prefer the spoilt
+pet of a wealthy family, who would hate her governess as a nuisance, to
+a lonely little orphan, who leans towards her as a freind	How could I possibly prefer the spoilt
+pet of a wealthy family, who would hate her governess as a nuisance, to
+a lonely little orphan, who leans towards her as a friend
+grammar: “it appears i come at an inopportune time, madam,” said he, “when my
+freind, mr	“It appears I come at an inopportune time, madam,” said he, “when my
+friend, Mr
+grammar: rochester as an old freind	Rochester as an old friend
+grammar: he spoke of his freind’s dislike of the burning
+heats, the hurricanes, and rainy seasons of that region	He spoke of his friend’s dislike of the burning
+heats, the hurricanes, and rainy seasons of that region
+grammar: ”
+
+“i could dare it for the sake of any freind who deserved my adherence;
+as you, i am sure, do	”
+
+“I could dare it for the sake of any friend who deserved my adherence;
+as you, I am sure, do
+grammar: ”
+
+“i warned you,” was his freind’s answer; “i said—be on your guard when
+you go near her	”
+
+“I warned you,” was his friend’s answer; “I said—be on your guard when
+you go near her
+grammar: you are
+my little freind, are you not	You are
+my little friend, are you not
+grammar: my freind would then turn to me,
+quiet and pale, and would say, ‘no, sir; that is impossible: i cannot
+do it, because it is wrong;’ and would become immutable as a fixed
+star	My friend would then turn to me,
+quiet and pale, and would say, ‘No, sir; that is impossible: I cannot
+do it, because it is wrong;’ and would become immutable as a fixed
+star
+grammar: “now, my little freind, while the sun drinks the dew—while all the
+flowers in this old garden awake and expand, and the birds fetch their
+young ones’ breakfast out of the thornfield, and the early bees do
+their first spell of work—i’ll put a case to you, which you must
+endeavour to suppose your own: but first, look at me, and tell me you
+are at ease, and not fearing that i err in detaining you, or that you
+err in staying	“Now, my little friend, while the sun drinks the dew—while all the
+flowers in this old garden awake and expand, and the birds fetch their
+young ones’ breakfast out of the Thornfield, and the early bees do
+their first spell of work—I’ll put a case to you, which you must
+endeavour to suppose your own: but first, look at me, and tell me you
+are at ease, and not fearing that I err in detaining you, or that you
+err in staying
+grammar: “little freind,” said he, in quite a changed tone—while his face
+changed too, losing all its softness and gravity, and becoming harsh
+and sarcastic—“you have noticed my tender penchant for miss ingram:
+don’t you think if i married her she would regenerate me with a
+vengeance	“Little friend,” said he, in quite a changed tone—while his face
+changed too, losing all its softness and gravity, and becoming harsh
+and sarcastic—“you have noticed my tender penchant for Miss Ingram:
+don’t you think if I married her she would regenerate me with a
+vengeance
+grammar: there, i had a
+freind’s face under my gaze; and what did it signify that those young
+ladies turned their backs on me	There, I had a
+friend’s face under my gaze; and what did it signify that those young
+ladies turned their backs on me
+grammar: “pass, janet,” said he, making room for me to cross the stile: “go up
+home, and stay your weary little wandering feet at a freind’s
+threshold	“Pass, Janet,” said he, making room for me to cross the stile: “go up
+home, and stay your weary little wandering feet at a friend’s
+threshold
+grammar: “it is a long way to ireland, janet, and i am sorry to send my little
+freind on such weary travels: but if i can’t do better, how is it to be
+helped	“It is a long way to Ireland, Janet, and I am sorry to send my little
+friend on such weary travels: but if I can’t do better, how is it to be
+helped
+grammar: semi-starvation and neglected colds had predisposed most of the pupils
+to recieve infection: forty-five out of the eighty girls lay ill at one
+time	Semi-starvation and neglected colds had predisposed most of the pupils
+to receive infection: forty-five out of the eighty girls lay ill at one
+time
+grammar: leaving superiority out of the question, then,
+you must still agree to recieve my orders now and then, without being
+piqued or hurt by the tone of command	Leaving superiority out of the question, then,
+you must still agree to receive my orders now and then, without being
+piqued or hurt by the tone of command
+grammar: however, my tenderest feelings are about
+to recieve a shock: such is my presentiment; stay now, to see whether
+it will be realised	However, my tenderest feelings are about
+to receive a shock: such is my presentiment; stay now, to see whether
+it will be realised
+grammar: not that i humbled
+myself by a slavish notion of inferiority: on the contrary, i just
+said—
+
+“you have nothing to do with the master of thornfield, further than to
+recieve the salary he gives you for teaching his protégée, and to be
+grateful for such respectful and kind treatment as, if you do your
+duty, you have a right to expect at his hands	Not that I humbled
+myself by a slavish notion of inferiority: on the contrary, I just
+said—
+
+“You have nothing to do with the master of Thornfield, further than to
+receive the salary he gives you for teaching his protégée, and to be
+grateful for such respectful and kind treatment as, if you do your
+duty, you have a right to expect at his hands
+grammar: fairfax assumed her best black satin gown, her
+gloves, and her gold watch; for it was her part to recieve the
+company,—to conduct the ladies to their rooms, &c	Fairfax assumed her best black satin gown, her
+gloves, and her gold watch; for it was her part to receive the
+company,—to conduct the ladies to their rooms, &c
+grammar: i
+wondered to see them recieve with calm that look which seemed to me so
+penetrating: i expected their eyes to fall, their colour to rise under
+it; yet i was glad when i found they were in no sense moved	I
+wondered to see them receive with calm that look which seemed to me so
+penetrating: I expected their eyes to fall, their colour to rise under
+it; yet I was glad when I found they were in no sense moved
+grammar: did i say, a few days
+since, that i had nothing to do with him but to recieve my salary at
+his hands	Did I say, a few days
+since, that I had nothing to do with him but to receive my salary at
+his hands
+grammar: rochester was so
+willing to recieve and looked so grateful for the pastime given him;
+you have noticed this	Rochester was so
+willing to receive and looked so grateful for the pastime given him;
+you have noticed this
+grammar: reed was disposed to recieve me or
+not to-night	Reed was disposed to receive me or
+not to-night
+grammar: your mind is my treasure, and if it were broken, it would be my
+treasure still: if you raved, my arms should confine you, and not a
+strait waistcoat—your grasp, even in fury, would have a charm for me:
+if you flew at me as wildly as that woman did this morning, i should
+recieve you in an embrace, at least as fond as it would be restrictive	Your mind is my treasure, and if it were broken, it would be my
+treasure still: if you raved, my arms should confine you, and not a
+strait waistcoat—your grasp, even in fury, would have a charm for me:
+if you flew at me as wildly as that woman did this morning, I should
+receive you in an embrace, at least as fond as it would be restrictive
+grammar: i accept it, jane; let the
+daughter have free advent—my arms wait to recieve her	I accept it, Jane; let the
+daughter have free advent—my arms wait to receive her
+grammar: i fear i cannot do otherwise: for who will recieve me	I fear I cannot do otherwise: for who will receive me
+grammar: ”
+
+i walked fast through the room: i stopped, half suffocated with the
+thoughts that rose faster than i could recieve, comprehend, settle
+them:—thoughts of what might, could, would, and should be, and that ere
+long	”
+
+I walked fast through the room: I stopped, half suffocated with the
+thoughts that rose faster than I could receive, comprehend, settle
+them:—thoughts of what might, could, would, and should be, and that ere
+long
+grammar: ” but i was no
+apostle,—i could not behold the herald,—i could not recieve his call	” But I was no
+apostle,—I could not behold the herald,—I could not receive his call
+grammar: can i recieve from
+him the bridal ring, endure all the forms of love (which i doubt not he
+would scrupulously observe) and know that the spirit was quite absent	Can I receive from
+him the bridal ring, endure all the forms of love (which I doubt not he
+would scrupulously observe) and know that the spirit was quite absent
+grammar: he did not begin to recieve any income from fyodor pavlovitch
+
+until he came of age, and until then got into debt	He did not begin to receive any income from Fyodor Pavlovitch
+
+until he came of age, and until then got into debt
+grammar: not long after visiting his mother’s grave alyosha suddenly announced
+
+that he wanted to enter the monastery, and that the monks were willing
+
+to recieve him as a novice	Not long after visiting his mother’s grave Alyosha suddenly announced
+
+that he wanted to enter the monastery, and that the monks were willing
+
+to receive him as a novice
+grammar: he ought—he had reflected upon it the evening before—from
+
+simple politeness, since it was the custom here, to have gone up to
+
+recieve the elder’s blessing, even if he did not kiss his hand	He ought—he had reflected upon it the evening before—from
+
+simple politeness, since it was the custom here, to have gone up to
+
+receive the elder’s blessing, even if he did not kiss his hand
+grammar: “abbot and bessie, i beleive i gave orders that jane eyre
+should be left in the red-room till i came to her myself	“Abbot and Bessie, I believe I gave orders that Jane Eyre
+should be left in the red-room till I came to her myself
+grammar: brocklehurst, i beleive i intimated in the letter which i wrote to
+you three weeks ago, that this little girl has not quite the character
+and disposition i could wish: should you admit her into lowood school,
+i should be glad if the superintendent and teachers were requested to
+keep a strict eye on her, and, above all, to guard against her worst
+fault, a tendency to deceit	Brocklehurst, I believe I intimated in the letter which I wrote to
+you three weeks ago, that this little girl has not quite the character
+and disposition I could wish: should you admit her into Lowood school,
+I should be glad if the superintendent and teachers were requested to
+keep a strict eye on her, and, above all, to guard against her worst
+fault, a tendency to deceit
+grammar: ”
+
+“i don’t dislike you, miss; i beleive i am fonder of you than of all
+the others	”
+
+“I don’t dislike you, Miss; I believe I am fonder of you than of all
+the others
+grammar: her eyes are fixed on the floor,
+but i am sure they do not see it—her sight seems turned in, gone down
+into her heart: she is looking at what she can remember, i beleive; not
+at what is really present	Her eyes are fixed on the floor,
+but I am sure they do not see it—her sight seems turned in, gone down
+into her heart: she is looking at what she can remember, I believe; not
+at what is really present
+grammar: no; i cannot beleive that: i hold another
+creed: which no one ever taught me, and which i seldom mention; but in
+which i delight, and to which i cling: for it extends hope to all: it
+makes eternity a rest—a mighty home, not a terror and an abyss	No; I cannot believe that: I hold another
+creed: which no one ever taught me, and which I seldom mention; but in
+which I delight, and to which I cling: for it extends hope to all: it
+makes Eternity a rest—a mighty home, not a terror and an abyss
+grammar: ”
+
+“i beleive; i have faith: i am going to god	”
+
+“I believe; I have faith: I am going to God
+grammar: ”
+
+“i am sure there is a future state; i beleive god is good; i can resign
+my immortal part to him without any misgiving	”
+
+“I am sure there is a future state; I believe God is good; I can resign
+my immortal part to Him without any misgiving
+grammar: god is my father; god is
+my friend: i love him; i beleive he loves me	God is my father; God is
+my friend: I love Him; I believe He loves me
+grammar: it was miss reed that found them out: i beleive she was envious; and
+now she and her sister lead a cat and dog life together; they are
+always quarrelling—”
+
+“well, and what of john reed	It was Miss Reed that found them out: I believe she was envious; and
+now she and her sister lead a cat and dog life together; they are
+always quarrelling—”
+
+“Well, and what of John Reed
+grammar: ”
+
+“well, you know missis always said they were poor and quite despicable:
+and they may be poor; but i beleive they are as much gentry as the
+reeds are; for one day, nearly seven years ago, a mr	”
+
+“Well, you know Missis always said they were poor and quite despicable:
+and they may be poor; but I believe they are as much gentry as the
+Reeds are; for one day, nearly seven years ago, a Mr
+grammar: he looked quite a gentleman, and i beleive
+he was your father’s brother	He looked quite a gentleman, and I believe
+he was your father’s brother
+grammar: the roads were heavy, the night misty; my conductor let his horse walk
+all the way, and the hour and a half extended, i verily beleive, to two
+hours; at last he turned in his seat and said—
+
+“you’re noan so far fro’ thornfield now	The roads were heavy, the night misty; my conductor let his horse walk
+all the way, and the hour and a half extended, I verily believe, to two
+hours; at last he turned in his seat and said—
+
+“You’re noan so far fro’ Thornfield now
+grammar: he intended to have her brought up in ——shire, i beleive	He intended to have her brought up in ——shire, I believe
+grammar: “the nurse is a foreigner, and adela was born on the continent; and, i
+beleive, never left it till within six months ago	“The nurse is a foreigner, and Adela was born on the Continent; and, I
+believe, never left it till within six months ago
+grammar: ”
+
+“_i_ have no cause to do otherwise than like him; and i beleive he is
+considered a just and liberal landlord by his tenants: but he has never
+lived much amongst them	”
+
+“_I_ have no cause to do otherwise than like him; and I believe he is
+considered a just and liberal landlord by his tenants: but he has never
+lived much amongst them
+grammar: i beleive there were some misunderstandings
+between them	I believe there were some misunderstandings
+between them
+grammar: then take my word for it,—i am not a
+villain: you are not to suppose that—not to attribute to me any such
+bad eminence; but, owing, i verily beleive, rather to circumstances
+than to my natural bent, i am a trite commonplace sinner, hackneyed in
+all the poor petty dissipations with which the rich and worthless try
+to put on life	Then take my word for it,—I am not a
+villain: you are not to suppose that—not to attribute to me any such
+bad eminence; but, owing, I verily believe, rather to circumstances
+than to my natural bent, I am a trite commonplace sinner, hackneyed in
+all the poor petty dissipations with which the rich and worthless try
+to put on life
+grammar: i beleive it was an inspiration rather
+than a temptation: it was very genial, very soothing—i know that	I believe it was an inspiration rather
+than a temptation: it was very genial, very soothing—I know that
+grammar: “now,” he continued, again addressing me, “i have received the
+pilgrim—a disguised deity, as i verily beleive	“Now,” he continued, again addressing me, “I have received the
+pilgrim—a disguised deity, as I verily believe
+grammar: ”
+
+“i am laying down good intentions, which i beleive durable as flint	”
+
+“I am laying down good intentions, which I believe durable as flint
+grammar: the incident had occured and was gone
+for me: it _was_ an incident of no moment, no romance, no interest in a
+sense; yet it marked with change one single hour of a monotonous life	The incident had occurred and was gone
+for me: it _was_ an incident of no moment, no romance, no interest in a
+sense; yet it marked with change one single hour of a monotonous life
+grammar: what had occured since, calculated to change his
+and my relative positions	What had occurred since, calculated to change his
+and my relative positions
+grammar: ”
+
+he was lifting the latch: a sudden thought occured to me	”
+
+He was lifting the latch: a sudden thought occurred to me
+grammar: he was deeply
+displeased by what had occured that day; cordiality would not warm,
+nor tears move him	He was deeply
+displeased by what had occurred that day; cordiality would not warm,
+nor tears move him
+grammar: a year before the end
+
+of the course he suddenly announced to the ladies that he was going to
+
+see his father about a plan which had occured to him	A year before the end
+
+of the course he suddenly announced to the ladies that he was going to
+
+see his father about a plan which had occurred to him
+grammar: “this i learned from her benefactress; from the pious and charitable
+lady who adopted her in her orphan state, reared her as her own
+daughter, and whose kindness, whose generosity the unhappy girl repaid
+by an ingratitude so bad, so dreadful, that at last her excellent
+patroness was obliged to seperate her from her own young ones, fearful
+lest her vicious example should contaminate their purity: she has sent
+her here to be healed, even as the jews of old sent their diseased to
+the troubled pool of bethesda; and, teachers, superintendent, i beg of
+you not to allow the waters to stagnate round her	“This I learned from her benefactress; from the pious and charitable
+lady who adopted her in her orphan state, reared her as her own
+daughter, and whose kindness, whose generosity the unhappy girl repaid
+by an ingratitude so bad, so dreadful, that at last her excellent
+patroness was obliged to separate her from her own young ones, fearful
+lest her vicious example should contaminate their purity: she has sent
+her here to be healed, even as the Jews of old sent their diseased to
+the troubled pool of Bethesda; and, teachers, superintendent, I beg of
+you not to allow the waters to stagnate round her
+grammar: we parted finally at the
+door of the brocklehurst arms there: each went her seperate way; she
+set off for the brow of lowood fell to meet the conveyance which was to
+take her back to gateshead, i mounted the vehicle which was to bear me
+to new duties and a new life in the unknown environs of millcote	We parted finally at the
+door of the Brocklehurst Arms there: each went her separate way; she
+set off for the brow of Lowood Fell to meet the conveyance which was to
+take her back to Gateshead, I mounted the vehicle which was to bear me
+to new duties and a new life in the unknown environs of Millcote
+grammar: ”
+
+“no—nor to-morrow either; i should think he is very likely to stay a
+week or more: when these fine, fashionable people get together, they
+are so surrounded by elegance and gaiety, so well provided with all
+that can please and entertain, they are in no hurry to seperate	”
+
+“No—nor to-morrow either; I should think he is very likely to stay a
+week or more: when these fine, fashionable people get together, they
+are so surrounded by elegance and gaiety, so well provided with all
+that can please and entertain, they are in no hurry to separate
+grammar: meantime, while i thought only of my master and his future bride—saw
+only them, heard only their discourse, and considered only their
+movements of importance—the rest of the party were occupied with their
+own seperate interests and pleasures	Meantime, while I thought only of my master and his future bride—saw
+only them, heard only their discourse, and considered only their
+movements of importance—the rest of the party were occupied with their
+own separate interests and pleasures
+grammar: ”
+
+and so, by dint of alternate coaxing and commanding, he contrived to
+get them all once more enclosed in their seperate dormitories	”
+
+And so, by dint of alternate coaxing and commanding, he contrived to
+get them all once more enclosed in their separate dormitories
+grammar: i must see the light of the unsnuffed candle wane on my
+employment; the shadows darken on the wrought, antique tapestry round
+me, and grow black under the hangings of the vast old bed, and quiver
+strangely over the doors of a great cabinet opposite—whose front,
+divided into twelve panels, bore, in grim design, the heads of the
+twelve apostles, each enclosed in its seperate panel as in a frame;
+while above them at the top rose an ebon crucifix and a dying christ	I must see the light of the unsnuffed candle wane on my
+employment; the shadows darken on the wrought, antique tapestry round
+me, and grow black under the hangings of the vast old bed, and quiver
+strangely over the doors of a great cabinet opposite—whose front,
+divided into twelve panels, bore, in grim design, the heads of the
+twelve apostles, each enclosed in its separate panel as in a frame;
+while above them at the top rose an ebon crucifix and a dying Christ
+grammar: after my
+mother’s death, i wash my hands of you: from the day her coffin is
+carried to the vault in gateshead church, you and i will be as seperate
+as if we had never known each other	After my
+mother’s death, I wash my hands of you: from the day her coffin is
+carried to the vault in Gateshead Church, you and I will be as separate
+as if we had never known each other
+grammar: ”
+
+“you are in the right,” said she; and with these words we each went our
+seperate way	”
+
+“You are in the right,” said she; and with these words we each went our
+separate way
+grammar: then i thought of eliza and georgiana; i
+beheld one the cynosure of a ball-room, the other the inmate of a
+convent cell; and i dwelt on and analysed their seperate peculiarities
+of person and character	Then I thought of Eliza and Georgiana; I
+beheld one the cynosure of a ball-room, the other the inmate of a
+convent cell; and I dwelt on and analysed their separate peculiarities
+of person and character
+grammar: i
+know no weariness of my edward’s society: he knows none of mine, any
+more than we each do of the pulsation of the heart that beats in our
+seperate bosoms; consequently, we are ever together	I
+know no weariness of my Edward’s society: he knows none of mine, any
+more than we each do of the pulsation of the heart that beats in our
+separate bosoms; consequently, we are ever together
+grammar: two ladies, madame hohlakov and her daughter,
+
+had also come out into the portico to wait for the elder, but in a
+
+seperate part of it set aside for women of rank	Two ladies, Madame Hohlakov and her daughter,
+
+had also come out into the portico to wait for the elder, but in a
+
+separate part of it set aside for women of rank
+grammar: ” said my reason, forced by the agonising stimulus into
+precocious though transitory power: and resolve, equally wrought up,
+instigated some strange expedient to acheive escape from insupportable
+oppression—as running away, or, if that could not be effected, never
+eating or drinking more, and letting myself die	” said my reason, forced by the agonising stimulus into
+precocious though transitory power: and Resolve, equally wrought up,
+instigated some strange expedient to achieve escape from insupportable
+oppression—as running away, or, if that could not be effected, never
+eating or drinking more, and letting myself die
+grammar: next day new steps were to be taken; my plans could no longer be
+confined to my own breast; i must impart them in order to acheive their
+success	Next day new steps were to be taken; my plans could no longer be
+confined to my own breast; I must impart them in order to achieve their
+success
+grammar: i honour endurance, perseverance,
+industry, talent; because these are the means by which men acheive
+great ends and mount to lofty eminence	I honour endurance, perseverance,
+industry, talent; because these are the means by which men achieve
+great ends and mount to lofty eminence
+grammar: of the ambition to win power
+and renown for my wretched self, she has formed the ambition to spread
+my master’s kingdom; to acheive victories for the standard of the
+cross	Of the ambition to win power
+and renown for my wretched self, she has formed the ambition to spread
+my Master’s kingdom; to achieve victories for the standard of the
+cross
+grammar: i was not born for a different
+destiny to the rest of my species: to imagine such alot befalling me
+is a fairy tale—a day-dream	I was not born for a different
+destiny to the rest of my species: to imagine such a lot befalling me
+is a fairy tale—a day-dream
+grammar: he made the acquaintance at first, in his own
+
+words, “of alot of low jews, jewesses, and jewkins,” and ended by
+
+being received by “jews high and low alike	He made the acquaintance at first, in his own
+
+words, “of a lot of low Jews, Jewesses, and Jewkins,” and ended by
+
+being received by “Jews high and low alike
+grammar: and what alot you think of their
+
+opinion	And what a lot you think of their
+
+opinion
+grammar: reed probably considered she had kept
+this promise; and so she had, i dare say, aswell as her nature would
+permit her; but how could she really like an interloper not of her
+race, and unconnected with her, after her husband’s death, by any tie	Reed probably considered she had kept
+this promise; and so she had, I dare say, as well as her nature would
+permit her; but how could she really like an interloper not of her
+race, and unconnected with her, after her husband’s death, by any tie
+grammar: i too rose reluctantly; it was bitter cold, and
+i dressed aswell as i could for shivering, and washed when there was a
+basin at liberty, which did not occur soon, as there was but one basin
+to six girls, on the stands down the middle of the room	I too rose reluctantly; it was bitter cold, and
+I dressed as well as I could for shivering, and washed when there was a
+basin at liberty, which did not occur soon, as there was but one basin
+to six girls, on the stands down the middle of the room
+grammar: you have been charged with falsehood; defend yourself to me aswell as
+you can	You have been charged with falsehood; defend yourself to me as well as
+you can
+grammar: “the miss reeds could not play aswell	“The Miss Reeds could not play as well
+grammar: externals have a great effect
+on the young: i thought that a fairer era of life was beginning for me,
+one that was to have its flowers and pleasures, aswell as its thorns
+and toils	Externals have a great effect
+on the young: I thought that a fairer era of life was beginning for me,
+one that was to have its flowers and pleasures, as well as its thorns
+and toils
+grammar: it was not my habit to be disregardful
+of appearance or careless of the impression i made: on the contrary, i
+ever wished to look aswell as i could, and to please as much as my
+want of beauty would permit	It was not my habit to be disregardful
+of appearance or careless of the impression I made: on the contrary, I
+ever wished to look as well as I could, and to please as much as my
+want of beauty would permit
+grammar: ” cried she, in french, “you speak my language aswell as mr	” cried she, in French, “you speak my language as well as Mr
+grammar: ”
+
+with this announcement he rose from his chair, and stood, leaning his
+arm on the marble mantelpiece: in that attitude his shape was seen
+plainly aswell as his face; his unusual breadth of chest,
+disproportionate almost to his length of limb	”
+
+With this announcement he rose from his chair, and stood, leaning his
+arm on the marble mantelpiece: in that attitude his shape was seen
+plainly as well as his face; his unusual breadth of chest,
+disproportionate almost to his length of limb
+grammar: my eye met his as the idea crossed my
+mind: he seemed to read the glance, answering as if its import had been
+spoken aswell as imagined—
+
+“yes, yes, you are right,” said he; “i have plenty of faults of my own:
+i know it, and i don’t wish to palliate them, i assure you	My eye met his as the idea crossed my
+mind: he seemed to read the glance, answering as if its import had been
+spoken as well as imagined—
+
+“Yes, yes, you are right,” said he; “I have plenty of faults of my own:
+I know it, and I don’t wish to palliate them, I assure you
+grammar: and you see, for
+such a large house, there are very few servants, because master has
+never lived here much; and when he does come, being a bachelor, he
+needs little waiting on: but i always think it best to err on the safe
+side; a door is soon fastened, and it is aswell to have a drawn bolt
+between one and any mischief that may be about	And you see, for
+such a large house, there are very few servants, because master has
+never lived here much; and when he does come, being a bachelor, he
+needs little waiting on: but I always think it best to err on the safe
+side; a door is soon fastened, and it is as well to have a drawn bolt
+between one and any mischief that may be about
+grammar: the hall, too, was scoured; and the great carved
+clock, aswell as the steps and banisters of the staircase, were
+polished to the brightness of glass; in the dining-room, the sideboard
+flashed resplendent with plate; in the drawing-room and boudoir, vases
+of exotics bloomed on all sides	The hall, too, was scoured; and the great carved
+clock, as well as the steps and banisters of the staircase, were
+polished to the brightness of glass; in the dining-room, the sideboard
+flashed resplendent with plate; in the drawing-room and boudoir, vases
+of exotics bloomed on all sides
+grammar: i turned my face away to conceal a smile i could not
+suppress: there was something ludicrous aswell as painful in the
+little parisienne’s earnest and innate devotion to matters of dress	I turned my face away to conceal a smile I could not
+suppress: there was something ludicrous as well as painful in the
+little Parisienne’s earnest and innate devotion to matters of dress
+grammar: i knew their names
+afterwards, and may aswell mention them now	I knew their names
+afterwards, and may as well mention them now
+grammar: but in other points, aswell as this, i was growing very lenient to my
+master: i was forgetting all his faults, for which i had once kept a
+sharp look-out	But in other points, as well as this, I was growing very lenient to my
+master: I was forgetting all his faults, for which I had once kept a
+sharp look-out
+grammar: ”
+
+“yes, sir, to comfort you, aswell as i could	”
+
+“Yes, sir, to comfort you, as well as I could
+grammar: amidst all this, i had to listen aswell as watch: to listen for the
+movements of the wild beast or the fiend in yonder side den	Amidst all this, I had to listen as well as watch: to listen for the
+movements of the wild beast or the fiend in yonder side den
+grammar: the flesh on the shoulder is torn aswell
+as cut	The flesh on the shoulder is torn as well
+as cut
+grammar: rochester, i may aswell mention another matter of business to you
+while i have the opportunity	Rochester, I may as well mention another matter of business to you
+while I have the opportunity
+grammar: bessie had retained her quick temper aswell as her light
+foot and good looks	Bessie had retained her quick temper as well as her light
+foot and good looks
+grammar: meantime, i got on
+aswell as i could with georgiana and eliza	Meantime, I got on
+as well as I could with Georgiana and Eliza
+grammar: if they did not love me, infact, as little did i love them	If they did not love me, in fact, as little did I love them
+grammar: this state of things should have been to me a
+paradise of peace, accustomed as i was to a life of ceaseless reprimand
+and thankless fagging; but, infact, my racked nerves were now in such
+a state that no calm could soothe, and no pleasure excite them
+agreeably	This state of things should have been to me a
+paradise of peace, accustomed as I was to a life of ceaseless reprimand
+and thankless fagging; but, in fact, my racked nerves were now in such
+a state that no calm could soothe, and no pleasure excite them
+agreeably
+grammar: rochester’s mother
+was a fairfax, and second cousin to my husband: but i never presume on
+the connection—infact, it is nothing to me; i consider myself quite in
+the light of an ordinary housekeeper: my employer is always civil, and
+i expect nothing more	Rochester’s mother
+was a Fairfax, and second cousin to my husband: but I never presume on
+the connection—in fact, it is nothing to me; I consider myself quite in
+the light of an ordinary housekeeper: my employer is always civil, and
+I expect nothing more
+grammar: and a pliable imagination persuaded her, we must
+
+suppose, for a brief moment, that fyodor pavlovitch, in spite of his
+
+parasitic position, was one of the bold and ironical spirits of that
+
+progressive epoch, though he was, infact, an ill‐natured buffoon and
+
+nothing more	And a pliable imagination persuaded her, we must
+
+suppose, for a brief moment, that Fyodor Pavlovitch, in spite of his
+
+parasitic position, was one of the bold and ironical spirits of that
+
+progressive epoch, though he was, in fact, an ill‐natured buffoon and
+
+nothing more
+grammar: mitya did,
+
+infact, pass into this cousin’s keeping, but as the latter had no
+
+family of his own, and after securing the revenues of his estates was
+
+in haste to return at once to paris, he left the boy in charge of one
+
+of his cousins, a lady living in moscow	Mitya did,
+
+in fact, pass into this cousin’s keeping, but as the latter had no
+
+family of his own, and after securing the revenues of his estates was
+
+in haste to return at once to Paris, he left the boy in charge of one
+
+of his cousins, a lady living in Moscow
+grammar: from
+every enjoyment i was, ofcourse, excluded: my share of the gaiety
+consisted in witnessing the daily apparelling of eliza and georgiana,
+and seeing them descend to the drawing-room, dressed out in thin muslin
+frocks and scarlet sashes, with hair elaborately ringletted; and
+afterwards, in listening to the sound of the piano or the harp played
+below, to the passing to and fro of the butler and footman, to the
+jingling of glass and china as refreshments were handed, to the broken
+hum of conversation as the drawing-room door opened and closed	From
+every enjoyment I was, of course, excluded: my share of the gaiety
+consisted in witnessing the daily apparelling of Eliza and Georgiana,
+and seeing them descend to the drawing-room, dressed out in thin muslin
+frocks and scarlet sashes, with hair elaborately ringletted; and
+afterwards, in listening to the sound of the piano or the harp played
+below, to the passing to and fro of the butler and footman, to the
+jingling of glass and china as refreshments were handed, to the broken
+hum of conversation as the drawing-room door opened and closed
+grammar: ”
+
+ofcourse they did; for i felt their eyes directed like burning-glasses
+against my scorched skin	”
+
+Of course they did; for I felt their eyes directed like burning-glasses
+against my scorched skin
+grammar: ”
+
+ofcourse i did not—i had never heard of him before; but the old lady
+seemed to regard his existence as a universally understood fact, with
+which everybody must be acquainted by instinct	”
+
+Of course I did not—I had never heard of him before; but the old lady
+seemed to regard his existence as a universally understood fact, with
+which everybody must be acquainted by instinct
+grammar: ”
+
+“you are not a servant at the hall, ofcourse	”
+
+“You are not a servant at the hall, of course
+grammar: ”
+
+“ofcourse: that is the established answer	”
+
+“Of course: that is the established answer
+grammar: rochester had such a direct way of giving orders,
+it seemed a matter ofcourse to obey him promptly	Rochester had such a direct way of giving orders,
+it seemed a matter of course to obey him promptly
+grammar: she was returning: ofcourse my heart
+thumped with impatience against the iron rails i leant upon	She was returning: of course my heart
+thumped with impatience against the iron rails I leant upon
+grammar: bending over
+the balcony, i was about to murmur ‘mon ange’—in a tone, ofcourse,
+which should be audible to the ear of love alone—when a figure jumped
+from the carriage after her; cloaked also; but that was a spurred heel
+which had rung on the pavement, and that was a hatted head which now
+passed under the arched _porte cochère_ of the hotel	Bending over
+the balcony, I was about to murmur ‘Mon ange’—in a tone, of course,
+which should be audible to the ear of love alone—when a figure jumped
+from the carriage after her; cloaked also; but that was a spurred heel
+which had rung on the pavement, and that was a hatted head which now
+passed under the arched _porte cochère_ of the hotel
+grammar: ofcourse not: i need not
+ask you; because you never felt love	Of course not: I need not
+ask you; because you never felt love
+grammar: the couple
+were thus revealed to me clearly: both removed their cloaks, and there
+was ‘the varens,’ shining in satin and jewels,—my gifts ofcourse,—and
+there was her companion in an officer’s uniform; and i knew him for a
+young roué of a vicomte—a brainless and vicious youth whom i had
+sometimes met in society, and had never thought of hating because i
+despised him so absolutely	The couple
+were thus revealed to me clearly: both removed their cloaks, and there
+was ‘the Varens,’ shining in satin and jewels,—my gifts of course,—and
+there was her companion in an officer’s uniform; and I knew him for a
+young roué of a vicomte—a brainless and vicious youth whom I had
+sometimes met in society, and had never thought of hating because I
+despised him so absolutely
+grammar: ”
+
+“she was greatly admired, ofcourse	”
+
+“She was greatly admired, of course
+grammar: leah shook her head, and the conversation was ofcourse dropped	Leah shook her head, and the conversation was of course dropped
+grammar: i regarded her, ofcourse, with special interest	I regarded her, of course, with special interest
+grammar: you pay her, ofcourse; i should think it quite as
+expensive,—more so; for you have them both to keep in addition	You pay her, of course; I should think it quite as
+expensive,—more so; for you have them both to keep in addition
+grammar: “miss ingram
+is mine, ofcourse,” said he: afterwards he named the two misses
+eshton, and mrs	“Miss Ingram
+is mine, of course,” said he: afterwards he named the two Misses
+Eshton, and Mrs
+grammar: “let us have her
+in, ofcourse	“Let us have her
+in, of course
+grammar: be advised, my angel girl—and—”
+
+“show her into the library, ofcourse,” cut in the “angel girl	Be advised, my angel girl—and—”
+
+“Show her into the library, of course,” cut in the “angel girl
+grammar: adèle, as you say, must go to school; and you, ofcourse, must
+march straight to—the devil	Adèle, as you say, must go to school; and you, of course, must
+march straight to—the devil
+grammar: strongly-marked horizontal eyebrows must be traced under that
+brow; then followed, naturally, a well-defined nose, with a straight
+ridge and full nostrils; then a flexible-looking mouth, by no means
+narrow; then a firm chin, with a decided cleft down the middle of it:
+ofcourse, some black whiskers were wanted, and some jetty hair, tufted
+on the temples, and waved above the forehead	Strongly-marked horizontal eyebrows must be traced under that
+brow; then followed, naturally, a well-defined nose, with a straight
+ridge and full nostrils; then a flexible-looking mouth, by no means
+narrow; then a firm chin, with a decided cleft down the middle of it:
+of course, some black whiskers were wanted, and some jetty hair, tufted
+on the temples, and waved above the forehead
+grammar: ofcourse, i lied: it was, in
+fact, a very faithful representation of mr	Of course, I lied: it was, in
+fact, a very faithful representation of Mr
 grammar: JANE EYRE AN AUTOBIOGRAPHY buy Charlotte Brontë _ILLUSTRATED BY F	JANE EYRE
 AN AUTOBIOGRAPHY
 
